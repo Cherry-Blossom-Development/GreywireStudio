@@ -1,0 +1,20 @@
+# Environment / secrets
+.env
+.env.*
+_secrets.txt
+*cert.pem
+*csr.pem
+*key.pem
+
+# Dependencies / build output
+node_modules/
+dist/
+build/
+
+# Editor / tooling
+.claude*
+tmpclaude*
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
