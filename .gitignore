@@ -18,3 +18,16 @@ tmpclaude*
 .idea/
 .DS_Store
 Thumbs.db
+
+# KiCad temporary / local files
+*-backups/
+_autosave-*
+*.lck
+fp-info-cache
+*.kicad_prl
+*.bak
+
+# LTspice generated output
+*.raw
+*.log
+*.net
