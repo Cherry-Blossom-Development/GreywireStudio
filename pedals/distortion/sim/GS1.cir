@@ -1,0 +1,83 @@
+* GS1 Distortion - LTspice simulation
+* Effect-on signal path of pedals/distortion/kicad/GS1/GS1.kicad_sch
+* (footswitch engaged). Part names and values match the schematic.
+*
+* Open in LTspice, press Run, then click on a node or use
+* Plot Settings > Add Traces to view V(in) and V(out).
+*
+* Knob settings (0 = fully counter-clockwise, 1 = fully clockwise):
+.param dist=0.5
+.param vol=0.5
+* Guitar signal: amplitude (V peak) and frequency (Hz).
+* 220Hz is the A string at the 5th fret; a pickup gives roughly 0.1-0.3V peak.
+.param amp=0.2
+.param freq=220
+
+* ---- Section E: power input --------------------------------------------
+* 9V adapter -> D3 reverse-polarity diode -> +9V rail
+V1 VDC 0 9
+D3 VDC V9 1N5817
+
+* ---- Section A: bias voltage (VB = 4.5V) --------------------------------
+R7 V9 VB 1Meg
+R8 VB 0 1Meg
+C6 VB 0 10u
+C7 V9 0 100u
+
+* ---- Section B: input ---------------------------------------------------
+Vguitar IN 0 SINE(0 {amp} {freq})
+R1 IN 0 1Meg
+C1 IN N1 10n
+R2 N1 OPIN 10k
+C2 OPIN 0 1n
+R3 OPIN VB 1Meg
+
+* ---- Section C: gain stage ----------------------------------------------
+* U1 pins: In+ In- V+ V- OUT
+* LTspice has no LM741 model, so this is its "universal" op amp set to
+* 741 specs: 200k open-loop gain, 1MHz bandwidth, 0.5V/us slew rate,
+* output swings to within about 1.5V of each rail.
+XU1 OPIN NINV V9 0 OPOUT level2 Avol=200k GBW=1Meg Slew=0.5Meg Rail=1.5 Rin=2Meg Ilimit=25m
+R5 OPOUT NINV 1Meg
+R4 NINV N3 4.7k
+* RV1 Distortion pot (1M), used as a variable resistor: clockwise = less resistance = more gain
+RV1 N3 N4 {1Meg*(1-dist)+1}
+C3 N4 0 47n
+
+* ---- Section D: output and clipping -------------------------------------
+C4 OPOUT N5 1u
+R6 N5 CLIP 10k
+D1 CLIP 0 1N34A
+D2 0 CLIP 1N34A
+C5 CLIP 0 1n
+* RV2 Volume pot (10k): CLIP -> wiper (OUT) -> GND
+RV2a CLIP OUT {10k*(1-vol)+1}
+RV2b OUT 0 {10k*vol+1}
+* Guitar amplifier input
+Ramp OUT 0 1Meg
+
+* ---- Models ---------------------------------------------------------------
+.lib UniversalOpAmp2.lib
+* 1N34A germanium diode (not in LTspice's standard library; common community model)
+.model 1N34A D(Is=2.6u Rs=7 N=1.6 Cjo=0.5p M=0.5 Vj=0.1 BV=60 Ibv=15u)
+* 1N5817 Schottky (copied from LTspice's standard.dio)
+.model 1N5817 D(Is=31.7u Rs=.051 N=1.373 Cjo=190p M=.3 Eg=.69 Xti=2 Iave=1 Vpk=20 mfg=OnSemi type=Schottky)
+
+* ---- Analysis -----------------------------------------------------------
+* 50ms of signal; max step 10us keeps the waveform smooth at audio frequencies
+.tran 0 50m 0 10u
+* Compare distortion knob settings (each step is drawn as its own trace).
+* Comment this line out (put * in front) to use the single dist value above.
+.step param dist list 0 0.5 1
+
+* To listen: comment out the .step line above, change .tran to 2 seconds
+* (.tran 0 2 0 10u), and remove the * from the next line. LTspice writes
+* GS1_out.wav next to this file.
+* .wave GS1_out.wav 16 44100 V(out)
+
+* Peak-to-peak levels, shown in View > SPICE Error Log after a run
+.meas tran in_pp PP V(in) FROM 20m TO 50m
+.meas tran opout_pp PP V(opout) FROM 20m TO 50m
+.meas tran out_pp PP V(out) FROM 20m TO 50m
+.meas tran vb AVG V(vb) FROM 20m TO 50m
+.end

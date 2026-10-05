@@ -32,3 +32,5 @@ fp-info-cache
 *.raw
 *.log
 *.net
+*.db
+*.wav
