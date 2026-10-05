@@ -1,0 +1,228 @@
+1. Choose a starting circuit
+
+For a first pedal, I'd base it on the MXR Distortion+ design. It's the classic beginner distortion:
+- one op-amp gain stage, with a knob that sets how hard it drives
+- two clipping diodes to ground, which create the distortion
+- a volume knob
+- about 15–20 parts in total
+
+Proven circuits like this are widely studied and modified. Once it works, you can make it your own by changing the diodes, adding a tone control and so on. Just don't use the MXR name on your product.
+
+2. Simulate it in LTspice (sim/ folder)
+
+This is where you try diode types and gain ranges, and look at the clipped waveform. Even listen to it as a .wav file, before buying anything.
+
+3. Build it on a breadboard
+
+I strongly recommend this before making a board. The parts cost roughly $15–30 if you don't already have them, and you'll find mistakes cheaply. You'll also want a 9V supply and a guitar and amp to test with.
+
+4. Draw the schematic in KiCad
+
+Open GS1.kicad_sch and do the following:
+1. Place the parts and wire them up.
+2. Assign each part a footprint, which is its physical size and pad layout on the board.
+3. Run the Electrical Rules Check to catch wiring mistakes.
+
+5. Lay out the board
+
+Open GS1.kicad_pcb and size the board to fit a standard enclosure (a Hammond 1590B is the usual small pedal box). Then do the following:
+1. Place the jacks, knobs and footswitch.
+2. Route the copper traces between parts.
+3. Run the Design Rules Check.
+
+6. Order the boards
+
+Export Gerber files and upload them to JLCPCB or PCBWay.
+
+How I can help with step 2: LTspice can run a circuit written as a text netlist. I can write one for a Distortion+-style circuit and put it in sim/. Then you just open it in LTspice and press Run to see the clean and distorted signals. Want me to do that?
+
+I haven't committed the new KiCad project yet. I can commit it now or wait until there's something drawn in it.
+
+
+
+That window is KiCad's Project Manager, its home screen. The left side lists your project's files, and the right side has buttons that open KiCad's editing tools.
+
+The three files
+
+GS1.kicad_pro: the project file
+This holds project-wide settings like design rules, default trace widths and which libraries to use. You rarely edit it directly. It's roughly like a package.json: it ties the project together, and opening it opens the whole project.
+
+The [main] next to it is your git branch. Recent KiCad versions have built-in git support, so KiCad noticed the GreywireStudio repo and shows the branch you're on. You can keep using git from the command line (or I can run it for you) and ignore that feature.
+
+GS1.kicad_sch: the schematic
+This is the circuit diagram: which parts exist and how they're connected. It shows the electrical logic, not physical layout. Here a resistor is just a zigzag symbol, and a wire is just a line meaning "these two points are connected." This is where you'll start.
+
+GS1.kicad_pcb: the circuit board layout
+This is the physical board: where each part sits, its real size, and the copper traces between parts. The board makers manufacture from this file. It's built from the schematic, so you finish the schematic first and then KiCad brings its parts and connections over.
+
+A software analogy: the schematic is like your source code, which describes what the circuit does. The board layout is like the compiled, deployed result, a physical form of that logic. Change the schematic, then update the board from it, never the other way around.
+
+The tool buttons on the right
+
+You'll mainly use two of them:
+- Schematic Editor: opens GS1.kicad_sch
+- PCB Editor: opens GS1.kicad_pcb
+
+The others you'll need occasionally or never:
+- Symbol Editor and Footprint Editor: create custom parts if one isn't in KiCad's built-in libraries. The built-in libraries cover almost everything a pedal needs.
+- Gerber Viewer: check your manufacturing files before you order boards.
+- Calculator Tools: handy formulas, such as how wide a trace needs to be or what resistor color codes mean.
+- Image Converter, Drawing Sheet Editor and Plugin Manager: you can ignore these for now.
+
+Next, open the Schematic Editor. It will be a blank page with a title block in the corner, and that's where the distortion circuit gets drawn.
+
+✻ Cooked for 11s · done 9:43 AM
+
+❯ ok I have opened the schematic editor
+
+The Schematic Editor works like a drawing canvas. You place part symbols, then connect them with wires. Here's how to get around and what to draw first.
+
+Getting around
+
+- Zoom: mouse scroll wheel
+- Pan: hold the middle mouse button (scroll wheel) and drag
+- Escape: cancels whatever tool you're in. Press it whenever you're stuck.
+
+The shortcuts you'll use 95% of the time
+
+Hover over the canvas and press:
+
+┌────────┬──────────────────────────────────────────────────────────────────┐
+│  Key   │                              Action                              │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ A      │ Add a part symbol (opens a search window)                        │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ P      │ Add a power symbol (+9V, GND)                                    │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ W      │ Draw a wire. Click to start, click to bend, double-click to end. │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ L      │ Add a net label, a named connection point (explained below)      │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ M      │ Move the part under the mouse                                    │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ R      │ Rotate the part under the mouse                                  │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ V      │ Set a part's value, such as "10k" or "1M"                        │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ E      │ Edit all of a part's properties                                  │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ Delete │ Delete the thing under the mouse                                 │
+├────────┼──────────────────────────────────────────────────────────────────┤
+│ Ctrl+S │ Save                                                             │
+└────────┴──────────────────────────────────────────────────────────────────┘
+
+Net labels will save you a lot of wiring. Any two points that carry the same label name are connected, even with no wire drawn between them. The GND and +9V power symbols work the same way: every GND symbol is connected to every other one.
+
+The circuit
+
+This is a Distortion+-style circuit, grouped into four sections. "VB" is a net label, a 4.5V reference halfway between 0V and 9V that the op-amp needs.
+
+A. Bias voltage (makes VB)
+- R7 1M: from +9V to VB
+- R8 1M: from VB to GND
+- C6 10µF electrolytic: from VB to GND
+- C7 100µF electrolytic: from +9V to GND (smooths the power supply)
+
+B. Input
+- J1 input jack: tip goes to the net IN, sleeve goes to GND
+- R1 1M: from IN to GND (prevents a pop when you switch the pedal on)
+- C1 10nF: from IN to a point we'll call N1
+- R2 10k: from N1 to the op-amp's + input
+- C2 1nF: from the op-amp's + input to GND (filters out radio noise)
+- R3 1M: from the op-amp's + input to VB
+
+C. Gain stage (the op-amp, U1)
+- U1 power pins: one goes to +9V, the other to GND
+- R5 1M: from the op-amp's output to its − input
+- R4 4.7k: from the − input to the Distortion pot
+- RV1 Distortion pot, 1M: in series with R4. Use the wiper and one end, so it acts as a variable resistor.
+- C3 47nF: from the other side of RV1 to GND
+
+The gain is 1 + R5 ÷ (R4 + RV1). That's about 200× at full distortion and about 2× at minimum.
+
+D. Output and clipping
+- C4 1µF: from the op-amp's output to a point we'll call N2
+- R6 10k: from N2 to the net CLIP
+- D1 and D2: from CLIP to GND, one pointing each way (this is where the distortion comes from)
+- C5 1nF: from CLIP to GND
+- RV2 Volume pot, 10k: one end to CLIP, the other end to GND, and the wiper to the output jack's tip
+- J2 output jack: tip from RV2's wiper, sleeve to GND
+
+What to type in the search window (after pressing A)
+
+┌───────────────┬──────────────────────────────────────────────────┐
+│     Part      │                    Search for                    │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Resistor      │ R, then pick Device:R                            │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Capacitor     │ Device:C (for electrolytics, Device:C_Polarized) │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Potentiometer │ Device:R_Potentiometer                           │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Diode         │ Device:D                                         │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Op-amp        │ 741, in the Amplifier_Operational library        │
+├───────────────┼──────────────────────────────────────────────────┤
+│ Jack          │ Connector:AudioJack2                             │
+└───────────────┴──────────────────────────────────────────────────┘
+
+Your first step
+
+Draw section A only (the bias voltage):
+1. Place the four parts.
+2. Add the +9V and GND power symbols.
+3. Put a VB net label where R7, R8 and C6 meet.
+4. Set each part's value with V.
+5. Save with Ctrl+S.
+
+Don't worry about neatness. Once you've saved, tell me and I'll read GS1.kicad_sch from the repo to check your connections before you move on to the input section.
+
+
+Step 1: Place the resistor
+
+1. Press A. The Choose Symbol window opens.
+2. In the filter box at the top, type Device:R.
+3. In the list, click R under the Device library. Its description says "Resistor", and a preview appears on the right.
+4. Click OK. The resistor is now attached to your mouse pointer, standing upright.
+5. Click somewhere in the middle of the page to drop it.
+6. KiCad may open the symbol chooser again so you can place another part. Press Escape to stop.
+
+Step 2: Set its value to 1M
+
+1. Hover over the resistor and press V.
+2. Replace the text with 1M (1 megaohm) and press Enter.
+
+The label next to the resistor should now say 1M.
+
+Step 3: Rename it to R7
+
+KiCad numbers parts automatically, so it probably called this one R1. Rename it to match the list:
+1. Hover over the resistor and press E. The Symbol Properties window opens.
+2. In the Reference row, change R1 to R7.
+3. Click OK.e
+
+Step 4: Connect the top end to +9V
+
+1. Press P to open the power symbol chooser.
+2. Type +9V, select +9V from the power library, and click OK.
+3. Place it a little above the resistor, then press Escape.
+4. Look at the top end of the resistor. There's a small circle at the tip of the pin, which marks an unconnected pin.
+5. Hover exactly over that circle and press W to start a wire there.
+6. Move the mouse up to the bot click. The wire endsautomatically when it reaches a pin.
+
+The small circles at both ends disappear when they're connected. That's how you can tell a
+connection worked.
+
+You can also skip the wire. Drag the +9V symbol so its pin lands exactly on the resistor's pin, and they connect directly.
+
+Step 5: Label the bottom end VB
+
+1. Hover over the circle on the resistor's bottom pin and press W.
+2. Move straight down a short distance and double-click to end the wire.
+3. Press L. The label window op
+4. Type VB and press Enter or click OK.aw
+5. The label is attached to youection point (the small square at its tip) sits on the end of the wire you just drew, then click.
+
+Step 6: Save
+
+Press Ctrl+S.
