@@ -13,9 +13,9 @@ All tools are free:
 
 ## Layout
 
-Each pedal has its own folder under `pedals/`:
-
 ```
+libraries/
+  GreywireStudio.kicad_sym   # Shared KiCad symbols (e.g. 3PDT footswitch)
 pedals/
   <pedal-name>/
     README.md   # Design notes, parts list, status
