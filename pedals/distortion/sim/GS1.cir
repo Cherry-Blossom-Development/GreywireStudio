@@ -6,7 +6,7 @@
 * Plot Settings > Add Traces to view V(in) and V(out).
 *
 * Knob settings (0 = fully counter-clockwise, 1 = fully clockwise):
-.param dist=0.5
+.param dist=1
 .param vol=0.5
 * Guitar signal: amplitude (V peak) and frequency (Hz).
 * 220Hz is the A string at the 5th fret; a pickup gives roughly 0.1-0.3V peak.
@@ -65,15 +65,15 @@ Ramp OUT 0 1Meg
 
 * ---- Analysis -----------------------------------------------------------
 * 50ms of signal; max step 10us keeps the waveform smooth at audio frequencies
-.tran 0 50m 0 10u
+.tran 0 2 0 10u
 * Compare distortion knob settings (each step is drawn as its own trace).
 * Comment this line out (put * in front) to use the single dist value above.
-.step param dist list 0 0.5 1
+* .step param dist list 0 0.5 1
 
 * To listen: comment out the .step line above, change .tran to 2 seconds
 * (.tran 0 2 0 10u), and remove the * from the next line. LTspice writes
 * GS1_out.wav next to this file.
-* .wave GS1_out.wav 16 44100 V(out)
+.wave GS1_out.wav 16 44100 V(out)
 
 * Peak-to-peak levels, shown in View > SPICE Error Log after a run
 .meas tran in_pp PP V(in) FROM 20m TO 50m
