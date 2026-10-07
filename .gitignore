@@ -34,3 +34,6 @@ fp-info-cache
 *.net
 *.db
 *.wav
+
+# Microsoft Office lock files
+~$*
