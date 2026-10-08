@@ -1,0 +1,20 @@
+* Flashover - listen
+* Runs 2 seconds at the knob settings below and writes Flashover_out.wav
+* next to this file. Change the settings, press Run again and listen.
+*
+* Knob settings (0 = fully down, 1 = fully up):
+.param dist=1 tone=0.5 level=0.188
+* Clipping: 0 = Soft (germanium), 1 = Hard (silicon)
+.param hard=1
+* Digital pot values: Tone pot (10k or 20k), wiper resistance
+.param Rt=10k Rw=75
+* Guitar signal: amplitude (V peak) and frequency (Hz)
+.param amp=0.2 freq=220
+Vguitar IN 0 SINE(0 {amp} {freq})
+
+.include Flashover_circuit.inc
+
+* Max step 10us keeps the waveform smooth at audio frequencies.
+.tran 0 2 0 10u
+.wave Flashover_out.wav 16 44100 V(out)
+.end

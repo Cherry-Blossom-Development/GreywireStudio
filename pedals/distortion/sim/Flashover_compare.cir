@@ -1,0 +1,31 @@
+* Flashover - compare Soft and Hard clipping
+* Runs Soft and Hard at two Gain settings and measures the output level
+* (RMS), so the Level compensation between modes can be chosen. Also
+* checks that every digital pot terminal stays between 0V and 9V.
+*
+* Open in LTspice and press Run. Results are in the SPICE Output Log
+* (View > SPICE Output Log). Plot V(out) to see the waveforms.
+
+.param dist=1 tone=0.5 level=1 hard=0 Rt=10k Rw=75
+* Guitar signal: 0.2V peak at 220Hz (A string, 5th fret)
+.param amp=0.2 freq=220
+Vguitar IN 0 SINE(0 {amp} {freq})
+
+.include Flashover_circuit.inc
+
+.step param hard list 0 1
+.step param dist list 0.5 1
+.tran 0 0.6 0 10u
+
+* Output level after the circuit has settled
+.meas TRAN out_rms RMS V(out) FROM 0.3 TO 0.6
+.meas TRAN out_pk MAX V(out) FROM 0.3 TO 0.6
+.meas TRAN out_dB PARAM 20*log10(out_rms)
+* Digital pot terminals must stay within 0V..9V
+.meas TRAN gainpot_min MIN V(n3) FROM 0.3 TO 0.6
+.meas TRAN gainpot_max MAX V(n3) FROM 0.3 TO 0.6
+.meas TRAN tonepot_min MIN min(V(lp),V(hp)) FROM 0.3 TO 0.6
+.meas TRAN tonepot_max MAX max(V(lp),V(hp)) FROM 0.3 TO 0.6
+.meas TRAN levelpot_min MIN V(bufo) FROM 0.3 TO 0.6
+.meas TRAN levelpot_max MAX V(bufo) FROM 0.3 TO 0.6
+.end

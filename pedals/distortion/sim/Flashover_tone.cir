@@ -1,0 +1,27 @@
+* Flashover - tone and gain frequency response
+* Small-signal sweep from 20 Hz to 20 kHz at three Tone settings, with the
+* Tone digital pot at 10k (available as a 9V digital pot) and 20k (the
+* DS-1's value), and the Gain knob at minimum and maximum.
+*
+* Open in LTspice and press Run, then plot V(out). Measurements are in the
+* SPICE Output Log. Hard clipping is selected because silicon diodes don't
+* conduct at small signal levels, so they don't color the tone curves.
+
+.param dist=1 tone=0.5 level=1 hard=1 Rt=10k Rw=75
+Vguitar IN 0 AC 1
+
+.include Flashover_circuit.inc
+
+.step param tone list 0 0.5 1
+.step param Rt list 10k 20k
+.step param dist list 0 1
+.ac dec 50 20 20k
+
+* Gain of the gain stage (input to op-amp output) at 1 kHz
+.meas AC gain_1k FIND mag(V(opout)) AT 1k
+* Output at a few frequencies, to compare tone settings
+.meas AC out_100 FIND mag(V(out)) AT 100
+.meas AC out_500 FIND mag(V(out)) AT 500
+.meas AC out_1k FIND mag(V(out)) AT 1k
+.meas AC out_3k FIND mag(V(out)) AT 3k
+.end
