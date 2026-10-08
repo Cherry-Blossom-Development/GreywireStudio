@@ -1,6 +1,6 @@
 # GreywireStudio
 
-GreywireStudio is a line of guitar effects pedals from Cherry Blossom Development. The first series, **Linework**, is a set of pedals that work on their own or together under a phone-connected control pedal. See `General Concept.docx` for the overall product concept.
+GreywireStudio is a line of guitar effects pedals from Cherry Blossom Development. The first series, **Linework**, is a set of pedals that work on their own or together under a phone-connected control pedal. See `General Concept.docx` for the overall product concept. `Linework Control Specification.docx` defines the rules every Linework pedal follows: the MIDI loop connecting them to Switchyard, the shared message map, presets and firmware updates.
 
 ## Tools
 
