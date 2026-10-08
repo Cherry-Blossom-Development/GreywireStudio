@@ -426,7 +426,7 @@
       {
         "filename": "Flashover.kicad_sch",
         "name": "Root",
-        "uuid": "c1c20152-b132-4e14-97dc-1ac24480e45d"
+        "uuid": "37bda491-c0dc-4d48-acdf-49df4f139bb0"
       }
     ],
     "used_designators": "",
@@ -434,24 +434,32 @@
   },
   "sheets": [
     [
-      "c1c20152-b132-4e14-97dc-1ac24480e45d",
+      "37bda491-c0dc-4d48-acdf-49df4f139bb0",
       "Root"
     ],
     [
-      "bd9c8ebc-793e-428c-9213-3d5c31b8942c",
+      "553416c4-a47b-4eba-a37d-be64f47f9e32",
       "Power and Bias"
     ],
     [
-      "d8b4aca9-ddeb-4c76-a690-0335c0a19397",
+      "2e16fd56-5524-4d37-91fb-235b8f173ecd",
       "Input and Gain"
     ],
     [
-      "8ef2c8d8-8965-41b4-bdab-024041543649",
+      "9fc66368-a873-4d2e-8fe7-1d30fc269945",
       "Clipping"
     ],
     [
-      "c612ce62-484a-452b-bbb9-31deb194e553",
+      "641032a7-af45-463f-9bff-064e3d76b912",
       "Tone and Output"
+    ],
+    [
+      "e4de81cf-2f24-4164-ab2f-6902509d3d8c",
+      "Controller"
+    ],
+    [
+      "4db21114-e16b-4c0d-baa8-2340788954e3",
+      "Digital Pots"
     ]
   ],
   "text_variables": {},
