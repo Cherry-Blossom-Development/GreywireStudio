@@ -2,14 +2,14 @@
 	(version 20260306)
 	(generator "eeschema")
 	(generator_version "10.0")
-	(uuid "872055d3-e01a-4a82-8c05-28c93674a700")
+	(uuid "837bea85-92fd-51b5-9680-1e9b1b02f616")
 	(paper "A4")
 	(title_block
 		(title "Flashover")
 		(date "2026-10-09")
 		(rev "0.1")
 		(company "GreywireStudio")
-		(comment 1 "Flashover distortion / overdrive - Linework series")
+		(comment 1 "Flashover distortion / overdrive - Linework series - main board")
 	)
 	(lib_symbols
 	)
@@ -21,7 +21,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "ce42a042-da19-4553-872b-b9e1736e81df")
+		(uuid "667157c7-817f-4287-8c44-5dfba4a4a651")
 	)
 	(wire
 		(pts
@@ -31,40 +31,40 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "9d3e60f6-3e48-4cc3-bc92-066581064c91")
+		(uuid "c301be09-0482-4587-a5b3-722ba71bde35")
 	)
 	(text "FLASHOVER"
 		(exclude_from_sim no)
 		(at 40.64 38.1 0)
 		(effects (font (size 3 3) (bold yes)) (justify left))
-		(uuid "6f5e403b-ef7c-4aa2-be9c-6a25b6a6b6f6")
+		(uuid "c91e3374-4931-41ba-a0aa-25f19511f63f")
 	)
-	(text "Distortion / overdrive pedal, Linework series. Complete schematic, version 0.1.\nBased on GS1 (MXR Distortion+) with Soft/Hard clipping, a DS-1 style Tone control,\na x4 output amplifier and digital pots for Gain, Tone and Level.\nValues match the LTspice model in pedals/distortion/sim/Flashover_circuit.inc."
+	(text "Distortion / overdrive pedal, Linework series.  Main board, version 0.1.\nBased on GS1 (MXR Distortion+) with Soft/Hard clipping, a DS-1 style Tone control,\na x4 output amplifier and digital pots for Gain, Tone and Level.\nValues match the LTspice model in pedals/distortion/sim/Flashover_circuit.inc."
 		(exclude_from_sim no)
 		(at 40.64 45.72 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "3699cd97-1ee5-4f73-bb47-126f2291e643")
+		(uuid "f4e0a029-086b-4b29-b86d-191010dd7eda")
 	)
 	(text "Signal flow:  input jack (Bypass)  ->  Input and Gain  ->  Clipping  ->  Tone and Output  ->  output jack (Bypass)"
 		(exclude_from_sim no)
 		(at 30.48 86.36 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "f1278b14-20cc-4756-8419-60b56a6bd8f4")
+		(uuid "2797a1ee-1549-4b03-a16a-cace70199e65")
 	)
-	(text "The controller sheets connect to the audio sheets and the controls through global labels\n(FX_IN/FX_OUT, HARD_SEL, SDA/SCL, encoder, LED, MIDI and bypass signals) and the power symbols."
+	(text "Two boards in a 1590BB enclosure.  This main board holds the audio circuit, controller,\ndigital pots, MIDI, bypass and all five jacks (along the top edge).  The knobs, LED rings,\nSoft/Hard button and panel LEDs are on the control board (project Flashover_Controls),\nwhich plugs into J7 on the Board Connector sheet."
 		(exclude_from_sim no)
-		(at 30.48 165.1 0)
+		(at 93.98 137.16 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "a7552566-36e7-4819-8d35-31065f10a047")
+		(uuid "407e3e66-83f3-4dd5-a395-909096aed613")
 	)
-	(text "Footprints assigned: surface-mount for assembly, through-hole for jacks, encoders, panel LEDs,\nthe Soft/Hard button, the TO-220 regulator and the germanium diodes.\nAudio-path capacitors (C1-C5, C8, C9, C12) must be C0G or film, not X7R."
+	(text "Footprints: surface-mount for assembly, through-hole for jacks, encoders, panel LEDs,\nthe Soft/Hard button, the regulator (laid flat) and the germanium diodes.\nAudio-path capacitors (C1-C5, C8, C9, C12) must be C0G or film, not X7R."
 		(exclude_from_sim no)
-		(at 30.48 172.72 0)
+		(at 30.48 167.64 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "6c5fc011-bd75-4dfa-b1cc-989e8c40884a")
+		(uuid "534461cd-79f3-4882-af44-d878b1ddfd57")
 	)
 	(sheet
-		(at 30.48 99.06)
+		(at 30.48 58.42)
 		(size 50.8 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -78,23 +78,23 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "c3224ece-4901-49d6-b919-c4688692a053")
-		(property "Sheetname" "Power and Bias"
-			(at 30.48 98.3484 0)
+		(uuid "90b0561f-bf2f-5722-b82d-fb6476e4025e")
+		(property "Sheetname" "Bypass"
+			(at 30.48 57.7084 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left bottom))
 		)
-		(property "Sheetfile" "power.kicad_sch"
-			(at 30.48 119.9646 0)
+		(property "Sheetfile" "bypass.kicad_sch"
+			(at 30.48 79.3246 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left top))
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
-					(page "2")
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
+					(page "9")
 				)
 			)
 		)
@@ -114,7 +114,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "1854cea8-bf87-4849-94dd-b39855f3ac8d")
+		(uuid "43e3d6ef-fa55-59d5-8cbf-a118a5cc2b38")
 		(property "Sheetname" "Input and Gain"
 			(at 93.98 57.7084 0)
 			(show_name no)
@@ -130,11 +130,11 @@
 		(pin "GAIN_OUT" output
 			(at 144.78 68.58 0)
 			(effects (font (size 1.27 1.27)) (justify right))
-			(uuid "8a600b85-5acf-4108-8f57-bad9ae8d22c1")
+			(uuid "ec728c0f-9ff8-409e-bd03-7a2d49569bb7")
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "3")
 				)
 			)
@@ -155,7 +155,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "06cc9006-e4d3-46e5-abbb-6442b648b186")
+		(uuid "b95cf5c0-2217-5924-9c6c-f22a440c8f2e")
 		(property "Sheetname" "Clipping"
 			(at 157.48 57.7084 0)
 			(show_name no)
@@ -171,16 +171,16 @@
 		(pin "GAIN_OUT" input
 			(at 157.48 68.58 180)
 			(effects (font (size 1.27 1.27)) (justify left))
-			(uuid "44e7da68-5b80-44df-ba5b-1679ece5abd7")
+			(uuid "f60d3748-81aa-4b31-b610-5a0ab0c1c895")
 		)
 		(pin "CLIP" output
 			(at 208.28 68.58 0)
 			(effects (font (size 1.27 1.27)) (justify right))
-			(uuid "7c01c113-c399-42e8-a569-4e08a9ca4f4e")
+			(uuid "84be57e2-fb3c-4720-986f-a0171086eb8f")
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "4")
 				)
 			)
@@ -201,7 +201,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "e0ce4150-4c2b-4816-bb42-05bac40058e5")
+		(uuid "c3e8e38c-0646-59ad-87f2-0fc32e09216c")
 		(property "Sheetname" "Tone and Output"
 			(at 220.98 57.7084 0)
 			(show_name no)
@@ -217,12 +217,48 @@
 		(pin "CLIP" input
 			(at 220.98 68.58 180)
 			(effects (font (size 1.27 1.27)) (justify left))
-			(uuid "38bcaef2-68c4-4107-81a1-8ef5a7877839")
+			(uuid "5cdfbd8f-4ce2-4e7e-8055-9b7cf41e6eea")
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "2576b1fc-88e7-5e62-97c6-8c7b62c813c9")
+		(property "Sheetname" "Power and Bias"
+			(at 30.48 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 30.48 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Flashover"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
+					(page "2")
 				)
 			)
 		)
@@ -242,7 +278,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "ca9b839e-be78-490a-b841-d3f8244d0890")
+		(uuid "d8f454cc-89da-5588-aca2-4d6400f9aab2")
 		(property "Sheetname" "Controller"
 			(at 93.98 98.3484 0)
 			(show_name no)
@@ -257,7 +293,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "6")
 				)
 			)
@@ -278,7 +314,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "288f9b5d-0dce-405c-aa6f-2a3071249c9f")
+		(uuid "96d332cc-37a5-54c0-8857-3a9f4eb1c7c4")
 		(property "Sheetname" "Digital Pots"
 			(at 157.48 98.3484 0)
 			(show_name no)
@@ -293,7 +329,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "7")
 				)
 			)
@@ -314,14 +350,14 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "c1b80b7d-c12f-4d6e-9ebf-4b17f70c7ad2")
-		(property "Sheetname" "Controls"
+		(uuid "c750e010-4f52-5e7e-9cf8-10897ac58569")
+		(property "Sheetname" "MIDI"
 			(at 220.98 98.3484 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left bottom))
 		)
-		(property "Sheetfile" "controls.kicad_sch"
+		(property "Sheetfile" "midi.kicad_sch"
 			(at 220.98 119.9646 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -329,7 +365,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "8")
 				)
 			)
@@ -350,14 +386,14 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "f94bd40a-c556-486d-8df9-b83168bbaa57")
-		(property "Sheetname" "LED Rings"
+		(uuid "ad928727-db1a-55ef-bb08-aff02965c328")
+		(property "Sheetname" "Board Connector"
 			(at 30.48 136.4484 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left bottom))
 		)
-		(property "Sheetfile" "led_rings.kicad_sch"
+		(property "Sheetfile" "board_connector.kicad_sch"
 			(at 30.48 158.0646 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -365,80 +401,8 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
-					(page "9")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 93.98 137.16)
-		(size 50.8 20.32)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "a4974728-33cf-4a7c-98bf-cb86e0234eaf")
-		(property "Sheetname" "MIDI"
-			(at 93.98 136.4484 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects (font (size 1.27 1.27)) (justify left bottom))
-		)
-		(property "Sheetfile" "midi.kicad_sch"
-			(at 93.98 158.0646 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects (font (size 1.27 1.27)) (justify left top))
-		)
-		(instances
-			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
+				(path "/837bea85-92fd-51b5-9680-1e9b1b02f616"
 					(page "10")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 30.48 58.42)
-		(size 50.8 20.32)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "d9140471-6418-4b11-add1-2e36f8b5b006")
-		(property "Sheetname" "Bypass"
-			(at 30.48 57.7084 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects (font (size 1.27 1.27)) (justify left bottom))
-		)
-		(property "Sheetfile" "bypass.kicad_sch"
-			(at 30.48 79.3246 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects (font (size 1.27 1.27)) (justify left top))
-		)
-		(instances
-			(project "Flashover"
-				(path "/872055d3-e01a-4a82-8c05-28c93674a700"
-					(page "11")
 				)
 			)
 		)

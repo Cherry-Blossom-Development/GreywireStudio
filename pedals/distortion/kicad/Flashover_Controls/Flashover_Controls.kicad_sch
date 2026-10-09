@@ -1,0 +1,142 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "79dd0584-f2e5-5c48-bdf8-1366e6bd349c")
+	(paper "A4")
+	(title_block
+		(title "Flashover Controls")
+		(date "2026-10-09")
+		(rev "0.1")
+		(company "GreywireStudio")
+		(comment 1 "Flashover control board - knobs, LED rings, button and panel LEDs")
+	)
+	(lib_symbols
+	)
+	(text "FLASHOVER CONTROLS"
+		(exclude_from_sim no)
+		(at 40.64 38.1 0)
+		(effects (font (size 3 3) (bold yes)) (justify left))
+		(uuid "97a0d2f9-5bae-46b1-ae99-76f21b0f6b1e")
+	)
+	(text "Control board for Flashover, version 0.1.  It sits behind the top panel of the 1590BB:\nthree endless knobs with 11-LED rings, the Soft/Hard button and the Soft, Hard, On and Link LEDs.\nIt plugs into J7 on the main board (project Flashover) through J8 on its underside."
+		(exclude_from_sim no)
+		(at 40.64 45.72 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "d3a5a3b1-6000-4070-9c32-dfe780331385")
+	)
+	(sheet
+		(at 30.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "62ab9958-9560-5cd2-bdff-2c9e3d6c32c2")
+		(property "Sheetname" "Controls"
+			(at 30.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "controls.kicad_sch"
+			(at 30.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Flashover_Controls"
+				(path "/79dd0584-f2e5-5c48-bdf8-1366e6bd349c"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "80f28e58-bd21-5893-a8f5-e719ffffcd69")
+		(property "Sheetname" "LED Rings"
+			(at 93.98 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "led_rings.kicad_sch"
+			(at 93.98 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Flashover_Controls"
+				(path "/79dd0584-f2e5-5c48-bdf8-1366e6bd349c"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "94527d06-1f2b-5cc3-8e27-bfaf8b3efd30")
+		(property "Sheetname" "Board Connector"
+			(at 157.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "board_connector.kicad_sch"
+			(at 157.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Flashover_Controls"
+				(path "/79dd0584-f2e5-5c48-bdf8-1366e6bd349c"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
