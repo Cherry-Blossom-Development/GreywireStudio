@@ -7,7 +7,7 @@
 * Clipping: 0 = Soft (germanium), 1 = Hard (silicon)
 .param hard=1
 * Digital pot values: Tone pot (10k or 20k), wiper resistance
-.param Rt=10k Rw=75
+.param Rt=10k Rw=150
 * Guitar signal: amplitude (V peak) and frequency (Hz)
 .param amp=0.2 freq=220
 Vguitar IN 0 SINE(0 {amp} {freq})

@@ -10,7 +10,8 @@
 *   level - Level knob, 0 (silent) to 1 (full)
 *   hard  - clipping mode, 0 = Soft (germanium), 1 = Hard (silicon)
 *   Rt    - Tone digital pot value (10k or 20k under evaluation)
-*   Rw    - digital pot wiper resistance (about 75 ohms for MCP41HV parts)
+*   Rw    - digital pot wiper resistance (MCP45HV51: 75 ohms typical at 36V,
+*           145 typical / 200 max at 10V; about 150 assumed at 9V)
 * and the guitar source:  Vguitar IN 0 ...
 *
 * Digital pots only accept signals between 0V and 9V, so everything after
@@ -39,12 +40,12 @@ R3 OPIN VB 1Meg
 
 * ---- Gain stage (GS1 values scaled for a 100k digital pot) ----------------
 * GS1: R5 1M, R4 4.7k, RV1 1M, C3 47n.  Flashover: R5 100k, RV1 100k digital
-* pot, C3 470n (x10 keeps the same bass roll-off). R4 is 390 rather than 470
-* because the pot's ~75 ohm wiper resistance adds to it.
-* Gain = 1 + R5 / (R4 + RV1): about 216x at max, about 2x at min.
+* pot, C3 470n (x10 keeps the same bass roll-off). R4 is 330 rather than 470
+* because the pot's ~150 ohm wiper resistance (at 9V) adds to it.
+* Gain = 1 + R5 / (R4 + Rw + RV1): about 210x at max, about 2x at min.
 XU1 OPIN NINV V9 0 OPOUT level2 Avol=200k GBW=1Meg Slew=0.5Meg Rail=1.5 Rin=2Meg Ilimit=25m
 R5 OPOUT NINV 100k
-R4 NINV N3 390
+R4 NINV N3 330
 RV1 N3 N4 {100k*(1-dist)+Rw}
 C3 N4 0 470n
 

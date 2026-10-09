@@ -485,7 +485,7 @@
 				)
 			)
 		)
-		(property "Description" "Single +36V digital pot, 7-bit, I2C, TSSOP-14. Unit A = the pot (P0A/P0W/P0B), unit B = control and power"
+		(property "Description" "Single +36V digital pot, 8-bit (256 steps), I2C, TSSOP-14. Unit A = the pot (P0A/P0W/P0B), unit B = control and power"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)

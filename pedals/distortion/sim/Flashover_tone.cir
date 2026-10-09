@@ -7,7 +7,7 @@
 * SPICE Output Log. Hard clipping is selected because silicon diodes don't
 * conduct at small signal levels, so they don't color the tone curves.
 
-.param dist=1 tone=0.5 level=1 hard=1 Rt=10k Rw=75
+.param dist=1 tone=0.5 level=1 hard=1 Rt=10k Rw=150
 Vguitar IN 0 AC 1
 
 .include Flashover_circuit.inc

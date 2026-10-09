@@ -37,7 +37,7 @@ The Flashover audio path: the GS1 gain stage scaled for 100k digital pots, switc
 **Design changes from GS1, and why:**
 
 - Digital pots only accept signals between 0V and 9V, so everything after the gain stage is centered on the 4.5V reference (VB) instead of ground. VB is buffered by an op-amp (U3) because the tone network and Level pot now return to it.
-- Gain stage scaled by 10 for a 100k digital pot: R5 100k, R4 390 (instead of 470, to allow for the pot's ~75 ohm wiper resistance), C3 470n. Gain at 1 kHz: about 1.8x to 172x, the same as GS1.
+- Gain stage scaled by 10 for a 100k digital pot: R5 100k, R4 330 (instead of 470, to allow for the pot's wiper resistance: about 150 ohms at 9V according to the MCP45HV51 datasheet), C3 470n. Gain at 1 kHz: about 1.8x to 170x, the same as GS1.
 - Output amplifier (U2) has a gain of 4 (+12 dB) to make up the tone network's loss, so the pedal can play louder than the bypassed guitar.
 
 **Results (October 2026):**

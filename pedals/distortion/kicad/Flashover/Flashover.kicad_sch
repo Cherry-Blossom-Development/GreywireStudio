@@ -2,7 +2,7 @@
 	(version 20260306)
 	(generator "eeschema")
 	(generator_version "10.0")
-	(uuid "d44d1406-41c8-4e08-862e-64ff4a05b8dc")
+	(uuid "d341370c-bf24-48b8-b9fb-db9600491445")
 	(paper "A4")
 	(title_block
 		(title "Flashover")
@@ -21,7 +21,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "697d7a9a-5789-4365-a736-bd3ee47bf655")
+		(uuid "e9ded4bc-9a9c-47e9-b622-37ad44d08647")
 	)
 	(wire
 		(pts
@@ -31,37 +31,37 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "fa456a98-1894-410d-8812-3556b866d3d3")
+		(uuid "ae70f9c2-1b53-4625-9575-15a9ffd453f6")
 	)
 	(text "FLASHOVER"
 		(exclude_from_sim no)
 		(at 40.64 38.1 0)
 		(effects (font (size 3 3) (bold yes)) (justify left))
-		(uuid "dacab31c-d0c9-4546-976e-d7fce098fe10")
+		(uuid "c6356b60-d5dd-49b6-a7d0-6cffb524f99e")
 	)
 	(text "Distortion / overdrive pedal, Linework series. Complete schematic, version 0.1.\nBased on GS1 (MXR Distortion+) with Soft/Hard clipping, a DS-1 style Tone control,\na x4 output amplifier and digital pots for Gain, Tone and Level.\nValues match the LTspice model in pedals/distortion/sim/Flashover_circuit.inc."
 		(exclude_from_sim no)
 		(at 40.64 45.72 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "6f99817b-5e98-4242-9a9e-49cda347e6f6")
+		(uuid "44a3f145-b8c7-45d8-bbeb-4ba3dbcad616")
 	)
 	(text "Signal flow:  input jack (Bypass)  ->  Input and Gain  ->  Clipping  ->  Tone and Output  ->  output jack (Bypass)"
 		(exclude_from_sim no)
 		(at 30.48 86.36 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "6c9ff120-531c-45ab-a88a-c28bb436d07e")
+		(uuid "0d96d825-a55a-455c-ba2a-90d8f05162f3")
 	)
 	(text "The controller sheets connect to the audio sheets and the controls through global labels\n(FX_IN/FX_OUT, HARD_SEL, SDA/SCL, encoder, LED, MIDI and bypass signals) and the power symbols."
 		(exclude_from_sim no)
 		(at 30.48 165.1 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "4ab1bd83-de6e-49f3-9ac4-78c05653e6ee")
+		(uuid "91811ddc-100a-4f36-8e7c-6840304e2ed2")
 	)
 	(text "All sheets drawn.  Footprints are assigned at the PCB stage."
 		(exclude_from_sim no)
 		(at 30.48 172.72 0)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "9755d4b2-40ee-446a-a3fb-5cf49bc6bbf5")
+		(uuid "c452c49a-2fbd-4d2a-86a5-9a2649d88886")
 	)
 	(sheet
 		(at 30.48 99.06)
@@ -78,7 +78,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "a0644c8d-e773-41df-961a-5d634295c30c")
+		(uuid "c146ffc5-dfa6-4812-a218-e0fafe322377")
 		(property "Sheetname" "Power and Bias"
 			(at 30.48 98.3484 0)
 			(show_name no)
@@ -93,7 +93,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "2")
 				)
 			)
@@ -114,7 +114,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "c3900c17-15a2-424d-8cbd-c2d255d63a5e")
+		(uuid "d807c62d-c7b4-41f0-8d75-0f3cff6869c0")
 		(property "Sheetname" "Input and Gain"
 			(at 93.98 57.7084 0)
 			(show_name no)
@@ -130,11 +130,11 @@
 		(pin "GAIN_OUT" output
 			(at 144.78 68.58 0)
 			(effects (font (size 1.27 1.27)) (justify right))
-			(uuid "bd7b8578-401e-4a60-a6ff-903438431b6c")
+			(uuid "a81f2e29-d542-48e6-b0b4-e68b8d069b40")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "3")
 				)
 			)
@@ -155,7 +155,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "8e8e19d8-0736-4e0b-9af8-a1eeaa915812")
+		(uuid "c22cd9a2-81b9-45fd-8fd2-6181600e4d84")
 		(property "Sheetname" "Clipping"
 			(at 157.48 57.7084 0)
 			(show_name no)
@@ -171,16 +171,16 @@
 		(pin "GAIN_OUT" input
 			(at 157.48 68.58 180)
 			(effects (font (size 1.27 1.27)) (justify left))
-			(uuid "5d19a88d-82b0-46dd-8f07-11d58aca9599")
+			(uuid "65408fff-3eaa-482d-9741-4364f95dfa57")
 		)
 		(pin "CLIP" output
 			(at 208.28 68.58 0)
 			(effects (font (size 1.27 1.27)) (justify right))
-			(uuid "446aa884-46dd-4896-9b78-d7d66230d17e")
+			(uuid "70ec46d1-c22f-4eab-80d8-f07c5b085b27")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "4")
 				)
 			)
@@ -201,7 +201,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "d799564d-b3cd-4934-9403-fb4471bc03b2")
+		(uuid "b4d4908f-d3cb-45c8-9e34-8e6e14bfce1f")
 		(property "Sheetname" "Tone and Output"
 			(at 220.98 57.7084 0)
 			(show_name no)
@@ -217,11 +217,11 @@
 		(pin "CLIP" input
 			(at 220.98 68.58 180)
 			(effects (font (size 1.27 1.27)) (justify left))
-			(uuid "218e2dc8-3cad-4467-afd2-38b2ca31cf33")
+			(uuid "d55806ab-6d4a-42d7-890a-316d2f9aa107")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "5")
 				)
 			)
@@ -242,7 +242,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "5bbc4df0-cbe4-4bd2-b83b-93d628f54495")
+		(uuid "c4765e83-6eac-4a4c-b7d6-e6cecfd0387c")
 		(property "Sheetname" "Controller"
 			(at 93.98 98.3484 0)
 			(show_name no)
@@ -257,7 +257,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "6")
 				)
 			)
@@ -278,7 +278,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "c09d2507-05e8-4731-b040-1c865b92845a")
+		(uuid "a246cd81-fc52-4cad-ab94-507bb87b3303")
 		(property "Sheetname" "Digital Pots"
 			(at 157.48 98.3484 0)
 			(show_name no)
@@ -293,7 +293,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "7")
 				)
 			)
@@ -314,7 +314,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "11cdbccb-4d58-4d6b-93b5-ac466c6ed634")
+		(uuid "1bec77bb-3b17-4e88-ab22-62bbbe9d7d15")
 		(property "Sheetname" "Controls"
 			(at 220.98 98.3484 0)
 			(show_name no)
@@ -329,7 +329,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "8")
 				)
 			)
@@ -350,7 +350,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "1348d830-ee1d-4ccd-8aee-977791e8d016")
+		(uuid "50b5a3d2-61a2-4f0b-a8ae-0b63da158209")
 		(property "Sheetname" "LED Rings"
 			(at 30.48 136.4484 0)
 			(show_name no)
@@ -365,7 +365,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "9")
 				)
 			)
@@ -386,7 +386,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "5461588f-5b25-4dc9-ad46-4053dcc88431")
+		(uuid "2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c")
 		(property "Sheetname" "MIDI"
 			(at 93.98 136.4484 0)
 			(show_name no)
@@ -401,7 +401,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "10")
 				)
 			)
@@ -422,7 +422,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "dec2e408-74d3-4796-af79-ccf96353493d")
+		(uuid "8db23f6e-d1ef-4344-be69-b3d596abd399")
 		(property "Sheetname" "Bypass"
 			(at 30.48 57.7084 0)
 			(show_name no)
@@ -437,7 +437,7 @@
 		)
 		(instances
 			(project "Flashover"
-				(path "/d44d1406-41c8-4e08-862e-64ff4a05b8dc"
+				(path "/d341370c-bf24-48b8-b9fb-db9600491445"
 					(page "11")
 				)
 			)

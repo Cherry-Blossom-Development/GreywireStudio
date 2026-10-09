@@ -6,7 +6,7 @@
 * Open in LTspice and press Run. Results are in the SPICE Output Log
 * (View > SPICE Output Log). Plot V(out) to see the waveforms.
 
-.param dist=1 tone=0.5 level=1 hard=0 Rt=10k Rw=75
+.param dist=1 tone=0.5 level=1 hard=0 Rt=10k Rw=150
 * Guitar signal: 0.2V peak at 220Hz (A string, 5th fret)
 .param amp=0.2 freq=220
 Vguitar IN 0 SINE(0 {amp} {freq})
