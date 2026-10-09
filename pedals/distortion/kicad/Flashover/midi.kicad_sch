@@ -2,7 +2,7 @@
 	(version 20260306)
 	(generator "eeschema")
 	(generator_version "10.0")
-	(uuid "e1a710d9-698d-40c0-96c0-6d1d85a14fc8")
+	(uuid "d2d5ab9b-f1cb-4586-9c06-0ab762bfe3d1")
 	(paper "A4")
 	(title_block
 		(title "Flashover - MIDI")
@@ -1320,29 +1320,29 @@
 		(at 63.5 83.82)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "00a7d27b-c755-4ca5-80f8-6afc2125540b")
+		(uuid "067862eb-707d-40c6-a9c1-744c7347fe07")
 	)
 	(junction
 		(at 63.5 91.44)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "83d231fe-d5a8-438a-9f16-8fd2e7c40bf6")
+		(uuid "183252ed-2017-4025-b201-dc5edfec3ca5")
 	)
 	(junction
 		(at 86.36 73.66)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "fb54f60c-979f-4696-9472-e935392a53ef")
+		(uuid "84024701-88c4-4780-87a4-ceadd805e3e5")
 	)
 	(junction
 		(at 106.68 86.36)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "fd9f82c8-5ad5-4998-a8e0-90e1459117d4")
+		(uuid "5729280e-929e-47a9-ac46-ace3cd98e45c")
 	)
 	(no_connect
 		(at 35.56 81.28)
-		(uuid "84248d3a-a40d-432a-a0d2-f668a5e3876c")
+		(uuid "b97e0cf7-d263-4772-b488-cfe0f4d68d8e")
 	)
 	(wire
 		(pts
@@ -1352,7 +1352,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "033e10d8-37ea-462d-939f-61a7b21aa2a4")
+		(uuid "7bbb5a4a-d597-4d56-b711-d493c9e4fb1a")
 	)
 	(wire
 		(pts
@@ -1362,7 +1362,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "02bb3fba-ebc6-4c6c-a33b-c7ea12b0f9e1")
+		(uuid "11e1bde7-9663-4591-8358-65340057b24d")
 	)
 	(wire
 		(pts
@@ -1372,7 +1372,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f75e3e87-8b21-449b-8b99-608ef6a53d97")
+		(uuid "e0217777-488c-4d09-bc28-36a2d4009401")
 	)
 	(wire
 		(pts
@@ -1382,7 +1382,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "46c2928e-4ca6-4190-939d-adc2514b7356")
+		(uuid "56fab43f-e3f3-49dd-8252-d15b754c8a0e")
 	)
 	(wire
 		(pts
@@ -1392,7 +1392,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "d0aff106-5f2d-4ec4-add6-870f87f713c0")
+		(uuid "d4fb4620-cdd2-44ae-81f9-496145f914ea")
 	)
 	(wire
 		(pts
@@ -1402,7 +1402,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "89221ebb-74e5-422e-b811-38d7eadca96c")
+		(uuid "d436a203-bc70-4e39-b38a-d50c2ac06e97")
 	)
 	(wire
 		(pts
@@ -1412,7 +1412,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "5b413596-31c7-400d-8424-cbe0d5772569")
+		(uuid "d8aa1dff-e46a-4f9f-bc80-81c9f55bb417")
 	)
 	(wire
 		(pts
@@ -1422,7 +1422,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "64087d8a-c040-41a8-acfc-19e7846dc381")
+		(uuid "479a0db3-8547-480d-b8e1-9800047c9ff8")
 	)
 	(wire
 		(pts
@@ -1432,7 +1432,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "5441b5b6-3169-4e1a-95eb-b773763d5b27")
+		(uuid "0fa731b4-d168-41be-9b46-0a73c6d32e72")
 	)
 	(wire
 		(pts
@@ -1442,7 +1442,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b35b8e29-3c6e-44b3-b7dd-735c3fb2bb78")
+		(uuid "54a0d009-159d-4be8-8a17-de7997e235ac")
 	)
 	(wire
 		(pts
@@ -1452,7 +1452,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "4f3da8bd-eff8-44de-80e7-bdaaf8d3f0c8")
+		(uuid "25357498-c42a-4d3a-b5f3-fb991d0ba13b")
 	)
 	(wire
 		(pts
@@ -1462,7 +1462,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "4b0cf12f-184d-462f-8da5-5cea5e942c48")
+		(uuid "6c54a370-43fd-41cd-a018-b8e7ee572082")
 	)
 	(wire
 		(pts
@@ -1472,7 +1472,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b766f960-3b0c-48a0-8444-70b81054dfff")
+		(uuid "4f2c48de-b251-4208-bf93-e289c1a0afd5")
 	)
 	(wire
 		(pts
@@ -1482,7 +1482,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "6ccf507d-0456-424c-af1c-f94ab11ff94a")
+		(uuid "782a043c-acf4-4b78-9e26-312d363e5275")
 	)
 	(wire
 		(pts
@@ -1492,7 +1492,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "37c818c8-8b54-4e97-8f96-6d488c815741")
+		(uuid "91958c01-2766-4ab4-ab34-415118ba689f")
 	)
 	(wire
 		(pts
@@ -1502,7 +1502,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "d1b1135c-57a6-4c6c-84a2-400f92c9c467")
+		(uuid "c1e829f8-e313-4758-b487-8f6bef0d6f96")
 	)
 	(wire
 		(pts
@@ -1512,40 +1512,40 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "e4f69c9d-8e9c-48be-8f9c-0317383bd415")
+		(uuid "b51657fc-d09f-4845-8566-73969fc56895")
 	)
 	(rectangle
 		(start 20.32 53.34)
 		(end 152.4 111.76)
 		(stroke (width 0) (type dash))
 		(fill (type none))
-		(uuid "e3749666-a9cc-40fc-89dd-b51d59dbad05")
+		(uuid "3db2506a-c245-4586-84a5-74a3a7be916a")
 	)
 	(text "AD: MIDI IN"
 		(exclude_from_sim no)
 		(at 21.59 55.245 0)
 		(effects (font (size 1.524 1.524) (bold yes)) (justify left))
-		(uuid "b6222c1b-18a0-4c8f-b0a4-9378fbf495cf")
+		(uuid "8ecc598a-0348-4dc9-93d1-486237e0997d")
 	)
 	(rectangle
 		(start 20.32 116.84)
 		(end 152.4 165.1)
 		(stroke (width 0) (type dash))
 		(fill (type none))
-		(uuid "1f47e302-09db-47cd-9624-3a20a539ae08")
+		(uuid "227c1162-13aa-45ac-a14f-40d0f04c6698")
 	)
 	(text "AE: MIDI OUT"
 		(exclude_from_sim no)
 		(at 21.59 118.745 0)
 		(effects (font (size 1.524 1.524) (bold yes)) (justify left))
-		(uuid "90bc5fdc-c325-4aaf-898a-f2bb1ca8b838")
+		(uuid "8add1898-7427-475b-b9eb-614beeeefb36")
 	)
 	(global_label "MIDI_RX"
 		(shape output)
 		(at 116.84 86.36 0)
 		(fields_autoplaced yes)
 		(effects (font (size 1.27 1.27)) (justify left))
-		(uuid "83752977-5ba0-46d8-a607-3b622e56bc95")
+		(uuid "6ec2db1b-240d-40a4-9554-e3f1d426f56d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 116.84 86.36 0)
 			(effects (font (size 1.27 1.27)) (justify left) (hide yes))
@@ -1555,14 +1555,14 @@
 		(exclude_from_sim no)
 		(at 22.86 101.6 0)
 		(effects (font (size 1 1)) (justify left))
-		(uuid "0ea527e6-5915-4edd-b5a2-0d4d23d6d469")
+		(uuid "5e573039-8b9c-4673-aec9-d8fd469aeb5d")
 	)
 	(global_label "MIDI_TX"
 		(shape input)
 		(at 86.36 137.16 180)
 		(fields_autoplaced yes)
 		(effects (font (size 1.27 1.27)) (justify right))
-		(uuid "0b589846-32ac-4b13-bf91-6b62c57f05a2")
+		(uuid "9e2ad6b4-5812-458f-b84d-59076a09dce1")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 86.36 137.16 0)
 			(effects (font (size 1.27 1.27)) (justify right) (hide yes))
@@ -1572,13 +1572,13 @@
 		(exclude_from_sim no)
 		(at 22.86 154.94 0)
 		(effects (font (size 1 1)) (justify left))
-		(uuid "2b96903f-6804-4abd-94aa-f8efcef5087c")
+		(uuid "849168ee-eebc-447b-b9b9-f8ed464f372e")
 	)
 	(text "No hardware MIDI thru.  The firmware passes on every message it receives\nand adds its own (merging, per the Linework Control Specification).\nIf the pedal loses power the loop stops here; Switchyard detects the break.\n\nMIDI_RX and MIDI_TX go to UART0 on the microcontroller (GPIO1 and GPIO0)."
 		(exclude_from_sim no)
 		(at 157.48 58.42 0)
 		(effects (font (size 1 1)) (justify left))
-		(uuid "e321288a-7ca0-4b6b-a5cb-acd43488dab5")
+		(uuid "da8f0664-966d-4852-9830-96617f56c609")
 	)
 	(symbol
 		(lib_id "Connector_Audio:AudioJack3")
@@ -1590,7 +1590,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "5322d1b5-cf82-442a-9e69-40aa8fa597ff")
+		(uuid "40643499-4375-4082-992b-d19010cc3e38")
 		(property "Reference" "J5"
 			(at 30.48 76.2 0)
 			(show_name no)
@@ -1603,7 +1603,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 			(at 30.48 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -1618,17 +1618,17 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "R"
-			(uuid "b3af12e9-9b48-4842-b5c9-452c6c08f988")
+			(uuid "13dcaee4-bf21-4ce5-8723-3070bf067cb0")
 		)
 		(pin "S"
-			(uuid "d9e45ff0-895b-4906-abe1-ba9a11f027c8")
+			(uuid "fbc4cd22-db14-4258-91b7-8cd0a42072e1")
 		)
 		(pin "T"
-			(uuid "4a233568-23ea-40dd-9147-2d8f8dff58e0")
+			(uuid "09860c43-c186-4880-881a-ac0e883e20eb")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "J5")
 					(unit 1)
 				)
@@ -1645,7 +1645,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "0bcc9b0e-0574-4f65-aa7a-d0d3e221bd63")
+		(uuid "75eb07a0-14f0-47ab-b764-01f75f788833")
 		(property "Reference" "R37"
 			(at 48.26 78.74 90)
 			(show_name no)
@@ -1658,7 +1658,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 48.26 83.82 90)
 			(hide yes)
 			(show_name no)
@@ -1673,14 +1673,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "4f8e371f-81c5-4dfa-a13d-8f50e2a7c1ca")
+			(uuid "1861455c-0edb-47ad-8008-ba3d6fe8f490")
 		)
 		(pin "2"
-			(uuid "f25eebe7-224c-4f25-b6cb-b97e4d738bb0")
+			(uuid "0a1d83bb-8de5-4cd8-9244-5e319c53f526")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "R37")
 					(unit 1)
 				)
@@ -1697,7 +1697,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "891d09d3-2665-4080-9fe8-1a1f905ffe70")
+		(uuid "a7299c7a-c637-4d04-abd5-bcab0810e015")
 		(property "Reference" "U11"
 			(at 81.28 76.2 0)
 			(show_name no)
@@ -1710,7 +1710,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:SMDIP-6_W7.62mm"
 			(at 86.36 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -1725,26 +1725,26 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "574cccb0-1416-4510-810e-361c546fb2d7")
+			(uuid "e7951185-76b8-4ebb-8178-50bdb10000c3")
 		)
 		(pin "2"
-			(uuid "003888e6-3e78-4892-863c-3dc0b8c51375")
+			(uuid "dd07969c-f419-4b01-9d83-7828c1e63e52")
 		)
 		(pin "3"
-			(uuid "30f77a3c-33e4-4021-80e3-645029beff0a")
+			(uuid "1e3bc117-f219-4045-8407-7f3516f54c8b")
 		)
 		(pin "4"
-			(uuid "08136bb2-1532-4fe9-a825-daf8eb31e3ba")
+			(uuid "74781e56-af79-4b0a-ab04-f7ea4fb33290")
 		)
 		(pin "5"
-			(uuid "bd649483-8772-42ea-82b4-f957dfc9f59c")
+			(uuid "9d8510a9-1a0f-4839-acab-a74ff17eb25d")
 		)
 		(pin "6"
-			(uuid "89db6a28-0e56-474d-881a-dbd2de39e099")
+			(uuid "c5a28d4f-d274-4e11-bc53-5e31c39ac040")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "U11")
 					(unit 1)
 				)
@@ -1761,20 +1761,20 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "16ed1094-765f-4190-9922-a92577eca972")
+		(uuid "ed5dfd94-bd80-4b78-9561-fd44fa6e12d4")
 		(property "Reference" "D43"
 			(at 59.2455 86.36 270)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Value" "1N4148"
-			(at 57.531 88.9 270)
+		(property "Value" "1N4148W"
+			(at 56.9595 88.9 270)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_SMD:D_SOD-123"
 			(at 63.5 87.63 270)
 			(hide yes)
 			(show_name no)
@@ -1789,14 +1789,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "cc82fce8-7bfb-4ee5-b887-3d4952ce97fd")
+			(uuid "a724e329-3bbb-4bf0-8030-e6fe74457a28")
 		)
 		(pin "2"
-			(uuid "aeea5d85-2a58-40b4-aa7c-720b469ea2c3")
+			(uuid "e6dfa8f0-b563-4a31-90db-327b30ff264b")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "D43")
 					(unit 1)
 				)
@@ -1813,7 +1813,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "b0272a4a-bf80-4a7e-b611-b375876fb9cb")
+		(uuid "47c4d643-bbbb-4b9f-a060-f3f7f3a003b4")
 		(property "Reference" "#PWR116"
 			(at 86.36 77.47 0)
 			(hide yes)
@@ -1842,11 +1842,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "5d60cd9d-18ca-4187-8f40-50d593444adc")
+			(uuid "dbb41e2d-208d-4c3c-95a4-1128f9df09d5")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR116")
 					(unit 1)
 				)
@@ -1863,7 +1863,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "43451908-4755-4aa7-a4d5-e653e5304e73")
+		(uuid "77ece016-ceee-41c5-b984-7513ee62d25b")
 		(property "Reference" "C41"
 			(at 96.52 76.2 0)
 			(show_name no)
@@ -1876,7 +1876,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify right))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 99.06 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -1891,14 +1891,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "40b7f833-1136-4e7a-8235-eff22b3e3ed0")
+			(uuid "3b40bd03-d15f-4b27-b6b2-0276c5bcee15")
 		)
 		(pin "2"
-			(uuid "4539b278-a056-4053-9391-4b8475a71f13")
+			(uuid "b282281f-ba11-45ea-a09a-9995a9cbdc99")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "C41")
 					(unit 1)
 				)
@@ -1915,7 +1915,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "3b53946e-a93d-44c1-bebf-1fbdec234474")
+		(uuid "e7a767ee-6b90-444a-9006-358ed89e0836")
 		(property "Reference" "#PWR117"
 			(at 99.06 87.63 0)
 			(hide yes)
@@ -1944,11 +1944,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "c3b0659a-9ce1-4eb2-9b0e-089799ff788a")
+			(uuid "f2424190-0bc7-4389-bcf7-20c3268c6ea4")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR117")
 					(unit 1)
 				)
@@ -1965,7 +1965,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "ecb063f9-8dd9-47bc-a826-8eddc69b9b6f")
+		(uuid "baf06f4a-1d82-415e-8e33-8b39fa0205dc")
 		(property "Reference" "#PWR118"
 			(at 86.36 100.33 0)
 			(hide yes)
@@ -1994,11 +1994,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "8cdb7ab8-a396-46e3-8e8a-64d9ea2330ae")
+			(uuid "40343a2f-5be8-42cc-ba5e-690db45823c3")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR118")
 					(unit 1)
 				)
@@ -2015,7 +2015,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "44bc2bd6-0d23-4b5e-a100-be5dbcafa46c")
+		(uuid "2dea24c9-58cb-44fd-ad93-2e4789d8c57f")
 		(property "Reference" "R38"
 			(at 109.22 81.28 0)
 			(show_name no)
@@ -2028,7 +2028,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 106.68 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -2043,14 +2043,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "437d21fc-68f5-4bbf-b2d6-88bb2786cc3d")
+			(uuid "bdd981d4-6a9d-4097-b0eb-690e572ac8e8")
 		)
 		(pin "2"
-			(uuid "56a331aa-0d09-4eff-9ff6-d2d74896c0f9")
+			(uuid "7363aee1-860b-41b9-95f0-61dd954cfc3c")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "R38")
 					(unit 1)
 				)
@@ -2067,7 +2067,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "055d237a-9e0f-4d4e-b326-df69cc4b9ef8")
+		(uuid "010a8f54-7165-4b3b-95e1-479470dc71b9")
 		(property "Reference" "#PWR119"
 			(at 106.68 82.55 0)
 			(hide yes)
@@ -2096,11 +2096,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "5e1400f0-1639-4a10-880a-f3aefebb2ebb")
+			(uuid "d5801703-9ef7-4af2-a12e-c5c3fab55e59")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR119")
 					(unit 1)
 				)
@@ -2117,7 +2117,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "d0fc396e-3c62-46c5-a042-e5abd13e89fa")
+		(uuid "12fe65fc-a47c-4fee-b8c3-121ea7ea654b")
 		(property "Reference" "J6"
 			(at 127 129.54 0)
 			(show_name no)
@@ -2130,7 +2130,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 			(at 124.46 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -2145,17 +2145,17 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "R"
-			(uuid "2a62beb4-8278-459e-bee1-76dbeb87db7e")
+			(uuid "3c805ebd-8fa5-4cfe-b99d-20d30d3686f5")
 		)
 		(pin "S"
-			(uuid "969abfe9-1b5a-4ac4-b3ea-dbd27bb1fafe")
+			(uuid "2eeec638-9bbc-4dff-8798-6c30cf4bfdec")
 		)
 		(pin "T"
-			(uuid "14285951-699d-47cf-8caa-578285c1ecc8")
+			(uuid "65c7ce9c-6fdc-495d-928b-7a3762a1ef93")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "J6")
 					(unit 1)
 				)
@@ -2172,7 +2172,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "68cbf8c2-53a2-4ca2-a321-9321f7f73526")
+		(uuid "724a80d9-5f23-48cd-beb9-80dcecf29a60")
 		(property "Reference" "R40"
 			(at 104.14 132.08 90)
 			(show_name no)
@@ -2185,7 +2185,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 104.14 137.16 90)
 			(hide yes)
 			(show_name no)
@@ -2200,14 +2200,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "e16e9161-a2c6-4deb-baf0-5e3de87680fe")
+			(uuid "8e24f760-cff0-4c8c-ad42-43d7d16a56b8")
 		)
 		(pin "2"
-			(uuid "53d16c6b-2b1e-4e0d-8534-b5f6d5df30e4")
+			(uuid "040a3ffd-0b17-421f-b718-82a3ce8f5b50")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "R40")
 					(unit 1)
 				)
@@ -2224,7 +2224,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "ba1d6629-7396-49ac-b139-403df85ab5f4")
+		(uuid "ea808e0d-6ebb-4752-81d0-f3f461ed533c")
 		(property "Reference" "R39"
 			(at 109.22 142.24 0)
 			(show_name no)
@@ -2237,7 +2237,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify right))
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_2010_5025Metric"
 			(at 111.76 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -2252,14 +2252,14 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "0341832a-c4cd-4bb3-98a9-2843fb68a3f4")
+			(uuid "331d243e-a135-4c6a-bbf2-ea8ab4409f97")
 		)
 		(pin "2"
-			(uuid "6c7c766e-73d9-4b59-b718-a7ee34a4551c")
+			(uuid "de2cb8de-d226-4214-8f3f-ae89ece7b968")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "R39")
 					(unit 1)
 				)
@@ -2276,7 +2276,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "d2129515-a94c-4734-9223-45c76a4ae01e")
+		(uuid "1719b1ad-566e-4654-a37b-657b9c3b25cb")
 		(property "Reference" "#PWR120"
 			(at 111.76 153.67 0)
 			(hide yes)
@@ -2305,11 +2305,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "0e079b19-0d19-439d-bf42-bf70bc882f76")
+			(uuid "194a3d31-7dba-4485-9b3f-8d991db13136")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR120")
 					(unit 1)
 				)
@@ -2326,7 +2326,7 @@
 		(on_board no)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "f3a2f85d-b58c-4665-8871-4f4009fce7c0")
+		(uuid "ad9546de-340f-4784-b60c-9ef4f857af3e")
 		(property "Reference" "#PWR121"
 			(at 119.38 153.67 0)
 			(hide yes)
@@ -2355,11 +2355,11 @@
 			(effects (font (size 1.27 1.27)))
 		)
 		(pin "1"
-			(uuid "d0ab274a-3fa1-4eb2-9c2e-f8ac2fd465e0")
+			(uuid "0b72c5d4-e4cb-4575-80d4-a473360330b0")
 		)
 		(instances
 			(project "Flashover"
-				(path "/d341370c-bf24-48b8-b9fb-db9600491445/2c9ef750-8dcf-4430-97b2-e9f9d07dbf1c"
+				(path "/872055d3-e01a-4a82-8c05-28c93674a700/a4974728-33cf-4a7c-98bf-cb86e0234eaf"
 					(reference "#PWR121")
 					(unit 1)
 				)
