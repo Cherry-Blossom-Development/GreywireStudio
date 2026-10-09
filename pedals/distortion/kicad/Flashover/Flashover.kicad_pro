@@ -426,7 +426,7 @@
       {
         "filename": "Flashover.kicad_sch",
         "name": "Root",
-        "uuid": "6aa723b4-171b-4dbf-8521-b922c86d1498"
+        "uuid": "d44d1406-41c8-4e08-862e-64ff4a05b8dc"
       }
     ],
     "used_designators": "",
@@ -434,44 +434,48 @@
   },
   "sheets": [
     [
-      "6aa723b4-171b-4dbf-8521-b922c86d1498",
+      "d44d1406-41c8-4e08-862e-64ff4a05b8dc",
       "Root"
     ],
     [
-      "35b5a1b4-3f4e-4782-bf36-93ac1433a1d7",
+      "a0644c8d-e773-41df-961a-5d634295c30c",
       "Power and Bias"
     ],
     [
-      "7e6aabeb-c032-4d29-8201-60a46a2e2b39",
+      "c3900c17-15a2-424d-8cbd-c2d255d63a5e",
       "Input and Gain"
     ],
     [
-      "0e285ffc-b43a-4485-a196-d109f5ddeb94",
+      "8e8e19d8-0736-4e0b-9af8-a1eeaa915812",
       "Clipping"
     ],
     [
-      "f894bec3-848a-42fa-b2be-5c928a7f08b6",
+      "d799564d-b3cd-4934-9403-fb4471bc03b2",
       "Tone and Output"
     ],
     [
-      "4d771b33-32c0-4aab-9b47-423faf5074bb",
+      "5bbc4df0-cbe4-4bd2-b83b-93d628f54495",
       "Controller"
     ],
     [
-      "e9a344c0-0d0b-4867-bf73-140bd7197cb9",
+      "c09d2507-05e8-4731-b040-1c865b92845a",
       "Digital Pots"
     ],
     [
-      "f6f6baad-9979-4d41-bf44-197c9ff0ca71",
+      "11cdbccb-4d58-4d6b-93b5-ac466c6ed634",
       "Controls"
     ],
     [
-      "31935877-02d2-4664-8987-188a8b1c1cee",
+      "1348d830-ee1d-4ccd-8aee-977791e8d016",
       "LED Rings"
     ],
     [
-      "a13efa16-ef29-485b-8709-1c8f16df03ad",
+      "5461588f-5b25-4dc9-ad46-4053dcc88431",
       "MIDI"
+    ],
+    [
+      "dec2e408-74d3-4796-af79-ccf96353493d",
+      "Bypass"
     ]
   ],
   "text_variables": {},
