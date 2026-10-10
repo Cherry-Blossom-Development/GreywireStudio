@@ -33,7 +33,7 @@ board), which keeps the audio quiet and cuts down the wiring.
 
 | Board | Connections still missing | Wiring errors (shorts or too-close tracks) |
 |---|---|---|
-| Control board | 7 | 0 |
+| Control board | 5 (2 of the original 7 routed by hand on 2026-10-10) | 0 |
 | Main board | 50 | 0 |
 
 - **Control board:** the 7 missing connections are all around the LED driver chip (U10). Fixing them

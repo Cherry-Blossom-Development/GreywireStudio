@@ -1,6 +1,6 @@
 # DRC both boards (with schematic parity) and summarise
 cd "$(dirname "$0")" && . ./env.sh
-for p in Flashover Flashover_Controls; do "$K" pcb drc --schematic-parity --severity-all --format json -o build/$p.drc.json $KD/$p/$p.kicad_pcb >/dev/null 2>&1; python - $p <<'PY'
+for p in Flashover Flashover_Controls; do "$K" pcb drc --refill-zones --schematic-parity --severity-all --format json -o build/$p.drc.json $KD/$p/$p.kicad_pcb >/dev/null 2>&1; python - $p <<'PY'
 import json, sys, collections
 d = json.load(open('build/' + sys.argv[1] + '.drc.json'))
 print(sys.argv[1], 'unconnected:', len(d.get('unconnected_items', [])), 'parity:', len(d.get('schematic_parity', [])))
