@@ -1,4 +1,4 @@
-# Flashover circuit boards: where we are (2026-10-09)
+# Flashover circuit boards: where we are (updated 2026-10-10)
 
 ## In short
 
@@ -56,15 +56,23 @@ board), which keeps the audio quiet and cuts down the wiring.
 - **Encoders:** they use the Alps EC11E footprint. Confirm it matches the Bourns PEC11R drawing.
 - **Audio capacitors:** C1–C5, C8, C9 and C12 must be C0G or film, not X7R.
 
-## Decisions to make next session
+## Done on 2026-10-10
 
-1. **How to finish the main board:**
-   - (a) route it by hand in KiCad (recommended), or
-   - (b) keep trying the automatic router.
-2. **Whether to save the generator scripts in this repo.** They are the Python scripts that produced
-   the schematics and board layouts. Right now they live only in Claude's temporary session folder.
-   - If that folder is lost, the design can still be edited by hand in KiCad, but it can no longer be
-     regenerated from the scripts.
-   - The routing scripts would overwrite any hand routing. Once routing by hand starts, the KiCad
-     files become the master copy.
-3. **Update the Flashover product document** to describe the two-board design.
+- **Generator scripts saved** in `scripts/`, with a README explaining how to run them. Run from
+  there, they reproduce the committed schematics exactly.
+  - Once routing by hand starts, the KiCad files become the master copy. Don't re-run
+    `make_boards.sh` after that: it overwrites the boards.
+- **Product document updated** for the two-board design: a new "Circuit boards" section, and the
+  sheet table now shows which board each sheet is on.
+- **Tried to help the autorouter:** I turned the main board's In2 layer into a 3.3V plane, because
+  half of the missing connections were 3.3V.
+  - It made things worse, 70 missing connections instead of 50, including parts of the audio path.
+    Losing In2 as a routing layer cost more than the plane saved.
+  - I reverted it. The boards are as committed on 2026-10-09.
+- **Conclusion:** the automatic router has gone as far as it usefully can on the main board.
+
+## Decision still open
+
+**Finishing the boards by hand in KiCad.** Start with the control board, which needs 7 short
+connections around U10, then do the main board, starting with the audio path. You can do this
+yourself, or ask me to work through it with you one area at a time.

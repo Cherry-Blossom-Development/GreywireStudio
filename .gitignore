@@ -37,3 +37,7 @@ fp-info-cache
 
 # Microsoft Office lock files
 ~$*
+
+# Python bytecode
+__pycache__/
+*.pyc
