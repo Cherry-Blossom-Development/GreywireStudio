@@ -17,6 +17,7 @@ These Python scripts generate the Flashover KiCad projects (`../Flashover` and `
 | `make_footprints.py` | Writes the custom footprints into `libraries/GreywireStudio.pretty` (the Bourns PEC11R encoder) | any Python 3 |
 | `gen_pcb.py [--controls]` | Places every part on the main board (and, with `--controls`, the control board), in 1590BB pedal coordinates, and adds the board outline and copper planes | KiCad's Python |
 | `swap_encoders.py` | One-off, already run: put the PEC11R footprint on the hand-routed control board, keeping its routing | KiCad's Python |
+| `drill_template.py` | Draw `Flashover_drill_template.pdf`: a 1:1 printable drilling template for the top panel and the jack walls, with positions read from the control board | Python with matplotlib |
 | `fanout.py <project>` | Adds a short track and a via from each surface-mount pad down to its inner plane (GND on both boards, +5V on the control board) | KiCad's Python |
 | `route.sh <project> [passes]` | Autoroutes with Freerouting (`route.py` and `dsnfix.py` handle the round trip), then adds ground pours | bash |
 | `make_boards.sh [max passes]` | Rebuilds the main board: netlists, placement, fan-out, autoroute, then `drc.sh` | bash |

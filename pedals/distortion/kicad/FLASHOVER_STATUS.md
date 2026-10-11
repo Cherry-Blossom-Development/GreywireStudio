@@ -105,8 +105,10 @@ CUI SJ1-3523N and CUI PJ-102AH.
   sit inside the wall, so the plug reaches all the way into the jack.
 - **Hole sizes:** they are generous on purpose. The 1/4" jacks are clamped by their nuts, and the small
   jacks are held by the board, so a little play makes assembly easier.
-- **Before drilling:** confirm every position on the real box and boards, ideally with a paper
-  template printed at 1:1 from KiCad.
+- **Printable template:** `Flashover_drill_template.pdf` shows the top panel and the three jack walls at
+  full size. Print it at 100% ("Actual size") and check that its 100 mm line measures 100 mm.
+  `scripts/drill_template.py` redraws it.
+- **Before drilling:** confirm every position against the real box and boards.
 
 ## Done on 2026-10-10
 
