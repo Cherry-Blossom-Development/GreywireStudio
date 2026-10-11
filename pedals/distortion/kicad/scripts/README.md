@@ -2,19 +2,24 @@
 
 These Python scripts generate the Flashover KiCad projects (`../Flashover` and `../Flashover_Controls`).
 
-**Once anyone routes a board by hand in KiCad, the KiCad files become the master copy.** After that,
-don't run `make_boards.sh`: it overwrites the `.kicad_pcb` files. The schematic generator
-(`gen_flashover.py`) overwrites the schematics in the same way.
+**Once a board is routed by hand in KiCad, its KiCad file is the master copy.**
+- **Control board:** routed by hand on 2026-10-10, so the scripts no longer touch it.
+  `gen_pcb.py` only rebuilds it when given `--controls`.
+- **Main board:** `make_boards.sh` still rebuilds it from scratch. Stop using that script once
+  hand-routing of the main board begins.
+- **Schematics:** `gen_flashover.py` overwrites them.
 
 | Script | What it does | Run with |
 |---|---|---|
 | `gen_flashover.py` | Writes both schematics and their project files. Uses `kigen.py` and `kisym.py` | any Python 3 |
 | `rules.py` | Design rules and net classes, written into the `.kicad_pro` files | (imported) |
 | `netlists.sh` | Exports both netlists to `build/`, for the placement script | bash |
-| `gen_pcb.py` | Places every part on both boards, in 1590BB pedal coordinates, and adds the board outline and copper planes | KiCad's Python |
+| `make_footprints.py` | Writes the custom footprints into `libraries/GreywireStudio.pretty` (the Bourns PEC11R encoder) | any Python 3 |
+| `gen_pcb.py [--controls]` | Places every part on the main board (and, with `--controls`, the control board), in 1590BB pedal coordinates, and adds the board outline and copper planes | KiCad's Python |
+| `swap_encoders.py` | One-off, already run: put the PEC11R footprint on the hand-routed control board, keeping its routing | KiCad's Python |
 | `fanout.py <project>` | Adds a short track and a via from each surface-mount pad down to its inner plane (GND on both boards, +5V on the control board) | KiCad's Python |
 | `route.sh <project> [passes]` | Autoroutes with Freerouting (`route.py` and `dsnfix.py` handle the round trip), then adds ground pours | bash |
-| `make_boards.sh [max passes]` | All of the board steps above, for both boards, followed by `drc.sh` | bash |
+| `make_boards.sh [max passes]` | Rebuilds the main board: netlists, placement, fan-out, autoroute, then `drc.sh` | bash |
 | `drc.sh` | Runs the design rule check, with schematic parity, on both boards and prints a summary | bash |
 | `render.sh` | Renders both boards to `build/*_pcb.png` | bash |
 

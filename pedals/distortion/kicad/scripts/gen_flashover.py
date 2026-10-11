@@ -427,7 +427,7 @@ s.text("The pot side of each chip (U7A, U8A, U9A) is drawn on the audio sheets w
 # =====================================================================
 s7 = Sheet("Flashover - Controls", 8, "Gain, Tone and Level endless knobs (encoders with push switch) and the Soft/Hard button")
 s = s7
-ENC = "PEC11R-4215F-S0024"
+ENC = "PEC11R-4220F-S0024"   # 20 mm shaft: a 7 mm bushing leaves room for washer and nut on the 2.25 mm panel
 rn, cn = 23, 33
 for i, (nm, title) in enumerate((("GAIN", "T: GAIN KNOB"), ("TONE", "U: TONE KNOB"), ("LEVEL", "V: LEVEL KNOB"))):
     x0 = 8 + 66 * i
@@ -471,7 +471,7 @@ s.wire(sw4.p('2'), (50, 98), (50, 101))
 s.pwr('GND', 50, 101)
 s.text("Each press toggles Soft / Hard.\nThe LEDs showing the mode are on the LED Rings sheet.", 10, 110, size=1.0)
 s.text("Encoders: Bourns PEC11R type, 24 steps per turn with a push switch\n"
-       "(shaft length to suit the enclosure).  No end stops: the LED ring shows the setting.\n"
+       "(20 mm shaft: body against the inside of the panel, nut outside).  No end stops: the LED ring shows the setting.\n"
        "A and B have 10k pull-ups and 10n caps (0.1 ms) to smooth contact bounce;\n"
        "the push switches are debounced in firmware.\n"
        "All signals go to the microcontroller on the main board through J8.", 80, 88, size=1.0)
@@ -843,9 +843,9 @@ FP_BY_REF = {
     'J4': 'Connector_JST:JST_SH_SM03B-SRSS-TB_1x03-1MP_P1.00mm_Horizontal',
     'J5': 'Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal',
     'J6': 'Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal',
-    'SW1': 'Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm',
-    'SW2': 'Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm',
-    'SW3': 'Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm',
+    'SW1': 'GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical',
+    'SW2': 'GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical',
+    'SW3': 'GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical',
     'SW4': 'Button_Switch_THT:SW_PUSH_6mm_H13mm',
     'SW5': 'Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical',   # footswitch is wired off-board
     'J7': 'Connector_PinSocket_2.54mm:PinSocket_2x10_P2.54mm_Vertical',
@@ -897,6 +897,10 @@ def write_project(out, project, root, subs, syms):
     rules.apply(pro)   # design rules, shared with the board scripts
     json.dump(pro, open(os.path.join(out, project + ".kicad_pro"), 'w', encoding='utf-8', newline='\n'), indent=2)
     shutil.copy(os.path.join(GS1, "sym-lib-table"), os.path.join(out, "sym-lib-table"))
+    open(os.path.join(out, "fp-lib-table"), "w", encoding="utf-8", newline="").write("\n".join([
+        "(fp_lib_table", "  (version 7)",
+        """  (lib (name "GreywireStudio")(type "KiCad")(uri "${KIPRJMOD}/../../../../libraries/GreywireStudio.pretty")"""
+        """(options "")(descr "GreywireStudio shared footprints"))""", ")", ""]))
     print("written", sorted(os.listdir(out)))
 
 

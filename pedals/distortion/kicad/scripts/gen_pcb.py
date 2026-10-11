@@ -1,5 +1,11 @@
 """Generate the Flashover main and control boards (placement only, no routing).
 
+usage: python gen_pcb.py              main board only
+       python gen_pcb.py --controls   main board and control board
+
+The control board was finished by hand in KiCad (2026-10-10): regenerating it throws that work away,
+so it is only rebuilt when asked for explicitly.
+
 Run with KiCad's bundled Python.  Coordinates below are 'pedal coordinates' in mm:
 x across the 1590BB from the left wall (0..94), y down from the top (jack) wall (0..119.5),
 looking at the top panel.  Both boards have their components facing the panel.
@@ -9,7 +15,7 @@ import xml.etree.ElementTree as ET
 import pcbnew
 
 FPDIR = r"C:/Users/dalla/AppData/Local/Programs/KiCad/10.0/share/kicad/footprints/"
-from paths import KI, BUILD as SP
+from paths import KI, LIB, BUILD as SP
 OX, OY = 100.0, 50.0          # where the pedal's top-left corner sits on the KiCad page
 
 V = lambda x, y: pcbnew.VECTOR2I(pcbnew.FromMM(OX + x), pcbnew.FromMM(OY + y))
@@ -21,7 +27,11 @@ BX1, BX2 = 5.0, 89.0                  # board left/right edges (walls are about 
 BY_TOP, BY_BOT = 4.0, 88.0            # main board top/bottom; footswitch sits at y = 102
 NOTCH = 6.5                           # clears the lid-screw bosses in the top corners
 CTL_TOP = 30.0                        # control board starts below the 1/4" jack bodies
-JACK_FRONT = BY_TOP                   # jack bodies line up with the board's top edge
+# 1590BB walls are drafted, about 2.6-3.4 mm thick; at jack height (about 13-17 mm below the panel)
+# the inside of the top wall is at y = 3.1 and the side walls at x = 2.7 / 91.3 (Hammond 1590BB drawing)
+JACK_FRONT = 3.3                      # jack fronts 0.2 mm short of the top wall
+SIDE_EDGE = 3.2                       # board edge under the side-wall MIDI jacks (0.5 mm from the wall)
+MIDI_Y = 72.5                         # centre of the MIDI jacks on the side walls
 
 KNOBS = {'SW1': (22.0, 46.0), 'SW2': (47.0, 68.0), 'SW3': (72.0, 46.0)}   # Gain, Tone, Level shafts
 RING_R = 12.6                         # clears the encoder's courtyard
@@ -68,7 +78,7 @@ class Board:
         self.fps = {}
         for ref, c in self.comps.items():
             lib, name = c['fp'].split(':')
-            fp = pcbnew.FootprintLoad(FPDIR + lib + ".pretty", name)
+            fp = pcbnew.FootprintLoad((LIB if lib == "GreywireStudio" else FPDIR) + lib + ".pretty", name)
             fp.SetFPID(pcbnew.LIB_ID(lib, name))
             fp.SetReference(ref)
             fp.SetValue(c['value'])
@@ -234,37 +244,37 @@ m.b.SetLayerName(pcbnew.In1_Cu, "In1.Cu")
 m.plane(pcbnew.In1_Cu, "GND", [(BX1, BY_TOP), (BX2, BY_TOP), (BX2, BY_BOT), (BX1, BY_BOT)])
 m.enclosure()
 
-# jacks along the top wall, left to right as seen from above: Output, MIDI Out, DC, MIDI In, Input
-jacks = [('J2', 'nrj'), ('J6', 'sj1'), ('J3', 'pj'), ('J5', 'sj1'), ('J1', 'nrj')]
-width = {'nrj': 16.84, 'sj1': 12.58, 'pj': 11.58}
+# jacks along the top wall, left to right as seen from above: Output, DC, Input, spread out evenly
+jacks = [('J2', 'nrj'), ('J3', 'pj'), ('J1', 'nrj')]
+width = {'nrj': 16.84, 'pj': 11.58}
 left, right = BX1 + NOTCH, BX2 - NOTCH
 gap = (right - left - sum(width[k] for _, k in jacks)) / (len(jacks) - 1)
 x = left
 for ref, kind in jacks:
     if kind == 'nrj':      # nose along +x in the footprint: turn it to face the wall
         m.place(ref, x + 2.63, JACK_FRONT + 16.95, 90)
-    elif kind == 'sj1':    # opening along +y
-        m.place(ref, x + 6.29, BY_TOP + 4.5, 180)   # footprint's board edge is at y = 4.5
     else:                  # PJ-102AH, opening along +y
         m.place(ref, x + 6.54, JACK_FRONT + 13.7, 180)
     x += width[kind] + gap
-print(f"  jack gap {gap:.2f} mm")
-# outline: the 3.5 mm jacks bring their own stretch of top edge (with a notch under the plug entry),
-# so the top edge stops either side of them
-sj = sorted(mm(m.fps[r].GetPosition().x) - OX for r in ('J5', 'J6'))
-m.outline([(BX2 - NOTCH, BY_TOP + NOTCH), (BX2, BY_TOP + NOTCH), (BX2, BY_BOT), (BX1, BY_BOT),
-           (BX1, BY_TOP + NOTCH), (BX1 + NOTCH, BY_TOP + NOTCH)], closed=False)
-top = [BX1 + NOTCH] + [v for x in sj for v in (x - 6.5, x + 6.5)] + [BX2 - NOTCH]
-for a, b in zip(top[::2], top[1::2]):
-    m.outline([(a, BY_TOP), (b, BY_TOP)], closed=False)
-m.outline([(BX1 + NOTCH, BY_TOP + NOTCH), (BX1 + NOTCH, BY_TOP)], closed=False)
-m.outline([(BX2 - NOTCH, BY_TOP), (BX2 - NOTCH, BY_TOP + NOTCH)], closed=False)
+print(f"  top-wall jack gap {gap:.2f} mm")
+# MIDI jacks on the side walls, where there is room: Out on the left, In on the right (next to the
+# MIDI circuit).  The SJ1-3523N brings its own stretch of board edge, at y = +4.5 in the footprint,
+# with a notch under the plug entry, so the board steps out to meet it.
+m.place('J6', SIDE_EDGE + 4.5, MIDI_Y, 270)
+m.place('J5', 94 - SIDE_EDGE - 4.5, MIDI_Y, 90)
+ya, yb = MIDI_Y - 6.5, MIDI_Y + 6.5
+XR = 94 - SIDE_EDGE
+m.outline([(BX1 + NOTCH, BY_TOP), (BX2 - NOTCH, BY_TOP), (BX2 - NOTCH, BY_TOP + NOTCH), (BX2, BY_TOP + NOTCH),
+           (BX2, ya), (XR, ya)], closed=False)
+m.outline([(XR, yb), (BX2, yb), (BX2, BY_BOT), (BX1, BY_BOT), (BX1, yb), (SIDE_EDGE, yb)], closed=False)
+m.outline([(SIDE_EDGE, ya), (BX1, ya), (BX1, BY_TOP + NOTCH), (BX1 + NOTCH, BY_TOP + NOTCH),
+           (BX1 + NOTCH, BY_TOP)], closed=False)
 
 m.place('J7', *J7_AT, J7_ROT)
 m.place('H1', *HOLES['H1'])
 m.place('H2', *HOLES['H2'])
 m.place('SW5', 12.0, 84.0)                      # footswitch wires
-m.place('U3', 27.0, 76.5, 90)                   # 5V regulator laid flat, away from the audio
+m.place_centre('U3', 23.3, 71.6, 0)             # 5V regulator laid flat, away from the audio, clear of MIDI Out
 m.place_centre("D3", 35.0, 18.4)               # reverse-polarity diode right behind the DC jack
 # functional groups.  Signal runs right to left: input jack -> gain -> clipping -> tone/output -> output jack
 m.pack([r for r in by_sheet(m, "Power and Bias") if r not in ("J3", "U3", "U2")], 29, 20.25, 65, 30.25, label="power")
@@ -272,9 +282,13 @@ m.pack(by_sheet(m, "Tone and Output") + ['U2'], 5.5, 30.5, 30, 47, label="tone/o
 m.pack(by_sheet(m, "Bypass"), 31, 30.5, 58, 47, label="bypass")
 m.pack(by_sheet(m, "Input and Gain"), 58.5, 30.5, 88.5, 47, label="input/gain")
 m.pack(by_sheet(m, "Clipping") + by_sheet(m, "Digital Pots"), 14, 47.5, 80, 61, label="clipping/pots")
-m.pack(by_sheet(m, "MIDI"), 62, 64, 81, 81, label="midi")
+m.pack([r for r in by_sheet(m, "MIDI") if r not in ("J5", "J6")], 62, 61.8, 77.5, 81, label="midi")
 m.pack(by_sheet(m, "Controller"), 30.5, 61.5, 61.5, 87.5, label="controller")
 m.save()
+
+if "--controls" not in sys.argv:
+    print("control board left alone (hand-routed); pass --controls to regenerate it")
+    sys.exit(0)
 
 # ===================================================================== control board
 c = Board("Flashover_Controls", "Flashover - control board", layers=4)

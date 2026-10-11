@@ -1,4 +1,4 @@
-# Flashover circuit boards: where we are (updated 2026-10-10)
+# Flashover circuit boards: where we are (updated 2026-10-11)
 
 ## In short
 
@@ -12,10 +12,11 @@ Two KiCad projects, one per board:
 
 | Folder | Board | What's on it |
 |---|---|---|
-| `Flashover/` | Main board | Audio circuit, microcontroller, digital pots, MIDI, bypass relay, and all five jacks along the top edge |
+| `Flashover/` | Main board | Audio circuit, microcontroller, digital pots, MIDI, bypass relay, and all five jacks: Output, DC and Input on the top edge, MIDI Out and MIDI In on the left and right edges |
 | `Flashover_Controls/` | Control board | The three knobs with their LED rings, the LED driver, the Soft/Hard button and the four panel LEDs |
 
-- **Enclosure:** Hammond 1590BB, with the jacks mounted along the top edge.
+- **Enclosure:** Hammond 1590BB. Output, DC and Input are on the top wall; MIDI Out is on the left wall and
+  MIDI In on the right.
 - **Stacking:** the control board sits just under the top panel and plugs into the main board below it
   through a 20-pin connector (J8 on the control board into J7 on the main board).
 - **Spacers:** two M3 screw holes on each board, in matching positions.
@@ -34,7 +35,7 @@ board), which keeps the audio quiet and cuts down the wiring.
 | Board | Connections still missing | Wiring errors (shorts or too-close tracks) |
 |---|---|---|
 | Control board | **0 — fully routed** (last 7 by hand, 2026-10-10) | 0 |
-| Main board | 50 | 0 |
+| Main board | 62 (new jack layout; needs hand-routing) | 0 |
 
 - **Control board:** finished. The last 7 connections, all around the LED driver chip (U10), were
   routed by hand. Only cosmetic silkscreen (label) warnings remain, to be tidied before ordering.
@@ -45,17 +46,67 @@ board), which keeps the audio quiet and cuts down the wiring.
   poorly. My recommendation is to route it by hand in KiCad, starting with the audio path:
   input jack → gain → clipping → tone → output.
 
-## Things to check against real parts before ordering
+## Fit check against the datasheets (2026-10-11)
 
-- **Jack spacing:** the five jacks along the top edge are very tight, with about 1 mm between bodies.
-  A smaller 1/4" jack such as the Lumberg KLBM 3 would free about 10 mm (it needs a custom footprint).
-- **Enclosure measurements:** I assumed walls about 3 mm thick and corner screw posts about 6.5 mm
-  across. Both need checking against Hammond's 1590BB drawing.
-- **Board stacking height:** the boards are about 11 mm apart, with the control board about 8 mm below
-  the panel. This depends on the actual encoder and button heights.
+I checked the design against the manufacturers' drawings: the Hammond 1590BB, Bourns PEC11R, Neutrik NRJ4HF,
+CUI SJ1-3523N and CUI PJ-102AH.
+
+**Fixed:**
+- **Encoder footprint:** the PEC11R's mounting legs are 13.2 mm apart, not the 11.2 mm of the Alps
+  footprint we had borrowed. I made a correct footprint (`libraries/GreywireStudio.pretty`) and swapped
+  it onto the control board. Three tracks were bent around the wider legs; the control board is still
+  fully routed and clean.
+- **Encoder part:** changed to **PEC11R-4220F-S0024** (20 mm shaft). Its 7 mm threaded collar leaves
+  room for the washer and nut on the 2.25 mm-thick panel.
+- **Control board height:** must sit **6.5 mm** below the inside of the panel (the encoder bodies
+  press against the panel, nuts outside), not 8 mm.
+- **Jacks:** the 1590BB's walls are thick, about 3 mm, and drafted (thicker towards the panel).
+  To make the fit roomy:
+  - The **MIDI jacks moved to the side walls**, so the top wall has just three jacks, about
+    13 mm apart.
+  - Every jack front now sits 0.2 mm from the inside of the wall.
+  - The small jacks get **wider holes on the outside** (shallow pockets), so plugs can seat fully.
+    See the drilling guide below.
+
+**Board stack (measured from the top of the panel):**
+
+| Layer | Depth |
+|---|---|
+| Panel (top of the box) | 0 – 2.25 mm |
+| Control board | top at 8.75 mm (6.5 mm below the inside of the panel), 1.6 mm thick |
+| Gap between boards | 11 mm: an 8.5 mm-tall 2x10 socket (J7) plus a standard pin header (J8). Use 11 mm M3 spacers |
+| Main board | top at 21.35 mm, 1.6 mm thick; about 9 mm clear above the lid |
+
+**Still to check with real parts in hand:**
 - **Ring LEDs:** they sit below the panel, so each knob needs 11 small panel holes, or light pipes.
-- **Encoders:** they use the Alps EC11E footprint. Confirm it matches the Bourns PEC11R drawing.
+- **Soft/Hard button:** the 13 mm switch will stick up about 4.25 mm above the panel. Choose a cap to suit.
+- **Wall thickness:** measure a real box. If the walls are thinner than the drawing suggests, the pockets
+  below can be shallower.
 - **Audio capacitors:** C1–C5, C8, C9 and C12 must be C0G or film, not X7R.
+
+## Enclosure drilling guide
+
+**How positions are measured:**
+- Looking down at the top of the pedal, with the jack wall at the top.
+- "Across" is measured from the box's left outside edge; "down" from the top wall's outside face.
+- "Depth" is measured from the top (panel) face of the box, down the wall.
+
+| Hole | Wall | Position | Depth (hole centre) | Hole | Outside pocket |
+|---|---|---|---|---|---|
+| Output (1/4", J2) | Top | 21.4 mm across | 14.9 mm | 11.5 mm | none (threaded nut) |
+| 9V DC (J3) | Top | 47.8 mm across | 14.9 mm | 8 mm | 13 mm wide, 2.3 mm deep |
+| Input (1/4", J1) | Top | 75.5 mm across | 14.9 mm | 11.5 mm | none (threaded nut) |
+| MIDI Out (3.5 mm, J6) | Left | 72.5 mm down | 18.9 mm | 6.5 mm | 11 mm wide, 1.9 mm deep |
+| MIDI In (3.5 mm, J5) | Right | 72.5 mm down | 18.9 mm | 6.5 mm | 11 mm wide, 1.9 mm deep |
+| Knobs (encoders) | Panel | Gain 22, 46 · Tone 47, 68 · Level 72, 46 (across, down) | — | 7.5 mm | — |
+
+- **Outside pockets:** a pocket is a shallow, flat-bottomed widening of the hole on the outside of the
+  wall, made with a larger drill or a counterbore bit to a set depth. It lets the plug's moulded body
+  sit inside the wall, so the plug reaches all the way into the jack.
+- **Hole sizes:** they are generous on purpose. The 1/4" jacks are clamped by their nuts, and the small
+  jacks are held by the board, so a little play makes assembly easier.
+- **Before drilling:** confirm every position on the real box and boards, ideally with a paper
+  template printed at 1:1 from KiCad.
 
 ## Done on 2026-10-10
 

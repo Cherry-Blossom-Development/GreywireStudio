@@ -1799,7 +1799,7 @@
 		(effects (font (size 1 1)) (justify left))
 		(uuid "ac0a7de5-5533-413b-8519-124a55b63918")
 	)
-	(text "Encoders: Bourns PEC11R type, 24 steps per turn with a push switch\n(shaft length to suit the enclosure).  No end stops: the LED ring shows the setting.\nA and B have 10k pull-ups and 10n caps (0.1 ms) to smooth contact bounce;\nthe push switches are debounced in firmware.\nAll signals go to the microcontroller on the main board through J8."
+	(text "Encoders: Bourns PEC11R type, 24 steps per turn with a push switch\n(20 mm shaft: body against the inside of the panel, nut outside).  No end stops: the LED ring shows the setting.\nA and B have 10k pull-ups and 10n caps (0.1 ms) to smooth contact bounce;\nthe push switches are debounced in firmware.\nAll signals go to the microcontroller on the main board through J8."
 		(exclude_from_sim no)
 		(at 111.76 119.38 0)
 		(effects (font (size 1 1)) (justify left))
@@ -1822,13 +1822,13 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Value" "PEC11R-4215F-S0024"
+		(property "Value" "PEC11R-4220F-S0024"
 			(at 63.5 97.79 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm"
+		(property "Footprint" "GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical"
 			(at 66.04 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -2495,13 +2495,13 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Value" "PEC11R-4215F-S0024"
+		(property "Value" "PEC11R-4220F-S0024"
 			(at 147.32 97.79 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm"
+		(property "Footprint" "GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical"
 			(at 149.86 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -3168,13 +3168,13 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Value" "PEC11R-4215F-S0024"
+		(property "Value" "PEC11R-4220F-S0024"
 			(at 231.14 97.79 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm"
+		(property "Footprint" "GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical"
 			(at 233.68 83.82 0)
 			(hide yes)
 			(show_name no)
