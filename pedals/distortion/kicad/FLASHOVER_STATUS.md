@@ -33,11 +33,12 @@ board), which keeps the audio quiet and cuts down the wiring.
 
 | Board | Connections still missing | Wiring errors (shorts or too-close tracks) |
 |---|---|---|
-| Control board | 5 (2 of the original 7 routed by hand on 2026-10-10) | 0 |
+| Control board | **0 — fully routed** (last 7 by hand, 2026-10-10) | 0 |
 | Main board | 50 | 0 |
 
-- **Control board:** the 7 missing connections are all around the LED driver chip (U10). Fixing them
-  is about ten minutes' work by hand in KiCad.
+- **Control board:** finished. The last 7 connections, all around the LED driver chip (U10), were
+  routed by hand. Only cosmetic silkscreen (label) warnings remain, to be tidied before ordering.
+  - L7 takes a long way round, past the right-hand knob and back. It works; tidy it later if wanted.
 - **Main board:** the automatic router (Freerouting) gets most of it, but leaves gaps, mostly around
   the microcontroller's very fine pins.
 - **Why route the main board by hand:** even a fully auto-routed main board would route the audio path
@@ -71,8 +72,21 @@ board), which keeps the audio quiet and cuts down the wiring.
   - I reverted it. The boards are as committed on 2026-10-09.
 - **Conclusion:** the automatic router has gone as far as it usefully can on the main board.
 
-## Decision still open
+## Next
 
-**Finishing the boards by hand in KiCad.** Start with the control board, which needs 7 short
-connections around U10, then do the main board, starting with the audio path. You can do this
-yourself, or ask me to work through it with you one area at a time.
+**Hand-route the main board** in KiCad, together, the same way as the control board: one connection
+at a time, with a check after each save. Start with the audio path:
+input jack → gain → clipping → tone → output.
+
+How to route by hand in KiCad (what worked on the control board):
+- Use the **Design Rules Checker → Unconnected Items** list to find each gap.
+- Set the grid to **0.1 mm** so the cursor can reach the fine-pitch pads.
+- **Page Up** selects the top layer (F.Cu, red); **Page Down** the bottom (B.Cu, blue).
+- Drawing a track:
+  - **X**, then click the start, to begin.
+  - Click to fix a corner.
+  - **V**, then click, drops a via and changes layer.
+  - **Esc** twice to stop.
+- Surface-mount pads are only on the top layer, so a track arriving on the bottom needs a via
+  just before the pad.
+- If clicking opens the footprint chooser, a tool is on: press **Esc** until the arrow is selected.
