@@ -19,11 +19,11 @@ def fix(fn, boundary=None):
     a = s.index("(class kicad_default")
     b = s.index("(circuit", a)
     names = re.findall(r'"[^"]*"|[^\s()]+', s[a + len("(class kicad_default"):b])
-    groups = {n: [] for n, _, _ in rules.CLASSES}
+    groups = {n: [] for n, *_ in rules.CLASSES}
     keep = []
     for n in names:
         bare = n.strip('"')
-        for cname, _, pats in rules.CLASSES:
+        for cname, *_, pats in rules.CLASSES:
             if any(fnmatch.fnmatchcase(bare, p) for p in pats):
                 groups[cname].append(n)
                 break
@@ -33,7 +33,7 @@ def fix(fn, boundary=None):
     a = s.index("(class kicad_default")
     end = s.index(")", s.index(")", s.index(f"(clearance {cl})", a)) + 1)   # end of (rule ...), then of (class ...)
     extra = ""
-    for cname, w, _ in rules.CLASSES:
+    for cname, w, *_ in rules.CLASSES:
         if groups[cname]:
             extra += (f"\n    (class {cname.replace(' ', '_')} {' '.join(groups[cname])}\n"
                       f"      (circuit\n        (use_via \"Via[0-3]_600:300_um\")\n      )\n"
