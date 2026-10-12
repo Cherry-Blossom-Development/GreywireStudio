@@ -64,13 +64,22 @@ checks the board with `scripts/drc.sh`.
 
 5. **/Clipping/CLIP:** via (134.12, 101.15) → F.Cu (135.67, 102.7) → (167.45, 102.7) → C5 pad 1. Clean.
 
-The audio path is finished. **Next:** the user works down the DRC list, doing the obvious ones, and asks Claude about the
-long +3V3 gaps (R45 → U7 pin 1, about 23 mm; the track at (133.4, 98.5) → (119.8, 86.1), about 18 mm), the
-crystal (/Controller/XOUT) and anything with no clear path.
+The audio path is finished.
 
-**Still open:** about 40 connections
-around the microcontroller (U4), mostly +3V3, the flash memory, the crystal and the board connector J7.
-Remaining dangling vias are autorouter leftovers to delete or connect along the way.
+**Around U4 (62 → 51 open, as of commit after 02621b0):**
+- The "Logic power" net class (+3V3, +1V1) now uses 0.2 mm tracks and 0.45/0.2 mm vias. KiCad wouldn't draw
+  the 0.3 mm width between the RP2040's 0.4 mm-pitch pins. `scripts/rules.py` matches.
+- Done: U4 pins 48–49 bridge; +1V1 staple over the top pins (45 → 50); +3V3 just inside the top pins (48 → 44);
+  +1V1 pin 50 → pin 23 under the chip on B.Cu; RUN (pin 26 → R20); LED_EN (pin 28 → J7 pin 19).
+- The bottom pins (24–28) only fit in this order: RUN, LED_EN, **SWDIO, SWCLK, MODE_BTN, +1V1 (pin 23 → C25)**.
+  The last four are next. Each was tested on a scratch copy and the rest of the chain still fits.
+- **Next: SWDIO**, all on F.Cu: pin 25 → straight down to Y 120.4 → right to X 138.8 → (143.9, 115.3) → J4 pin 3.
+
+**How each step is planned:** `scripts/build/hr2.py` (a two-layer A* search) proposes a route on a scratch copy;
+`scripts/build/tp.py` tests the grid-snapped version (the user's grid is 0.1 mm) with `kicad-cli pcb drc
+--refill-zones`. In Git Bash, set `MSYS_NO_PATHCONV=1`, or net names like `/Controller/+1V1` become paths.
+A greedy pass over everything (`build/planall.py`) solved 35 connections but couldn't do about 17: the long runs
+to J7, the flash (QSPI SD2/SD3/SCLK), the crystal (XOUT), SDA/SCL and HARD_SEL. Those need planning together.
 
 ## Fit check against the datasheets (2026-10-11)
 
