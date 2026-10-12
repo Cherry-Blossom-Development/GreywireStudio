@@ -52,7 +52,7 @@ We're routing the main board by hand in KiCad, one connection at a time, startin
 Coordinates below are KiCad's own (the X/Y readout at the bottom of the KiCad window). After each save, Claude
 checks the board with `scripts/drc.sh`.
 
-**Done (62 → 58 open):**
+**Done (62 → 57 open):**
 1. **Net-(C1-Pad2):** R2 pad 1 → via (170.8, 86.0) → B.Cu → the router's via at (177.99, 84.19).
 2. **Net-(C3-Pad1):** U7 pin 11 → via (166.5, 83.6) → B.Cu around the end of the R4 track → via (175.6, 80.1) →
    C3 pad 1. KiCad's router picked this path itself; it's clean.
@@ -62,12 +62,13 @@ checks the board with `scripts/drc.sh`.
 4. **Net-(C9-Pad1):** U9 pin 12 → F.Cu through the gap → via (121.9, 83.75) → B.Cu along Y 87.2 → via
    (106.4, 86.3) → C9 pad 1. Clean.
 
-**Next: connection 5, /Clipping/CLIP (tested on a scratch copy: 0 errors).** All on F.Cu, no new vias:
-- Press X, click the via at (134.12, 101.15). Click (135.67, 102.7), then (167.45, 102.7).
-- Click C5 pad 1 (171.62, 98.53). Esc twice, then save.
-- It runs just below the clipping diodes, about 9 mm from U4, the flash and the crystal.
+5. **/Clipping/CLIP:** via (134.12, 101.15) → F.Cu (135.67, 102.7) → (167.45, 102.7) → C5 pad 1. Clean.
 
-**Still open after these:** about 40 connections
+The audio path is finished. **Next:** the user works down the DRC list, doing the obvious ones, and asks Claude about the
+long +3V3 gaps (R45 → U7 pin 1, about 23 mm; the track at (133.4, 98.5) → (119.8, 86.1), about 18 mm), the
+crystal (/Controller/XOUT) and anything with no clear path.
+
+**Still open:** about 40 connections
 around the microcontroller (U4), mostly +3V3, the flash memory, the crystal and the board connector J7.
 Remaining dangling vias are autorouter leftovers to delete or connect along the way.
 
