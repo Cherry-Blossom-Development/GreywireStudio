@@ -1,4 +1,4 @@
-# Flashover circuit boards: where we are (updated 2026-10-11)
+# Flashover circuit boards: where we are (updated 2026-10-12)
 
 ## In short
 
@@ -35,7 +35,7 @@ board), which keeps the audio quiet and cuts down the wiring.
 | Board | Connections still missing | Wiring errors (shorts or too-close tracks) |
 |---|---|---|
 | Control board | **0 — fully routed** (last 7 by hand, 2026-10-10) | 0 |
-| Main board | 62 (new jack layout; needs hand-routing) | 0 |
+| Main board | 60 (hand-routing in progress, see below) | 0 |
 
 - **Control board:** finished. The last 7 connections, all around the LED driver chip (U10), were
   routed by hand. Only cosmetic silkscreen (label) warnings remain, to be tidied before ordering.
@@ -45,6 +45,38 @@ board), which keeps the audio quiet and cuts down the wiring.
 - **Why route the main board by hand:** even a fully auto-routed main board would route the audio path
   poorly. My recommendation is to route it by hand in KiCad, starting with the audio path:
   input jack → gain → clipping → tone → output.
+
+## Main board hand-routing: progress (2026-10-12)
+
+We're routing the main board by hand in KiCad, one connection at a time, starting with the audio path.
+Coordinates below are KiCad's own (the X/Y readout at the bottom of the KiCad window). After each save, Claude
+checks the board with `scripts/drc.sh`.
+
+**Done (62 → 60 open):**
+1. **Net-(C1-Pad2):** R2 pad 1 → via (170.8, 86.0) → B.Cu → the router's via at (177.99, 84.19).
+2. **Net-(C3-Pad1):** U7 pin 11 → via (166.5, 83.6) → B.Cu around the end of the R4 track → via (175.6, 80.1) →
+   C3 pad 1. KiCad's router picked this path itself; it's clean.
+
+**Next: connection 3, FX_OUT (instructions given, not drawn yet):**
+- Page Down (B.Cu). Press X, click the via at (110.52, 88.21) beside C9.
+- Click (120.5, 88.2), then (121.0, 87.7). Press V, then click there: a via, and back to F.Cu.
+- Click R11 pad 1 at (122.18, 87.69). Esc twice, then save.
+
+**Then: connection 4, Net-(C9-Pad1) (U9 pin 12 → C9 pad 1). The hard one.**
+- U9 pin 12 is walled in on F.Cu:
+  - on the left, by the R16 and VB tracks under the chip;
+  - on the right, by the U2A+ via at (121.98, 82.62).
+- The only exit is a narrow gap to the right, then down:
+  - F.Cu: pin 12 → (121.3, 82.64) → (121.7, 83.04) → (121.7, 83.55) → via at (121.9, 83.75).
+  - The gap clears the U2A+ via by only about 0.02 mm, so let KiCad's router steer.
+- B.Cu: (121.0, 84.6) → (121.0, 86.4) → (120.2, 87.2), then left along Y 87.2 to (107.3, 87.2) → via at
+  (106.4, 86.3) → F.Cu down into C9 pad 1 (106.37, 88.33).
+- This route is planned to stay clear of FX_OUT's route above.
+- If KiCad can't find the gap, the fallback is to move the U2A+ via. Claude to work that out.
+
+**Still open after these:** /Clipping/CLIP (a long gap, from (134.1, 101.2) to (172.6, 99.5)), plus about 40 connections
+around the microcontroller (U4), mostly +3V3, the flash memory, the crystal and the board connector J7.
+Remaining dangling vias are autorouter leftovers to delete or connect along the way.
 
 ## Fit check against the datasheets (2026-10-11)
 
