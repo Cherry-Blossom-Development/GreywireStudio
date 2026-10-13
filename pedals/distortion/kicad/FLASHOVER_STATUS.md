@@ -66,16 +66,15 @@ checks the board with `scripts/drc.sh`.
 
 The audio path is finished.
 
-**Around U4 (62 → 49 open):**
+**Around U4 (62 → 47 open):**
 - The "Logic power" net class (+3V3, +1V1) now uses 0.2 mm tracks and 0.45/0.2 mm vias. KiCad wouldn't draw
   the 0.3 mm width between the RP2040's 0.4 mm-pitch pins. `scripts/rules.py` matches.
 - Done: U4 pins 48–49 bridge; +1V1 staple over the top pins (45 → 50); +3V3 just inside the top pins (48 → 44);
   +1V1 pin 50 → pin 23 under the chip on B.Cu; RUN (pin 26 → R20); LED_EN (pin 28 → J7 pin 19); SWDIO (pin 25 → J4 pin 3);
-  SWCLK (pin 24 → under the chip on B.Cu → J4 pin 1).
-- The bottom pins (24–28) only fit in this order: RUN, LED_EN, SWDIO, SWCLK, **MODE_BTN, +1V1 (pin 23 → C25)**.
-  The last two are next. Each was tested on a scratch copy and the rest of the chain still fits.
-- **Next: MODE_BTN**, all on B.Cu, via to via: (136.9, 114.8) → (151.0, 114.8) → (153.7, 117.5) → (178.4, 117.5) →
-  via (179.8, 118.9).
+  SWCLK (pin 24 → under the chip on B.Cu → J4 pin 1); MODE_BTN; +1V1 (pin 23 → C25). The bottom-edge group is finished.
+- The bottom pins (24–28) only fit in this order: RUN, LED_EN, SWDIO, SWCLK, MODE_BTN, +1V1.
+- **Next:** plan the remaining 47 (about 28 +3V3 hops, about 12 long runs from U4's left side to J7 and the jacks,
+  the flash and the crystal) as a set, then walk through them one at a time.
 
 **How each step is planned:** `scripts/build/hr2.py` (a two-layer A* search) proposes a route on a scratch copy;
 `scripts/build/tp.py` tests the grid-snapped version (the user's grid is 0.1 mm) with `kicad-cli pcb drc
