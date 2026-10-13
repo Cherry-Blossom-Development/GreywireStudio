@@ -1,10 +1,10 @@
-# Flashover circuit boards: where we are (updated 2026-10-12)
+# Flashover circuit boards: where we are (updated 2026-10-13)
 
 ## In short
 
-The schematic is finished and the parts are placed on two circuit boards. Wiring the boards together
-("routing") is partly done: the control board is nearly finished, but the main board still needs
-substantial work. Nothing is ready to order yet.
+The schematic is finished, and **both circuit boards are fully routed**: every connection is made, there are no
+wiring errors, and both boards match their schematics. Before ordering, the silkscreen (printed labels) needs
+tidying, and the boards need a final look-over.
 
 ## What exists
 
@@ -29,58 +29,37 @@ Two KiCad projects, one per board:
 
 ## Where the routing stands
 
-Both boards are 4-layer. The two inner layers are copper "planes" for ground (and +5V on the control
-board), which keeps the audio quiet and cuts down the wiring.
+Both boards are 4-layer. The control board's inner layers are ground and +5V planes. On the main board, In1 is
+a solid ground plane and In2 is a ground pour that also carries some signals.
 
 | Board | Connections still missing | Wiring errors (shorts or too-close tracks) |
 |---|---|---|
-| Control board | **0 — fully routed** (last 7 by hand, 2026-10-10) | 0 |
-| Main board | 60 (hand-routing in progress, see below) | 0 |
+| Control board | **0 — fully routed** (finished by hand, 2026-10-11) | 0 |
+| Main board | **0 — fully routed** (2026-10-13) | 0 |
 
-- **Control board:** finished. The last 7 connections, all around the LED driver chip (U10), were
-  routed by hand. Only cosmetic silkscreen (label) warnings remain, to be tidied before ordering.
-  - L7 takes a long way round, past the right-hand knob and back. It works; tidy it later if wanted.
-- **Main board:** the automatic router (Freerouting) gets most of it, but leaves gaps, mostly around
-  the microcontroller's very fine pins.
-- **Why route the main board by hand:** even a fully auto-routed main board would route the audio path
-  poorly. My recommendation is to route it by hand in KiCad, starting with the audio path:
-  input jack → gain → clipping → tone → output.
+Only cosmetic silkscreen warnings remain on both boards (labels overlapping each other, copper or the edge).
 
-## Main board hand-routing: progress (2026-10-12)
+- **Control board:** L7 takes a long way round, past the right-hand knob and back. It works; tidy it later if
+  wanted.
 
-We're routing the main board by hand in KiCad, one connection at a time, starting with the audio path.
-Coordinates below are KiCad's own (the X/Y readout at the bottom of the KiCad window). After each save, Claude
-checks the board with `scripts/drc.sh`.
+## How the main board was finished (2026-10-12 to 10-13)
 
-**Done (62 → 57 open):**
-1. **Net-(C1-Pad2):** R2 pad 1 → via (170.8, 86.0) → B.Cu → the router's via at (177.99, 84.19).
-2. **Net-(C3-Pad1):** U7 pin 11 → via (166.5, 83.6) → B.Cu around the end of the R4 track → via (175.6, 80.1) →
-   C3 pad 1. KiCad's router picked this path itself; it's clean.
-
-3. **FX_OUT:** via (110.52, 88.21) → B.Cu along Y 87.6 → via (121.335, 87.6) → R11 pad 1. Clean.
-
-4. **Net-(C9-Pad1):** U9 pin 12 → F.Cu through the gap → via (121.9, 83.75) → B.Cu along Y 87.2 → via
-   (106.4, 86.3) → C9 pad 1. Clean.
-
-5. **/Clipping/CLIP:** via (134.12, 101.15) → F.Cu (135.67, 102.7) → (167.45, 102.7) → C5 pad 1. Clean.
-
-The audio path is finished.
-
-**Around U4 (62 → 47 open):**
-- The "Logic power" net class (+3V3, +1V1) now uses 0.2 mm tracks and 0.45/0.2 mm vias. KiCad wouldn't draw
-  the 0.3 mm width between the RP2040's 0.4 mm-pitch pins. `scripts/rules.py` matches.
-- Done: U4 pins 48–49 bridge; +1V1 staple over the top pins (45 → 50); +3V3 just inside the top pins (48 → 44);
-  +1V1 pin 50 → pin 23 under the chip on B.Cu; RUN (pin 26 → R20); LED_EN (pin 28 → J7 pin 19); SWDIO (pin 25 → J4 pin 3);
-  SWCLK (pin 24 → under the chip on B.Cu → J4 pin 1); MODE_BTN; +1V1 (pin 23 → C25). The bottom-edge group is finished.
-- The bottom pins (24–28) only fit in this order: RUN, LED_EN, SWDIO, SWCLK, MODE_BTN, +1V1.
-- **Next:** plan the remaining 47 (about 28 +3V3 hops, about 12 long runs from U4's left side to J7 and the jacks,
-  the flash and the crystal) as a set, then walk through them one at a time.
-
-**How each step is planned:** `scripts/build/hr2.py` (a two-layer A* search) proposes a route on a scratch copy;
-`scripts/build/tp.py` tests the grid-snapped version (the user's grid is 0.1 mm) with `kicad-cli pcb drc
---refill-zones`. In Git Bash, set `MSYS_NO_PATHCONV=1`, or net names like `/Controller/+1V1` become paths.
-A greedy pass over everything (`build/planall.py`) solved 35 connections but couldn't do about 17: the long runs
-to J7, the flash (QSPI SD2/SD3/SCLK), the crystal (XOUT), SDA/SCL and HARD_SEL. Those need planning together.
+- **By hand, in KiCad:** the audio path (FX_OUT, C9, CLIP, plus C1 and C3), the supplies around U4's top pins,
+  and U4's bottom-edge pins (RUN, LED_EN, SWDIO, SWCLK, MODE_BTN, +1V1).
+- **Net class change:** "Logic power" (+3V3, +1V1) now uses 0.2 mm tracks and 0.45/0.2 mm vias. KiCad
+  couldn't fit 0.3 mm tracks between the RP2040's 0.4 mm-pitch pins. `scripts/rules.py` matches.
+- **Parts moved** (commit 0b4bf70):
+  - The crystal group (Y1, R19, C29, C30) now sits right under U4's XIN/XOUT pins, cutting the crystal tracks
+    from about 25 mm to under 6 mm. The old spread-out placement risked an unreliable clock.
+  - The 3.3 V regulator U6 and its caps C31/C32 moved beside J7.
+  - C22, C23 and C28 moved into the gaps this left.
+- **The rest by script:** each track was found by a two-layer (plus In2) search on a scratch copy and checked
+  with DRC before going in. The autorouter's tracks for GAIN/TONE on U4's crowded left side were pulled up
+  and rerouted.
+  - A short SCL segment by U9 was moved, so U9's pin 1 could reach +3V3 through a via.
+  - A ground stitching via at (130.9, 120.0) rejoins a cut-off patch of ground fill.
+- The planning helpers are in `scripts/build/` (`hr2.py` search, `plan2.py` ordering, `place.py` part moves).
+  That folder is git-ignored; they're scratch tools, not part of the board.
 
 ## Fit check against the datasheets (2026-10-11)
 
@@ -163,19 +142,7 @@ CUI SJ1-3523N and CUI PJ-102AH.
 
 ## Next
 
-**Hand-route the main board** in KiCad, together, the same way as the control board: one connection
-at a time, with a check after each save. Start with the audio path:
-input jack → gain → clipping → tone → output.
-
-How to route by hand in KiCad (what worked on the control board):
-- Use the **Design Rules Checker → Unconnected Items** list to find each gap.
-- Set the grid to **0.1 mm** so the cursor can reach the fine-pitch pads.
-- **Page Up** selects the top layer (F.Cu, red); **Page Down** the bottom (B.Cu, blue).
-- Drawing a track:
-  - **X**, then click the start, to begin.
-  - Click to fix a corner.
-  - **V**, then click, drops a via and changes layer.
-  - **Esc** twice to stop.
-- Surface-mount pads are only on the top layer, so a track arriving on the bottom needs a via
-  just before the pad.
-- If clicking opens the footprint chooser, a tool is on: press **Esc** until the arrow is selected.
+1. **Look the main board over in KiCad**, especially around U4 and the new crystal and regulator spots.
+2. **Tidy the silkscreen** on both boards: move overlapping labels clear of each other and of pads.
+3. **Final checks before ordering:** DRC on both boards, then the 3D view for the stack-up and jack fit.
+4. **Fabrication outputs:** Gerbers, drill files, BOM and placement files.
