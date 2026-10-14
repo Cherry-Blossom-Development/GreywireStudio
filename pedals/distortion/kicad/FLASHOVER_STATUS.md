@@ -61,6 +61,19 @@ Only cosmetic silkscreen warnings remain on both boards (labels overlapping each
 - The planning helpers are in `scripts/build/` (`hr2.py` search, `plan2.py` ordering, `place.py` part moves).
   That folder is git-ignored; they're scratch tools, not part of the board.
 
+## Stacking check and footswitch connector (2026-10-14)
+
+- **Alignment:** the screw holes (H1/H3, H2/H4) and all 20 pins of J7/J8 sit at exactly the same positions on
+  both boards, with matching signals. Pin 1 (+5V) lines up.
+- **Heights:** nothing on the main board touches the control board. The closest is relay K1, 1.9 mm below the
+  Gain encoder's legs. **Trim the control board's through-hole legs to about 1.5 mm** when soldering.
+- **Footswitch connector SW5:** changed from the upright JST B2B-PH-K to the side-entry **S2B-PH-K-S**, and
+  moved 2.75 mm toward the front edge. The upright one left only 5 mm for the wires under the control board;
+  the side-entry plug goes in from the front edge, so it can be plugged in after stacking.
+- **No 3D models in KiCad's library** for J1, J2 (1/4" jacks), J3 (DC jack), SW1–SW3 (encoders) and the
+  LED driver chip, so they are missing from the 3D view.
+- The check scripts are `scripts/build/fitcheck_survey.py` and `fitcheck_heights.py`.
+
 ## Fit check against the datasheets (2026-10-11)
 
 I checked the design against the manufacturers' drawings: the Hammond 1590BB, Bourns PEC11R, Neutrik NRJ4HF,

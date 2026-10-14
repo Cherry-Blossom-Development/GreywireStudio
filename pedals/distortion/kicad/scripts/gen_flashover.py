@@ -847,7 +847,7 @@ FP_BY_REF = {
     'SW2': 'GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical',
     'SW3': 'GreywireStudio:RotaryEncoder_Bourns_PEC11R-4xxxF-Sxxxx_Vertical',
     'SW4': 'Button_Switch_THT:SW_PUSH_6mm_H13mm',
-    'SW5': 'Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical',   # footswitch is wired off-board
+    'SW5': 'Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal',   # footswitch is wired off-board; side entry from the front edge
     'J7': 'Connector_PinSocket_2.54mm:PinSocket_2x10_P2.54mm_Vertical',
     'J8': 'Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical',   # on the underside
     'H1': 'MountingHole:MountingHole_3.2mm_M3', 'H2': 'MountingHole:MountingHole_3.2mm_M3',
