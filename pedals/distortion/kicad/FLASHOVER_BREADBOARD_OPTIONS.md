@@ -87,7 +87,7 @@ A recorded-guitar simulation costs nothing and gives a rough sense of the pedal'
 
 Start with the stage 1 parts list and wiring guide: it's needed whichever way the other decisions go.
 
-- [ ] Decide: Option A (sound test only) or Option B (the full circuit, in stages)
+- [x] Decide: Option A (sound test only) or Option B (the full circuit, in stages). Chose Option A first (Oct 15); it can grow into Option B later. Parts and connections: `FLASHOVER_BREADBOARD_STAGE1.md`
 - [ ] Decide, for Option B: factory-assembled breakout board or self-soldered adapters for the two tiny chips
 - [ ] Optional: record a few seconds of dry guitar for the LTspice listening test
 - [ ] Claude prepares the stage 1 parts list (orderable from Tayda or Mouser) and a step-by-step breadboard wiring guide
