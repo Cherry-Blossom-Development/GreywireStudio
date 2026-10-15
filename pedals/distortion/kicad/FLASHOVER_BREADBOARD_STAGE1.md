@@ -2,7 +2,7 @@
 
 Oct 15, 2026
 
-This is the sound test. It's the main board's audio path with the same values, but uses through-hole parts, three ordinary knob pots in place of the digital pots, and a toggle switch in place of the Soft/Hard relay. The parts and connections come from `Flashover/Flashover.kicad_sch`. Background: `FLASHOVER_BREADBOARD_OPTIONS.md`.
+This is the sound test. It's the main board's audio path with the same values, but uses through-hole parts, three ordinary knob pots in place of the digital pots, and a toggle switch in place of the Soft/Hard relay. The parts and connections come from `Flashover/Flashover.kicad_sch`. Background: `FLASHOVER_BREADBOARD_OPTIONS.md`. Hole-by-hole build steps: `FLASHOVER_BREADBOARD_STAGE1_BUILD.md`. Order checklist (Tayda): `../Flashover Breadboard Tayda Order.docx`.
 
 **Left out:** the controller, encoders, LED rings, MIDI, the bypass relay and footswitch, and the L7805 5 V regulator (only the logic and relays use 5 V). With no bypass, the input and output jacks connect straight to the circuit. To compare with the dry guitar, plug the guitar straight into the amp.
 
