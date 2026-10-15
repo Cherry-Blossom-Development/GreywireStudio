@@ -4,7 +4,9 @@ Oct 15, 2026
 
 This is the sound test. It's the main board's audio path with the same values, but uses through-hole parts, three ordinary knob pots in place of the digital pots, and a toggle switch in place of the Soft/Hard relay. The parts and connections come from `Flashover/Flashover.kicad_sch`. Background: `FLASHOVER_BREADBOARD_OPTIONS.md`. Hole-by-hole build steps: `FLASHOVER_BREADBOARD_STAGE1_BUILD.md`. Order checklist (Tayda): `../Flashover Breadboard Tayda Order.docx`.
 
-**Left out:** the controller, encoders, LED rings, MIDI, the bypass relay and footswitch, and the L7805 5 V regulator (only the logic and relays use 5 V). With no bypass, the input and output jacks connect straight to the circuit. To compare with the dry guitar, plug the guitar straight into the amp.
+**Left out:** the controller, encoders, LED rings, MIDI, the bypass relay and the L7805 5 V regulator (only the logic and relays use 5 V).
+
+**Added:** a 3PDT footswitch, the classic pedal stomp switch. It does the bypass relay's job directly. When the effect is off, the guitar goes straight from the input jack to the output jack (true bypass). Its third pole lights an on/off LED. On the finished pedal, the footswitch only signals the controller, which switches the relay. Here it switches the audio itself.
 
 ## Parts list
 
@@ -60,6 +62,8 @@ Film capacitors rated 63 V or 100 V are fine.
 | 1 | B100k pot (linear) | U7 Gain digital pot | |
 | 2 | B10k pot (linear) | U8 Tone and U9 Level digital pots | |
 | 1 | SPDT on-on mini toggle | K1 Soft/Hard relay | |
+| 1 | 3PDT latching footswitch (9 lugs) | K2 bypass relay, and SW5 | True bypass |
+| 1 | 3 mm red LED, plus a 4.7k resistor | | On/off indicator |
 | 2 | 1/4" mono jack | J1, J2 | |
 | 1 | 2.1 mm DC jack | J3 | Standard pedal power, **center negative** |
 
@@ -73,6 +77,8 @@ Pots with PCB pins (9 mm size) plug straight into a breadboard. 16 mm or 24 mm p
 - A 22 AWG solid jumper wire kit.
 - A few alligator clip leads.
 - A 9 V center-negative pedal power supply.
+- A digital multimeter.
+- A soldering iron, for the footswitch lugs.
 
 ## Connection list
 
@@ -101,7 +107,7 @@ Put C10 next to the LM741 and C11 next to the TL072.
 
 | Net | Connects |
 | --- | --- |
-| Input | Input jack tip, R1, C1 |
+| Input | Footswitch lug 1 (effect in), R1, C1 |
 | | C1, R2 |
 | LM741 + | R2, C2, R3, LM741 pin 3 |
 | LM741 − | LM741 pin 2, R4, R5 |
@@ -134,9 +140,30 @@ Each pair is two diodes facing opposite ways between the toggle and VB.
 | TL072 − A | TL072 pin 2, R16, R17 |
 | Amp out | TL072 pin 1, R16, Level pot lug 3 |
 | | Level pot lug 2 (wiper), C9 |
-| Output | C9, R11, Output jack tip |
+| Output | C9, R11, Footswitch lug 3 (effect out) |
 
 Tone clockwise is brighter. Level clockwise is louder.
+
+### Footswitch (true bypass) and LED
+
+Looking at the footswitch's lugs, they form a 3 × 3 grid numbered like a phone keypad: 1 2 3 across the top, 4 5 6 across the middle, and 7 8 9 across the bottom. Each column is one switch. The middle lug is the common, and it connects to either the top lug or the bottom lug.
+
+| Lugs | Connects |
+| --- | --- |
+| Lug 4 | Input jack tip |
+| Lug 1 | Circuit input (R1, C1) |
+| Lug 6 | Output jack tip |
+| Lug 3 | Circuit output (C9, R11) |
+| Lug 7 to lug 9 | A short wire on the switch (the bypass path) |
+| Lug 5 | GND |
+| Lug 2 | LED cathode (short leg) |
+| LED anode (long leg) | 4.7k resistor to +9V |
+| Lug 8 | Not used |
+
+- **Effect on:** the commons connect to the top row, so input → circuit → output, and the LED lights.
+- **Effect off:** they connect to the bottom row, so input → lug 7 → lug 9 → output, and the LED is off.
+
+R1 and R11 keep both ends of the circuit at ground when it's switched out, which stops a pop on switching.
 
 ## Checks before plugging in a guitar
 

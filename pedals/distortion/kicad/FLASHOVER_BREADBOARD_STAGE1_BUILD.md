@@ -27,7 +27,7 @@ This guide places every part of the stage 1 (Option A) circuit on one 830-point 
 
 **Long parts:** where a part has to reach further than its legs, bend the legs out. Two resistors cross the middle groove and arch over the gain chip; that's fine as long as no bare legs touch.
 
-**Off-board parts:** the three pots, the toggle switch and the three jacks sit off the board on wires. The most reliable way is to solder a short length of solid jumper wire to each lug. Alligator clip leads also work, but check they can't touch each other.
+**Off-board parts:** the three pots, the toggle switch, the footswitch, the LED and the three jacks sit off the board on wires. The footswitch needs soldered wires. The most reliable way is to solder a short length of solid jumper wire to each lug. Alligator clip leads also work, but check they can't touch each other.
 
 **Pot lugs:** looking at the pot from the front, with the shaft toward you and the lugs pointing down, the lugs are 1, 2 and 3 from left to right. Lug 2 is the wiper.
 
@@ -81,8 +81,6 @@ Insert the **LM741** (U1) at columns 11–14, notch left: pin 1 in f11, pin 4 in
 | --- | --- | --- |
 | Jumper | T12 (pin 7) | Top red rail |
 | Jumper | B14 (pin 4) | Bottom blue rail |
-| Input jack tip wire | B3 | |
-| Input jack sleeve wire | Bottom blue rail | |
 | R1, 1M | B3 | Bottom blue rail |
 | C1, 10 nF | B3 | B6 |
 | R2, 10k | B6 | B13 (pin 3) |
@@ -144,8 +142,6 @@ On a toggle the lever points away from the lug it connects, so label it once you
 | Level pot lug 2 wire | B50 | |
 | C9, 1 µF | B50 | B53 |
 | R11, 100k | B53 | Bottom blue rail |
-| Output jack tip wire | B53 | |
-| Output jack sleeve wire | Bottom blue rail | |
 
 Tone clockwise is brighter, and Level clockwise is louder.
 
@@ -153,15 +149,51 @@ Tone clockwise is brighter, and Level clockwise is louder.
 - **About 4.5 V** on B40 (TL072 pin 1) and B42.
 - **0 V** on B53, the output. C9 blocks the 4.5 V from reaching the amp.
 
-## Step 6: first sound
+## Step 6: footswitch, LED and jacks
 
-1. Set Level fully down, Gain halfway and Tone halfway.
-2. Turn the amp down. Plug the guitar into the input jack and the output jack into the amp, then power up.
-3. Bring Level up slowly while playing. Then try Gain and Tone across their range, and flip Soft/Hard.
+The footswitch switches the guitar between the circuit and a straight wire from input to output (true bypass). Its third switch lights the LED when the effect is on.
+
+**Footswitch lugs:** turn the footswitch over and look at the lugs. They form a 3 × 3 grid, numbered like a phone keypad: 1 2 3 across the top row, 4 5 6 across the middle and 7 8 9 across the bottom. Holding it with any edge as "top" works, as long as you keep the same view throughout. The middle row are the commons. Each one connects to the lug above it or the lug below it, depending on the switch position.
+
+First, solder these on the switch itself:
+
+| Wire | From | To |
+| --- | --- | --- |
+| Short link | Lug 7 | Lug 9 |
+| Input jack tip | Input jack tip lug | Footswitch lug 4 |
+| Output jack tip | Output jack tip lug | Footswitch lug 6 |
+| LED cathode wire | LED short leg (flat side) | Footswitch lug 2 |
+
+Then wire the switch and LED to the breadboard:
+
+| Part | From | To |
+| --- | --- | --- |
+| Wire | Footswitch lug 1 | B3 (circuit input) |
+| Wire | Footswitch lug 3 | B53 (circuit output) |
+| Wire | Footswitch lug 5 | Top blue rail (GND) |
+| LED resistor, 4.7k | Top red rail | T30 |
+| Wire | T30 | LED long leg (anode) |
+| Input jack sleeve wire | Input jack sleeve lug | Bottom blue rail |
+| Output jack sleeve wire | Output jack sleeve lug | Bottom blue rail |
+
+Lug 8 isn't used.
+
+**Check:** with the power off, set the multimeter to continuity (the beep setting). Probe the two jack tip lugs, then press the footswitch.
+- In one position it beeps. That's bypass: the guitar goes straight through.
+- In the other it doesn't. That's effect on.
+
+Then power up and stomp: the LED should light in the effect-on position. If it lights in the bypass position instead, the LED wire is on lug 8; move it to lug 2.
+
+## Step 7: first sound
+
+1. Set Level fully down, Gain halfway and Tone halfway. Start with the effect off (LED dark).
+2. Turn the amp down. Plug the guitar into the input jack and the output jack into the amp, then power up. You should hear the clean guitar.
+3. Stomp the footswitch on and bring Level up slowly while playing. Then try Gain and Tone across their range, and flip Soft/Hard. Stomp off and on to compare with the dry guitar; set Level so the two are about equally loud for a fair comparison.
 4. Hard is about 8.5 dB louder than Soft at the same settings, so lower Level before switching to Hard.
 
 **If something's wrong:**
-- **No sound:** recheck steps 3–5 with the meter, looking for 4.5 V at the chip pins. Also make sure both jack sleeves go to ground.
+- **No sound with the effect off:** check the lug 7–9 link and the jack wiring from step 6.
+- **No sound with the effect on only:** recheck steps 3–5 with the meter, looking for 4.5 V at the chip pins. Also check the lug 1 and lug 3 wires.
 - **Loud hum:** usually a loose ground or a long input wire. Keep the input jack wire short, and away from the power wires and the output wire.
 - **Squealing at high Gain:** move the input and output wires apart. Breadboards pick up hiss and hum at full Gain anyway, and the finished board is quieter.
 
