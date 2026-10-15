@@ -109,8 +109,8 @@ const OFF = [
   { id: 'in', step: 6, kind: 'jack', x: colX(2.2), y: 552, name: 'Input jack',
     terms: { tip: [colX(1.4), BOTY + 26, 'tip'], sleeve: [colX(3.0), BOTY + 26, 'sleeve'] } },
   { id: 'fs', step: 6, kind: 'fs', x: colX(9), y: 538, name: '3PDT footswitch', terms: {} },
-  { id: 'led', step: 6, kind: 'led', x: colX(18), y: 540, name: 'LED',
-    terms: { A: [colX(17.6), BOTY + 14, 'long leg (A)'], K: [colX(18.4), BOTY + 14, 'short leg (K)'] } },
+  { id: 'led', step: 6, kind: 'led', x: colX(19.5), y: 540, name: 'LED',
+    terms: { A: [colX(19.1), BOTY + 14, 'long leg (A)'], K: [colX(19.9), BOTY + 14, 'short leg (K)'] } },
   { id: 'tog', step: 4, kind: 'toggle', x: colX(24), y: 540, name: 'Soft/Hard toggle',
     terms: { A: [colX(23), BOTY, 'lug A (Soft)'], C: [colX(24), BOTY, 'center lug'], B: [colX(25), BOTY, 'lug B (Hard)'] } },
   { id: 'tone', step: 5, kind: 'pot', x: colX(33), y: 548, name: 'Tone B10k',
@@ -122,7 +122,7 @@ const OFF = [
 ];
 // footswitch lugs, numbered like a phone keypad
 { const fs = OFF.find(o => o.id === 'fs');
-  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) fs.terms[r * 3 + c + 1] = [fs.x + (c - 1) * 18, fs.y - 26 + r * 18, 'lug ' + (r * 3 + c + 1)]; }
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) fs.terms[r * 3 + c + 1] = [fs.x + (c - 1) * 24, fs.y - 28 + r * 22, 'lug ' + (r * 3 + c + 1)]; }
 const OFFNAME = { dc: 'DC jack', gain: 'Gain pot', in: 'Input jack', fs: 'Footswitch', led: 'LED', tog: 'Toggle', tone: 'Tone pot', level: 'Level pot', out: 'Output jack' };
 
 const CHIPS = [
@@ -272,7 +272,7 @@ function label(g, x, y, txt, color, anchor = 'middle') {
 function drawOff(o) {
   const g = partGroup(o.step, o.name); const c = stepColor(o.step);
   if (o.kind === 'jack') {
-    el('rect', { x: o.x - 30, y: o.y - 14, width: 60, height: 28, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    el('rect', { x: o.x - 38, y: o.y - 14, width: 76, height: 28, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
     const t = el('text', { x: o.x, y: o.y + 1, class: 'offlbl', 'text-anchor': 'middle' }, g); t.textContent = o.name;
     if (o.sub) { const s = el('text', { x: o.x, y: o.y + 11, class: 'offsmall', 'text-anchor': 'middle' }, g); s.textContent = o.sub; }
   } else if (o.kind === 'pot') {
@@ -284,9 +284,9 @@ function drawOff(o) {
     el('line', { x1: o.x, y1: o.y + 4, x2: o.x + 10, y2: o.y + 26, stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
     const t = el('text', { x: o.x + 36, y: o.y - 4, class: 'offlbl' }, g); t.textContent = o.name;
   } else if (o.kind === 'fs') {
-    el('rect', { x: o.x - 36, y: o.y - 44, width: 72, height: 72, rx: 8, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
-    const t = el('text', { x: o.x + 44, y: o.y - 14, class: 'offlbl' }, g); t.textContent = o.name;
-    const s = el('text', { x: o.x + 44, y: o.y - 2, class: 'offsmall' }, g); s.textContent = 'lug side, keypad numbering';
+    el('rect', { x: o.x - 40, y: o.y - 44, width: 80, height: 82, rx: 8, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x + 48, y: o.y - 14, class: 'offlbl' }, g); t.textContent = o.name;
+    const s = el('text', { x: o.x + 48, y: o.y - 2, class: 'offsmall' }, g); s.textContent = 'lug side, keypad numbering';
   } else if (o.kind === 'led') {
     el('circle', { cx: o.x, cy: o.y, r: 9, fill: '#e2342f', stroke: '#8f1d1a', 'stroke-width': 1 }, g);
     el('line', { x1: o.x - 8, y1: BOTY + 14, x2: o.x - 4, y2: o.y - 8, stroke: '#888', 'stroke-width': 1.5 }, g);
@@ -319,7 +319,7 @@ function drawChip(ch) {
 
 function curve(a, b) {
   const [x1, y1] = a, [x2, y2] = b, dy = y2 - y1;
-  if (Math.abs(dy) < 30) { const k = y1 < BY ? -30 : 50; return `M ${x1} ${y1} C ${x1} ${y1 + k} ${x2} ${y2 + k} ${x2} ${y2}`; }
+  if (Math.abs(dy) < 30) { const k = y1 < BY ? -30 : (Math.abs(x2 - x1) > 200 ? 100 : 50); return `M ${x1} ${y1} C ${x1} ${y1 + k} ${x2} ${y2 + k} ${x2} ${y2}`; }
   return `M ${x1} ${y1} C ${x1} ${y1 + dy * 0.5} ${x2} ${y2 - dy * 0.5} ${x2} ${y2}`;
 }
 
