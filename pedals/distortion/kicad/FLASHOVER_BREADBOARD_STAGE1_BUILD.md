@@ -170,7 +170,7 @@ Then wire the switch and LED to the breadboard:
 | --- | --- | --- |
 | Wire | Footswitch lug 1 | B3 (circuit input) |
 | Wire | Footswitch lug 3 | B53 (circuit output) |
-| Wire | Footswitch lug 5 | Top blue rail (GND) |
+| Wire | Footswitch lug 5 | Bottom blue rail (GND) |
 | LED resistor, 4.7k | Top red rail | T30 |
 | Wire | T30 | LED long leg (anode) |
 | Input jack sleeve wire | Input jack sleeve lug | Bottom blue rail |

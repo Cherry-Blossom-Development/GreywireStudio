@@ -1,0 +1,439 @@
+<title>Flashover Breadboard Layout</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: header, step selector, wide scrollable board diagram, then the selected step's placement table */
+:root {
+  --bg: #eef1ee; --panel: #ffffff; --fg: #1d2420; --muted: #5d6b63; --line: #cfd8d2;
+  --accent: #0f6e64; --accent-fg: #ffffff;
+  --board: #f6f4ec; --board-edge: #d9d4c4; --hole: #8f8a7c; --groove: #e4dfcf;
+  --rail-red: #d0343a; --rail-blue: #2f5fb3;
+  --s1: #c2410c; --s2: #7c3aed; --s3: #0369a1; --s4: #a16207; --s5: #047857; --s6: #be185d;
+  --font-display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141917; --panel: #1c2320; --fg: #e4ebe7; --muted: #9aaba2; --line: #2e3833;
+  --accent: #3fb8a8; --accent-fg: #0d1513; --board: #e9e6dc; --board-edge: #bdb7a5; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #141917; --panel: #1c2320; --fg: #e4ebe7; --muted: #9aaba2; --line: #2e3833;
+  --accent: #3fb8a8; --accent-fg: #0d1513; --board: #e9e6dc; --board-edge: #bdb7a5; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px; }
+header { display: grid; gap: 6px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 0; max-width: 70ch; }
+.mono { font-family: var(--font-mono); font-size: 0.92em; }
+.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.steps button { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  padding: 7px 12px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.steps button .dot { width: 10px; height: 10px; border-radius: 50%; }
+.steps button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.steps button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.board-scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.board-scroll svg { display: block; width: 100%; min-width: 1050px; height: auto; }
+.info { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .info { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
+.card h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 10px; }
+.check { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+td.ref { font-weight: 600; white-space: nowrap; }
+.legend { display: grid; gap: 8px; font-size: 0.9rem; }
+.legend div { display: flex; gap: 10px; align-items: center; }
+.legend svg { flex: none; }
+.note { color: var(--muted); font-size: 0.88rem; margin: 10px 0 0; }
+svg text { font-family: var(--font-body); }
+.lbl { font-size: 10px; font-weight: 600; paint-order: stroke; stroke: var(--board); stroke-width: 3px; stroke-linejoin: round; }
+.offlbl { font-size: 11px; font-weight: 600; fill: var(--fg); }
+.offsmall { font-size: 9px; fill: var(--muted); }
+.part { transition: opacity .2s; }
+@media (prefers-reduced-motion: reduce) { .part { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Flashover breadboard, stage 1</h1>
+    <p class="sub">Where every part goes on one 830-point breadboard, step by step. Pick a step to see what it adds; earlier steps fade into the background. Hover over or tap a part for its name. The full instructions are in <span class="mono">FLASHOVER_BREADBOARD_STAGE1_BUILD.md</span>.</p>
+  </header>
+
+  <div class="steps" id="steps" role="group" aria-label="Build step"></div>
+
+  <div class="board-scroll"><svg id="board" viewBox="0 0 1320 615" role="img" aria-label="Breadboard layout diagram"></svg></div>
+
+  <div class="info">
+    <div class="card">
+      <h2 id="step-title"></h2>
+      <div class="table-scroll"><table><thead><tr><th>Part</th><th>Value</th><th>From</th><th>To</th></tr></thead><tbody id="rows"></tbody></table></div>
+      <p class="check" id="step-check"></p>
+    </div>
+    <div class="card">
+      <h2>Reading the diagram</h2>
+      <div class="legend" id="legend"></div>
+      <p class="note">Hole names: the letter is the row (a–e top half, f–j bottom half), the number is the column. Any hole in the same column and half works the same, so the exact letter only matters for keeping parts from crowding each other.</p>
+      <p class="note">Some boards put the red and blue rails in the opposite order. Follow the colors, not the positions. Unplug the power before changing anything.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const P = 20, X0 = 40, BY = 120;
+const colX = c => X0 + (c - 1) * P;
+const ROWY = { a: 186, b: 206, c: 226, d: 246, e: 266, f: 306, g: 326, h: 346, i: 366, j: 386 };
+const RAILY = { TB: 138, TR: 156, VB: 416, BG: 434 };
+const RAILNAME = { TB: 'top blue rail (GND)', TR: 'top red rail (+9V)', VB: 'bottom red rail (VB)', BG: 'bottom blue rail (GND)' };
+const TOPY = 96, BOTY = 490;
+
+const STEPS = [
+  { n: 1, name: 'Rails and power', check: 'Power up. Black probe on a blue rail: about 8.6–8.8 V on the top red rail, 0 V on the bottom blue rail.' },
+  { n: 2, name: 'The 4.5 V bias (VB)', check: 'About 4.5 V on T43, T41 and the bottom red rail (give it a few seconds), and about 8.7 V on T40.' },
+  { n: 3, name: 'Input and gain stage', check: 'About 4.5 V on T13 (LM741 pin 6) at any Gain setting.' },
+  { n: 4, name: 'Clipping and Soft/Hard', check: 'About 4.5 V on B20 in both switch positions.' },
+  { n: 5, name: 'Tone, output amp and Level', check: 'About 4.5 V on B40 and B42, and 0 V on B53 (the output).' },
+  { n: 6, name: 'Footswitch, LED and jacks', check: 'Power off, meter on continuity: the two jack tips beep in one footswitch position (bypass) and not the other. Powered: the LED lights with the effect on.' },
+];
+
+// Off-board parts and their terminals
+const OFF = [
+  { id: 'dc', step: 1, kind: 'jack', x: colX(2.2), y: 40, name: '9V DC jack', sub: 'center negative', top: true,
+    terms: { '+': [colX(1.4), TOPY, 'sleeve (+)'], '-': [colX(3.0), TOPY, 'center (−)'] } },
+  { id: 'gain', step: 3, kind: 'pot', x: colX(7), y: 46, name: 'Gain B100k', top: true,
+    terms: { 1: [colX(6), TOPY, 'lug 1'], 2: [colX(7), TOPY, 'lug 2'], 3: [colX(8), TOPY, 'lug 3'] } },
+  { id: 'in', step: 6, kind: 'jack', x: colX(2.2), y: 552, name: 'Input jack',
+    terms: { tip: [colX(1.4), BOTY + 26, 'tip'], sleeve: [colX(3.0), BOTY + 26, 'sleeve'] } },
+  { id: 'fs', step: 6, kind: 'fs', x: colX(9), y: 538, name: '3PDT footswitch', terms: {} },
+  { id: 'led', step: 6, kind: 'led', x: colX(18), y: 540, name: 'LED',
+    terms: { A: [colX(17.6), BOTY + 14, 'long leg (A)'], K: [colX(18.4), BOTY + 14, 'short leg (K)'] } },
+  { id: 'tog', step: 4, kind: 'toggle', x: colX(24), y: 540, name: 'Soft/Hard toggle',
+    terms: { A: [colX(23), BOTY, 'lug A (Soft)'], C: [colX(24), BOTY, 'center lug'], B: [colX(25), BOTY, 'lug B (Hard)'] } },
+  { id: 'tone', step: 5, kind: 'pot', x: colX(33), y: 548, name: 'Tone B10k',
+    terms: { 1: [colX(32), BOTY, 'lug 1'], 2: [colX(33), BOTY, 'lug 2'], 3: [colX(34), BOTY, 'lug 3'] } },
+  { id: 'level', step: 5, kind: 'pot', x: colX(46), y: 548, name: 'Level B10k',
+    terms: { 1: [colX(45), BOTY, 'lug 1'], 2: [colX(46), BOTY, 'lug 2'], 3: [colX(47), BOTY, 'lug 3'] } },
+  { id: 'out', step: 6, kind: 'jack', x: colX(58.2), y: 552, name: 'Output jack',
+    terms: { tip: [colX(57.4), BOTY + 26, 'tip'], sleeve: [colX(59.0), BOTY + 26, 'sleeve'] } },
+];
+// footswitch lugs, numbered like a phone keypad
+{ const fs = OFF.find(o => o.id === 'fs');
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) fs.terms[r * 3 + c + 1] = [fs.x + (c - 1) * 18, fs.y - 26 + r * 18, 'lug ' + (r * 3 + c + 1)]; }
+const OFFNAME = { dc: 'DC jack', gain: 'Gain pot', in: 'Input jack', fs: 'Footswitch', led: 'LED', tog: 'Toggle', tone: 'Tone pot', level: 'Level pot', out: 'Output jack' };
+
+const CHIPS = [
+  { step: 2, ref: 'U2', value: 'TL072', col: 40 },
+  { step: 3, ref: 'U1', value: 'LM741', col: 11 },
+];
+
+// [step, kind, ref, value, from, to]  (ecap: from = + leg; diode: from = anode, to = striped cathode)
+const PARTS = [
+  [1, 'wire', 'Jumper', 'GND link', 'TB@1', 'BG@1'],
+  [1, 'wire', 'Jumper', 'GND link', 'TB@62', 'BG@62'],
+  [1, 'wire', 'Wire', 'DC +', 'dc:+', 'a2'],
+  [1, 'wire', 'Wire', 'DC −', 'dc:-', 'TB@3'],
+  [1, 'sch', 'D3', '1N5817', 'b2', 'TR@3'],
+  [1, 'ecap', 'C7', '100µF', 'TR@5', 'TB@5'],
+  [1, 'cer', 'C10', '100nF', 'TR@9', 'TB@9'],
+  [1, 'cer', 'C11', '100nF', 'TR@38', 'TB@38'],
+
+  [2, 'wire', 'Jumper', '+9V to pin 8', 'a40', 'TR@40'],
+  [2, 'wire', 'Jumper', 'pin 4 to GND', 'j43', 'BG@43'],
+  [2, 'res', 'R7', '1M', 'b43', 'TR@43'],
+  [2, 'res', 'R8', '1M', 'a43', 'TB@47'],
+  [2, 'ecap', 'C6', '10µF', 'c43', 'TB@45'],
+  [2, 'wire', 'Jumper', 'pin 7 to pin 6', 'c41', 'c42'],
+  [2, 'res', 'R18', '100', 'd42', 'd46'],
+  [2, 'ecap', 'C15', '10µF', 'c46', 'TB@49'],
+  [2, 'wire', 'Jumper', 'VB to rail', 'e46', 'VB@46'],
+
+  [3, 'wire', 'Jumper', '+9V to pin 7', 'a12', 'TR@12'],
+  [3, 'wire', 'Jumper', 'pin 4 to GND', 'j14', 'BG@14'],
+  [3, 'res', 'R1', '1M', 'g3', 'BG@2'],
+  [3, 'film', 'C1', '10nF', 'f3', 'f6'],
+  [3, 'res', 'R2', '10k', 'j6', 'j13'],
+  [3, 'film', 'C2', '1nF', 'i13', 'BG@15'],
+  [3, 'res', 'R3', '1M', 'h13', 'VB@16'],
+  [3, 'res', 'R5', '100k', 'h12', 'c13'],
+  [3, 'res', 'R4', '330', 'i12', 'c8'],
+  [3, 'film', 'C3', '470nF', 'c6', 'TB@7'],
+  [3, 'wire', 'Wire', 'Gain lug 3', 'gain:3', 'a8'],
+  [3, 'wire', 'Wire', 'Gain lug 2', 'gain:2', 'a6'],
+  [3, 'wire', 'Link', 'Gain lug 1 to lug 2', 'gain:1', 'gain:2'],
+
+  [4, 'film', 'C4', '1µF', 'b13', 'b17'],
+  [4, 'res', 'R6', '10k', 'c17', 'f20'],
+  [4, 'wire', 'Jumper', 'B20 to B21', 'g20', 'g21'],
+  [4, 'res', 'R10', '1M', 'h20', 'VB@19'],
+  [4, 'film', 'C5', '1nF', 'i20', 'VB@21'],
+  [4, 'wire', 'Wire', 'Toggle center', 'tog:C', 'j20'],
+  [4, 'wire', 'Wire', 'Toggle A (Soft)', 'tog:A', 'j29'],
+  [4, 'wire', 'Wire', 'Toggle B (Hard)', 'tog:B', 'j32'],
+  [4, 'ge', 'D1', '1N34A', 'g29', 'VB@28'],
+  [4, 'ge', 'D2', '1N34A', 'VB@30', 'h29'],
+  [4, 'si', 'D4', '1N4148', 'g32', 'VB@31'],
+  [4, 'si', 'D5', '1N4148', 'VB@33', 'h32'],
+
+  [5, 'film', 'C12', '22nF', 'i21', 'i23'],
+  [5, 'res', 'R15', '6.8k', 'h23', 'VB@25'],
+  [5, 'res', 'R14', '6.8k', 'f21', 'f26'],
+  [5, 'film', 'C8', '100nF', 'h26', 'VB@27'],
+  [5, 'wire', 'Wire', 'Tone lug 1', 'tone:1', 'j26'],
+  [5, 'wire', 'Wire', 'Tone lug 3', 'tone:3', 'j23'],
+  [5, 'wire', 'Wire', 'Tone lug 2', 'tone:2', 'j42'],
+  [5, 'wire', 'Jumper', 'B40 to B37', 'g40', 'g37'],
+  [5, 'res', 'R16', '30k', 'h37', 'h41'],
+  [5, 'res', 'R17', '10k', 'i41', 'VB@39'],
+  [5, 'wire', 'Wire', 'Level lug 3', 'level:3', 'j37'],
+  [5, 'wire', 'Wire', 'Level lug 1', 'level:1', 'VB@47'],
+  [5, 'wire', 'Wire', 'Level lug 2', 'level:2', 'j50'],
+  [5, 'film', 'C9', '1µF', 'g50', 'g53'],
+  [5, 'res', 'R11', '100k', 'i53', 'BG@54'],
+
+  [6, 'wire', 'Link', 'Lug 7 to lug 9', 'fs:7', 'fs:9'],
+  [6, 'wire', 'Wire', 'Input tip', 'in:tip', 'fs:4'],
+  [6, 'wire', 'Wire', 'Output tip', 'out:tip', 'fs:6'],
+  [6, 'wire', 'Wire', 'LED cathode', 'led:K', 'fs:2'],
+  [6, 'wire', 'Wire', 'Effect in', 'fs:1', 'j3'],
+  [6, 'wire', 'Wire', 'Effect out', 'fs:3', 'j53'],
+  [6, 'wire', 'Wire', 'Footswitch GND', 'fs:5', 'BG@8'],
+  [6, 'res', 'R LED', '4.7k', 'TR@29', 'b30'],
+  [6, 'wire', 'Wire', 'LED anode', 'e30', 'led:A'],
+  [6, 'wire', 'Wire', 'Input sleeve', 'in:sleeve', 'BG@3'],
+  [6, 'wire', 'Wire', 'Output sleeve', 'out:sleeve', 'BG@60'],
+];
+
+function pt(s) {
+  let m;
+  if ((m = /^([a-j])(\d+)$/.exec(s))) return [colX(+m[2]), ROWY[m[1]]];
+  if ((m = /^(TB|TR|VB|BG)@(\d+)$/.exec(s))) return [colX(+m[2]), RAILY[m[1]]];
+  const [id, t] = s.split(':'); const o = OFF.find(o => o.id === id);
+  return o.terms[t];
+}
+function desc(s) {
+  let m;
+  if ((m = /^([a-j])(\d+)$/.exec(s))) return `${s} (${'abcde'.includes(m[1]) ? 'T' : 'B'}${m[2]})`;
+  if ((m = /^(TB|TR|VB|BG)@(\d+)$/.exec(s))) return RAILNAME[m[1]];
+  const [id, t] = s.split(':'); const o = OFF.find(o => o.id === id);
+  return `${OFFNAME[id]} ${o.terms[t][2]}`;
+}
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const stepColor = n => `var(--s${n})`;
+
+const svg = document.getElementById('board');
+
+function drawBoard() {
+  const g = el('g', {}, svg);
+  el('rect', { x: 14, y: BY, width: 1292, height: 334, rx: 10, fill: 'var(--board)', stroke: 'var(--board-edge)', 'stroke-width': 2 }, g);
+  el('rect', { x: 22, y: 280, width: 1276, height: 12, rx: 3, fill: 'var(--groove)' }, g);
+  // rails
+  for (const [k, y] of Object.entries(RAILY)) {
+    const red = k === 'TR' || k === 'VB';
+    const ly = (k === 'TB' || k === 'TR') ? (k === 'TB' ? y - 9 : y + 9) : (k === 'VB' ? y - 9 : y + 9);
+    el('line', { x1: 30, x2: 1290, y1: ly, y2: ly, stroke: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'stroke-width': 1.5 }, g);
+    for (let c = 1; c <= 63; c++) el('rect', { x: colX(c) - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
+    const t = el('text', { x: 24, y: y + 3.5, 'font-size': 10, 'font-weight': 700, fill: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'text-anchor': 'middle' }, g);
+    t.textContent = red ? '+' : '−';
+  }
+  const railTag = [['TB', 'GND'], ['TR', '+9V'], ['VB', 'VB 4.5V'], ['BG', 'GND']];
+  for (const [k, txt] of railTag) {
+    const red = k === 'TR' || k === 'VB';
+    const t = el('text', { x: 1300, y: RAILY[k] + 3.5, 'font-size': 9, 'font-weight': 700, fill: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'text-anchor': 'end' }, g);
+    t.textContent = txt;
+  }
+  for (const [r, y] of Object.entries(ROWY)) {
+    for (let c = 1; c <= 63; c++) el('rect', { x: colX(c) - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
+    for (const x of [26, 1294]) { const t = el('text', { x, y: y + 3.5, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = r; }
+  }
+  for (let c = 1; c <= 63; c++) if (c === 1 || c % 5 === 0) for (const y of [174, 400 - 2]) {
+    if (y > 300) continue;
+    const t = el('text', { x: colX(c), y, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = c;
+  }
+  for (let c = 1; c <= 63; c++) if (c === 1 || c % 5 === 0) {
+    const t = el('text', { x: colX(c), y: 289.5, 'font-size': 8, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = c;
+  }
+}
+
+const groups = [];
+function partGroup(step, title) {
+  const g = el('g', { class: 'part', 'data-step': step }, svg);
+  const t = el('title', {}, g); t.textContent = title;
+  groups.push(g); return g;
+}
+function label(g, x, y, txt, color, anchor = 'middle') {
+  const t = el('text', { x, y, class: 'lbl', fill: color, 'text-anchor': anchor }, g); t.textContent = txt;
+}
+
+function drawOff(o) {
+  const g = partGroup(o.step, o.name); const c = stepColor(o.step);
+  if (o.kind === 'jack') {
+    el('rect', { x: o.x - 30, y: o.y - 14, width: 60, height: 28, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x, y: o.y + 1, class: 'offlbl', 'text-anchor': 'middle' }, g); t.textContent = o.name;
+    if (o.sub) { const s = el('text', { x: o.x, y: o.y + 11, class: 'offsmall', 'text-anchor': 'middle' }, g); s.textContent = o.sub; }
+  } else if (o.kind === 'pot') {
+    el('circle', { cx: o.x, cy: o.y, r: 22, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    el('circle', { cx: o.x, cy: o.y, r: 7, fill: c, opacity: 0.35 }, g);
+    const t = el('text', { x: o.x + 30, y: o.y + 4, class: 'offlbl' }, g); t.textContent = o.name;
+  } else if (o.kind === 'toggle') {
+    el('rect', { x: o.x - 30, y: o.y - 22, width: 60, height: 26, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    el('line', { x1: o.x, y1: o.y + 4, x2: o.x + 10, y2: o.y + 26, stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    const t = el('text', { x: o.x + 36, y: o.y - 4, class: 'offlbl' }, g); t.textContent = o.name;
+  } else if (o.kind === 'fs') {
+    el('rect', { x: o.x - 36, y: o.y - 44, width: 72, height: 72, rx: 8, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x + 44, y: o.y - 14, class: 'offlbl' }, g); t.textContent = o.name;
+    const s = el('text', { x: o.x + 44, y: o.y - 2, class: 'offsmall' }, g); s.textContent = 'lug side, keypad numbering';
+  } else if (o.kind === 'led') {
+    el('circle', { cx: o.x, cy: o.y, r: 9, fill: '#e2342f', stroke: '#8f1d1a', 'stroke-width': 1 }, g);
+    el('line', { x1: o.x - 8, y1: BOTY + 14, x2: o.x - 4, y2: o.y - 8, stroke: '#888', 'stroke-width': 1.5 }, g);
+    el('line', { x1: o.x + 8, y1: BOTY + 14, x2: o.x + 4, y2: o.y - 8, stroke: '#888', 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x + 16, y: o.y + 4, class: 'offlbl' }, g); t.textContent = 'LED';
+  }
+  for (const [k, [x, y, nm]] of Object.entries(o.terms)) {
+    el('circle', { cx: x, cy: y, r: 4, fill: '#b9b4a6', stroke: '#6d685b', 'stroke-width': 1 }, g);
+    const short = o.kind === 'fs' ? k : o.kind === 'pot' ? k : o.kind === 'toggle' ? ({ A: 'Soft', C: 'C', B: 'Hard' })[k]
+      : o.kind === 'led' ? ({ A: 'A', K: 'K' })[k] : (k === '+' ? '+' : k === '-' ? '−' : k);
+    const above = !o.top && o.kind !== 'fs' && o.kind !== 'led' && o.kind !== 'jack';
+    const ty = o.kind === 'fs' ? y + 3 : o.top ? y - 8 : above ? y + 15 : y + 15;
+    const tx = o.kind === 'fs' ? x + 7 : x;
+    const t = el('text', { x: tx, y: ty, class: 'offsmall', 'text-anchor': o.kind === 'fs' ? 'start' : 'middle' }, g); t.textContent = short;
+  }
+}
+
+function drawChip(ch) {
+  const g = partGroup(ch.step, `${ch.ref} ${ch.value}, columns ${ch.col}–${ch.col + 3}, notch left`);
+  const x1 = colX(ch.col) - 8, x2 = colX(ch.col + 3) + 8;
+  el('rect', { x: x1, y: ROWY.e - 9, width: x2 - x1, height: ROWY.f - ROWY.e + 18, rx: 3, fill: '#24262a' }, g);
+  el('path', { d: `M ${x1} 278 a 7 7 0 0 1 0 14`, fill: 'var(--board)' }, g);
+  el('circle', { cx: colX(ch.col), cy: ROWY.f - 1, r: 2, fill: '#cfcfcf' }, g);
+  for (let i = 0; i < 4; i++) { el('rect', { x: colX(ch.col + i) - 3, y: ROWY.e - 3, width: 6, height: 6, fill: '#c9c9c9' }, g);
+    el('rect', { x: colX(ch.col + i) - 3, y: ROWY.f - 3, width: 6, height: 6, fill: '#c9c9c9' }, g); }
+  const t = el('text', { x: (x1 + x2) / 2, y: 289, 'font-size': 10, 'font-weight': 700, fill: '#f2f2f2', 'text-anchor': 'middle' }, g);
+  t.textContent = `${ch.ref} ${ch.value}`;
+  label(g, x1 - 2, ROWY.f + 16, 'pin 1', stepColor(ch.step), 'end');
+}
+
+function curve(a, b) {
+  const [x1, y1] = a, [x2, y2] = b, dy = y2 - y1;
+  if (Math.abs(dy) < 30) { const k = y1 < BY ? -30 : 50; return `M ${x1} ${y1} C ${x1} ${y1 + k} ${x2} ${y2 + k} ${x2} ${y2}`; }
+  return `M ${x1} ${y1} C ${x1} ${y1 + dy * 0.5} ${x2} ${y2 - dy * 0.5} ${x2} ${y2}`;
+}
+
+function drawPart([step, kind, ref, value, from, to]) {
+  const a = pt(from), b = pt(to), c = stepColor(step);
+  const title = `${ref === 'Wire' || ref === 'Jumper' || ref === 'Link' ? value : ref + ' ' + value}: ${desc(from)} to ${desc(to)}`;
+  const g = partGroup(step, title);
+  const offA = !/^[a-j]\d|@/.test(from), offB = !/^[a-j]\d|@/.test(to);
+  if (kind === 'wire') {
+    const d = (offA || offB) ? curve(a, b) : `M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}`;
+    el('path', { d, fill: 'none', stroke: c, 'stroke-width': 2.4, 'stroke-linecap': 'round', opacity: 0.9 }, g);
+    for (const [p, off] of [[a, offA], [b, offB]]) if (!off) el('circle', { cx: p[0], cy: p[1], r: 3.2, fill: c }, g);
+    return;
+  }
+  const [x1, y1] = a, [x2, y2] = b, len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+  el('line', { x1, y1, x2, y2, stroke: c, 'stroke-width': 1.8, 'stroke-linecap': 'round' }, g);
+  el('circle', { cx: x1, cy: y1, r: 3, fill: c }, g); el('circle', { cx: x2, cy: y2, r: 3, fill: c }, g);
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  const body = el('g', { transform: `translate(${mx} ${my}) rotate(${ang})` }, g);
+  const L = Math.max(10, Math.min(kind === 'res' ? 26 : 18, len - 8));
+  if (kind === 'res') {
+    el('rect', { x: -L / 2, y: -4.5, width: L, height: 9, rx: 4, fill: '#d9bd8c', stroke: '#8a6d3b', 'stroke-width': 1 }, body);
+  } else if (kind === 'film') {
+    el('rect', { x: -L / 2, y: -5.5, width: L, height: 11, rx: 2, fill: '#3d6fb5', stroke: '#22457a', 'stroke-width': 1 }, body);
+  } else if (kind === 'cer') {
+    el('rect', { x: -5, y: -5, width: 10, height: 10, rx: 4, fill: '#e2a33b', stroke: '#9b6a17', 'stroke-width': 1 }, body);
+  } else if (kind === 'ecap') {
+    el('rect', { x: -L / 2, y: -6, width: L, height: 12, rx: 3, fill: '#23395b', stroke: '#111d30', 'stroke-width': 1 }, body);
+    el('rect', { x: L / 2 - 5, y: -6, width: 4, height: 12, fill: '#b9c3d3' }, body);
+    const pl = el('text', { x: -L / 2 - 2, y: -8, 'font-size': 10, 'font-weight': 800, fill: c, 'text-anchor': 'middle' }, body); pl.textContent = '+';
+  } else {
+    const fill = kind === 'ge' ? '#e58b2a' : kind === 'si' ? '#e7a7a0' : '#2b2b2b';
+    const band = kind === 'sch' ? '#e8e8e8' : '#1b1b1b';
+    el('rect', { x: -L / 2, y: -3.5, width: L, height: 7, rx: 2, fill, stroke: '#5a3d1a', 'stroke-width': 0.8 }, body);
+    el('rect', { x: L / 2 - 4, y: -3.5, width: 2.5, height: 7, fill: band }, body);
+  }
+  // label offset perpendicular to the part
+  const nx = -(y2 - y1) / (len || 1), ny = (x2 - x1) / (len || 1);
+  const s = ny > 0 ? -1 : 1;
+  label(g, mx + nx * 12 * s, my + ny * 12 * s + 3.5, `${ref} ${value}`, c);
+}
+
+drawBoard();
+OFF.forEach(drawOff);
+CHIPS.forEach(drawChip);
+PARTS.forEach(drawPart);
+
+// Legend
+const legend = document.getElementById('legend');
+const LEG = [
+  ['res', 'Resistor'], ['film', 'Film capacitor'], ['cer', 'Ceramic capacitor'],
+  ['ecap', 'Electrolytic capacitor (+ marked, pale stripe is −)'], ['ge', 'Diode, striped end is the cathode'], ['wire', 'Wire or jumper'], ['chip', 'Chip, notch on the left, pin 1 at the dot'],
+];
+for (const [k, txt] of LEG) {
+  const row = document.createElement('div');
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', 44); s.setAttribute('height', 16); s.setAttribute('viewBox', '0 0 44 16');
+  if (k === 'wire') el('path', { d: 'M 4 8 L 40 8', stroke: 'var(--muted)', 'stroke-width': 2.4, 'stroke-linecap': 'round' }, s);
+  else if (k === 'chip') { el('rect', { x: 8, y: 2, width: 28, height: 12, rx: 2, fill: '#24262a' }, s); el('circle', { cx: 12, cy: 11, r: 1.5, fill: '#ccc' }, s); }
+  else {
+    el('line', { x1: 2, y1: 8, x2: 42, y2: 8, stroke: 'var(--muted)', 'stroke-width': 1.6 }, s);
+    const m = { res: ['#d9bd8c', 22, 9], film: ['#3d6fb5', 16, 11], cer: ['#e2a33b', 10, 10], ecap: ['#23395b', 18, 12], ge: ['#e58b2a', 16, 7] }[k];
+    el('rect', { x: 22 - m[1] / 2, y: 8 - m[2] / 2, width: m[1], height: m[2], rx: 2, fill: m[0] }, s);
+    if (k === 'ge') el('rect', { x: 26, y: 4.5, width: 2.5, height: 7, fill: '#1b1b1b' }, s);
+    if (k === 'ecap') el('rect', { x: 26, y: 2, width: 4, height: 12, fill: '#b9c3d3' }, s);
+  }
+  const span = document.createElement('span'); span.textContent = txt;
+  row.append(s, span); legend.appendChild(row);
+}
+
+// Step selector
+const stepsEl = document.getElementById('steps');
+const buttons = [];
+function mkBtn(n, txt) {
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'step-btn-' + n;
+  if (n) { const d = document.createElement('span'); d.className = 'dot'; d.style.background = stepColor(n); b.appendChild(d); }
+  b.append(txt); b.addEventListener('click', () => show(n)); stepsEl.appendChild(b); buttons.push([n, b]);
+}
+mkBtn(0, 'All steps');
+STEPS.forEach(s => mkBtn(s.n, `${s.n}. ${s.name}`));
+
+function show(n) {
+  buttons.forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === n)));
+  for (const g of groups) {
+    const s = +g.dataset.step;
+    if (n === 0 || s === n) { g.style.display = ''; g.style.opacity = 1; }
+    else if (s < n) { g.style.display = ''; g.style.opacity = 0.22; }
+    else g.style.display = 'none';
+  }
+  const rows = document.getElementById('rows'); rows.innerHTML = '';
+  const title = document.getElementById('step-title'), check = document.getElementById('step-check');
+  const list = n === 0 ? [] : PARTS.filter(p => p[0] === n);
+  const chips = n === 0 ? [] : CHIPS.filter(c => c.step === n);
+  const add = cells => { const tr = document.createElement('tr');
+    cells.forEach((c, i) => { const td = document.createElement('td'); td.textContent = c; if (i === 0) td.className = 'ref'; if (i >= 2) td.classList.add('mono'); tr.appendChild(td); });
+    rows.appendChild(tr); };
+  if (n === 0) {
+    title.textContent = 'All steps';
+    check.textContent = 'Pick a step above to see its parts, holes and voltage check.';
+    STEPS.forEach(s => add([`Step ${s.n}`, s.name, `${PARTS.filter(p => p[0] === s.n).length + CHIPS.filter(c => c.step === s.n).length} items`, '']));
+    try { localStorage.setItem('flashover-step', '0'); } catch (e) {}
+    return;
+  }
+  const st = STEPS[n - 1];
+  title.textContent = `Step ${n}: ${st.name}`;
+  chips.forEach(c => add([c.ref, c.value, `columns ${c.col}–${c.col + 3}`, 'notch left, pin 1 in f' + c.col]));
+  list.forEach(([, kind, ref, value, from, to]) => {
+    const isWire = ref === 'Wire' || ref === 'Jumper' || ref === 'Link';
+    const v = isWire ? value : value + (kind === 'ecap' ? ' (+ at From)' : ['ge', 'si', 'sch'].includes(kind) ? ' (stripe at To)' : '');
+    add([ref, v, desc(from), desc(to)]);
+  });
+  check.textContent = 'Check: ' + st.check;
+  try { localStorage.setItem('flashover-step', String(n)); } catch (e) {}
+}
+let start = 0;
+try { const v = parseInt(localStorage.getItem('flashover-step'), 10); if (v >= 0 && v <= 6) start = v; } catch (e) {}
+show(start);
+</script>
