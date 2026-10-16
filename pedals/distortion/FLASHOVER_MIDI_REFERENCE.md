@@ -108,7 +108,7 @@ In the identity replies, `dd` is Flashover's channel (`7F` until one is assigned
 
 No firmware exists yet, so these can be settled when stage 2 of the breadboard brings in the RP2040.
 
-- [ ] Accept the SysEx byte layouts above, or change them, then copy them into the Linework Control Specification.
+- [x] Accept the SysEx byte layouts above, or change them, then copy them into the Linework Control Specification.
 - [ ] CC 81 from other brands' controllers: many send 0 and 127 for a switch. Proposal: any value of 1 or more means Hard.
 - [ ] Fine adjustment (CC 52–54): support it now for the pots' full 257 steps, or wait until 128 steps proves too coarse.
 - [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time?
