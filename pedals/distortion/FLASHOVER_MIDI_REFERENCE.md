@@ -10,12 +10,12 @@ MIDI has no function calls and no return values. It is a stream of short one-way
 
 What this doc calls an "API call" is a message Switchyard (the controller pedal) sends. Most messages get nothing back. Where Switchyard needs an answer, it asks with a question message and the pedal sends a separate answer message later. The Linework loop carries that answer back to Switchyard.
 
-- **Status byte:** the first byte of each message says what kind it is. Its top bit is always 1 (values 80–FF in hex).
-- **Data bytes:** the bytes after it carry values. Their top bit is always 0, so every value runs 0–127.
+- **Status byte:** the first byte of each message, which says what kind of message it is. It runs 80–FF in hex (128–255). See "Status byte and data byte" in the Glossary.
+- **Data bytes:** the bytes after it, which carry the values. Every value runs 0–127; the Glossary explains why.
 - **Channel:** most messages carry a channel number, 1–16, in the low half of the status byte. Each Linework pedal listens on its own channel, so up to 16 pedals share one cable. In the bytes, channel 1 is written as 0 and channel 16 as F.
 - **System exclusive (SysEx):** a message of any length for a maker's own commands. It starts with F0 and ends with F7. Linework uses SysEx for setup, presets, settings dumps and firmware updates.
 
-In this doc, bytes are written in hex, and `n` stands for the channel minus 1. For example, `B2` is a control change on channel 3.
+In this doc, bytes are written in hex (see "Hex" in the Glossary), and `n` stands for the channel minus 1. For example, `B2` is a control change on channel 3.
 
 ## Flashover's MIDI hardware
 
@@ -112,3 +112,47 @@ No firmware exists yet, so these can be settled when stage 2 of the breadboard b
 - [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time?
 - [ ] How fast to send hand changes: 10 ms or 20 ms between messages per knob.
 - [ ] Apply a new manufacturer ID from the MIDI Association before sale (small annual fee).
+
+## Glossary
+
+### Bit, byte and top bit
+
+A byte is 8 bits. Written out, the most valuable bit is on the left:
+
+```
+bit value:  128  64  32  16   8   4   2   1
+example:      1   0   1   1   0   0   0   0   = 128 + 32 + 16 = 176
+```
+
+The **top bit** is the leftmost one, worth 128. It's also called the most significant bit or the high bit. It names a position inside a single byte. It is unrelated to endianness, which is the order of the bytes in a number that takes up several bytes.
+
+### Status byte and data byte
+
+MIDI uses the top bit of every byte as a label:
+
+- **Top bit 1:** a **status byte**, which starts a new message. With the 128 bit set, its value is always 128 or more.
+- **Top bit 0:** a **data byte**, a value inside the message. Only the other 7 bits are left, so the value is always 0–127.
+
+| | Decimal | Hex | Binary |
+| --- | --- | --- | --- |
+| Status bytes | 128–255 | 80–FF | 1xxxxxxx |
+| Data bytes | 0–127 | 00–7F | 0xxxxxxx |
+
+This is why every MIDI value (a knob position, a CC number, a preset number) stops at 127: one of the 8 bits is used for the label.
+
+The label exists because MIDI has no gaps or markers between messages, only a steady stream of bytes. A pedal plugged in partway through a message reads until it sees a byte with the top bit set, and knows a new message starts there. It never mistakes a value for the start of a message.
+
+### Hex
+
+Hex (hexadecimal) counts in sixteens, using the digits 0–9 and then A–F (A = 10, F = 15). Each hex digit stands for exactly 4 bits, so any byte is exactly two hex digits.
+
+MIDI documents write status bytes in hex because a status byte holds two things, one in each hex digit:
+
+```
+ B    2
+1011 0010
+ │    └─ channel: 0010 = 2, which means channel 3
+ └────── message type: 1011 = B = control change
+```
+
+So `B2` reads at a glance as "control change on channel 3". The same byte in decimal is 178, which hides both parts. Data bytes are single values, such as Gain = 100, so they're often given in decimal instead. This doc writes bytes in hex and settings in decimal, and gives both where it helps.
