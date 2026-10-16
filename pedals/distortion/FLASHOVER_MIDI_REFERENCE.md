@@ -60,29 +60,31 @@ These six messages are fixed by the Linework Control Specification and the Flash
 
 These are the messages that get answers. The spec lists them but leaves the bytes "to be written once the first prototype is working", so the layouts below are a first proposal. Every one is SysEx, framed the same way:
 
-`F0 7D 4C 57 cc … F7`
+`F0 7D 4C 57 cc qq … F7`
 
 - `7D` is the manufacturer ID MIDI sets aside for development and non-commercial use. A paid ID from the MIDI Association replaces it before sale.
+- **The header changes length with a paid ID.** A paid ID is 3 bytes (`00 xx yy`), which moves every later byte 2 places. Firmware and Switchyard code should keep the header (`F0 7D 4C 57` for now) as one named constant and count byte positions from its end, never hard-code them.
 - `4C 57` ("LW") marks the message as Linework, since other gear may also use `7D`.
 - `cc` is the command; `ch` is a channel, 00–0F.
+- `qq` is a sequence number, 00–7F. Switchyard counts it up with each request, going from 7F back to 00, and every answer repeats it. That way a lost or late answer is never matched to the wrong request. Pedal info answers the standard identity request, which has no `qq`, so it sends 00.
 - **Serial** `s0…s9`: the 64-bit unique ID of the pedal's flash chip, split into ten 7-bit bytes.
-- **Settings** `gg tt ll mm oo`: Gain, Tone, Level (0–127), mode (0 Soft, 1 Hard) and on/off (0 or 1).
+- **Settings** `(pairs)`: a CC number then its value, one pair per control, using the same values as the matching control change. Flashover sends `14 gg 15 tt 16 ll 51 mm 50 oo`: Gain, Tone, Level (0–127), mode (0 Soft, 1 Hard) and on/off (0 off, 127 on). A pedal with other controls sends its own CC numbers, so Switchyard can read any Linework pedal without knowing its model. The `F7` marks where the pairs end.
 
 | Message | Bytes Switchyard sends | What Flashover does | What comes back |
 | --- | --- | --- | --- |
-| Position count | `F0 7D 4C 57 01 kk F7`, starting at kk = 00 | Saves kk + 1 as its position, and passes the message on with kk + 1 in place of kk | The number that reaches Switchyard is the number of pedals |
-| Identity request (standard MIDI) | `F0 7E 7F 06 01 F7` | Passes it on, then adds its own two answers | Standard identity reply `F0 7E dd 06 02 7D 4C 57 01 00 aa bb cc ss F7`, then pedal info `F0 7D 4C 57 02 pp dd s0…s9 F7` |
-| Assign channel | `F0 7D 4C 57 03 s0…s9 ch F7` | If the serial is its own, saves the channel to flash and lights the Link LED | Acknowledgement |
-| Report settings | `F0 7D 4C 57 10 ch F7` | Reads its current settings | `F0 7D 4C 57 11 ch gg tt ll mm oo F7` |
-| Store preset | `F0 7D 4C 57 20 ch pp ff gg tt ll mm oo F7` | Writes preset slot pp. ff = 0 stores the values sent; ff = 1 stores the current sound (the values sent are ignored) | Acknowledgement |
-| Read preset | `F0 7D 4C 57 21 ch pp F7` | Reads slot pp | `F0 7D 4C 57 22 ch pp gg tt ll mm oo F7` |
-| Firmware: begin | `F0 7D 4C 57 30 s0…s9 z0 z1 z2 c0…c4 F7` | Goes to bypass and erases the spare firmware copy. z = size in bytes, c = CRC-32 check value of the whole file | Acknowledgement once erased |
-| Firmware: data | `F0 7D 4C 57 31 ch b0 b1 (74 bytes) xx F7` | Writes 64 bytes of firmware as block b0 b1. xx is a checksum of the block | Acknowledgement with the block number |
-| Firmware: finish | `F0 7D 4C 57 32 ch F7` | Checks the CRC-32 of the whole copy. If it matches, it switches to the new copy and restarts | Acknowledgement, then a fresh identity reply after the restart |
+| Position count | `F0 7D 4C 57 01 qq kk F7`, starting at kk = 00 | Saves kk + 1 as its position, and passes the message on with kk + 1 in place of kk | The number that reaches Switchyard is the number of pedals |
+| Identity request (standard MIDI) | `F0 7E 7F 06 01 F7` | Passes it on, then adds its own two answers | Standard identity reply `F0 7E dd 06 02 7D 4C 57 01 00 aa bb cc ss F7`, then pedal info `F0 7D 4C 57 02 qq pp dd s0…s9 F7` |
+| Assign channel | `F0 7D 4C 57 03 qq s0…s9 ch F7` | If the serial is its own, saves the channel to flash and lights the Link LED | Acknowledgement |
+| Report settings | `F0 7D 4C 57 10 qq ch F7` | Reads its current settings | `F0 7D 4C 57 11 qq ch (pairs) F7` |
+| Store preset | `F0 7D 4C 57 20 qq ch pp ff (pairs) F7` | Writes preset slot pp. ff = 0 stores the pairs sent; ff = 1 stores the current sound, and the message carries no pairs | Acknowledgement |
+| Read preset | `F0 7D 4C 57 21 qq ch pp F7` | Reads slot pp | `F0 7D 4C 57 22 qq ch pp (pairs) F7` |
+| Firmware: begin | `F0 7D 4C 57 30 qq s0…s9 z0 z1 z2 c0…c4 F7` | Goes to bypass and erases the spare firmware copy. z = size in bytes, c = CRC-32 check value of the whole file | Acknowledgement once erased |
+| Firmware: data | `F0 7D 4C 57 31 qq ch b0 b1 (74 bytes) xx F7` | Writes 64 bytes of firmware as block b0 b1. xx is a checksum of the block | Acknowledgement with the block number |
+| Firmware: finish | `F0 7D 4C 57 32 qq ch F7` | Checks the CRC-32 of the whole copy. If it matches, it switches to the new copy and restarts | Acknowledgement, then a fresh identity reply after the restart |
 
 In the identity replies, `dd` is Flashover's channel (`7F` until one is assigned), `01 00` is the Flashover model number, `aa bb cc` is the firmware version, `ss` is the spec version, and `pp` is the position.
 
-**Acknowledgement:** `F0 7D 4C 57 7E ch cc st F7`, where `cc` repeats the command and `st` is the result. Firmware data adds the block number before `F7`.
+**Acknowledgement:** `F0 7D 4C 57 7E qq ch cc st F7`, where `qq` repeats the request's sequence number, `cc` repeats the command and `st` is the result. Firmware data adds the block number before `F7`.
 
 | st | Meaning |
 | --- | --- |
