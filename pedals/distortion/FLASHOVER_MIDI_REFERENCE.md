@@ -66,7 +66,7 @@ These are the messages that get answers. The spec lists them but leaves the byte
 - **The header changes length with a paid ID.** A paid ID is 3 bytes (`00 xx yy`), which moves every later byte 2 places. Firmware and Switchyard code should keep the header (`F0 7D 4C 57` for now) as one named constant and count byte positions from its end, never hard-code them.
 - `4C 57` ("LW") marks the message as Linework, since other gear may also use `7D`.
 - `cc` is the command; `ch` is a channel, 00–0F.
-- `qq` is a sequence number, 00–7F. Switchyard counts it up with each request, going from 7F back to 00, and every answer repeats it. That way a lost or late answer is never matched to the wrong request. Pedal info answers the standard identity request, which has no `qq`, so it sends 00.
+- `qq` is a sequence number, and every answer repeats it, so a lost or late answer is never matched to the wrong request. Switchyard's own requests use 00–3F and the phone app's use 40–7F (spec 0.2). Flashover just copies whatever number the request carries. Pedal info answers the standard identity request, which has no `qq`, so it sends 00, as does the Loop break report.
 - **Serial** `s0…s9`: the 64-bit unique ID of the pedal's flash chip, split into ten 7-bit bytes.
 - **Settings** `(pairs)`: a CC number then its value, one pair per control, using the same values as the matching control change. Flashover sends `14 gg 15 tt 16 ll 51 mm 50 oo`: Gain, Tone, Level (0–127), mode (0 Soft, 1 Hard) and on/off (0 off, 127 on). A pedal with other controls sends its own CC numbers, so Switchyard can read any Linework pedal without knowing its model. The `F7` marks where the pairs end.
 
@@ -81,6 +81,7 @@ These are the messages that get answers. The spec lists them but leaves the byte
 | Firmware: begin | `F0 7D 4C 57 30 qq s0…s9 z0 z1 z2 c0…c4 F7` | Goes to bypass and erases the spare firmware copy. z = size in bytes, c = CRC-32 check value of the whole file | Acknowledgement once erased |
 | Firmware: data | `F0 7D 4C 57 31 qq ch b0 b1 (74 bytes) xx F7` | Writes 64 bytes of firmware as block b0 b1. xx is a checksum of the block | Acknowledgement with the block number |
 | Firmware: finish | `F0 7D 4C 57 32 qq ch F7` | Checks the CRC-32 of the whole copy. If it matches, it switches to the new copy and restarts | Acknowledgement, then a fresh identity reply after the restart |
+| Loop break report | (nothing: Flashover sends this itself) | If its MIDI in hears nothing for 1 second, sends `F0 7D 4C 57 08 00 pp F7` with its position, once a second until messages arrive again | Tells Switchyard where the loop is broken |
 
 In the identity replies, `dd` is Flashover's channel (`7F` until one is assigned), `01 00` is the Flashover model number, `aa bb cc` is the firmware version, `ss` is the spec version, and `pp` is the position.
 
@@ -94,6 +95,8 @@ In the identity replies, `dd` is Flashover's channel (`7F` until one is assigned
 | 03 | Checksum failed; Switchyard resends |
 | 04 | Busy; Switchyard waits and resends |
 | 05 | Firmware check failed; the old version keeps running |
+
+**Active Sensing (`FE`):** Switchyard sends it around the loop every 250 ms as a heartbeat. Flashover passes it on like any other message. It's what keeps Flashover's MIDI in from going quiet while the loop is working.
 
 **Why 74 bytes for 64.** MIDI data bytes only go up to 127, but firmware bytes go to 255. So every 7 firmware bytes travel as 8 MIDI bytes, with the extra byte carrying the top bits. A block takes about 27 ms, so a 200 KB update takes about 1.5 to 2 minutes, matching the spec.
 
