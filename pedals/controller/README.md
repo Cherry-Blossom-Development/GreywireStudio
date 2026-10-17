@@ -4,4 +4,4 @@ The Linework series control pedal. A phone (iPhone or Android) plugs into it ove
 
 ## Status
 
-Concept - product definition drafted, no circuit yet.
+Concept - main features decided (October 2026), no circuit yet. Next: breadboard prototype on a Raspberry Pi Pico, firmware, and a Web MIDI test tool.
