@@ -178,7 +178,7 @@ Pins 14 and 15 (D13 and D14, the Daisy's serial port) are kept free for stage 2,
 
 ## Firmware
 
-The test firmware is a simple delay with three settings: Time (about 50 ms to 1 s), Repeats (how many echoes, from one to almost endless) and Mix (how loud the echoes are). The footswitch turns the effect on and off and switches the relay. It's written in C++ with Electrosmith's free libraries (libDaisy and DaisySP) and loaded over USB. I'll write it once the parts are ordered.
+`firmware/stage1_delay/` is a simple delay with three settings: Time (50 ms to 1 s), Repeats (from one echo to almost endless) and Mix (how loud the echoes are). Each repeat is a little darker than the last, like an analog delay. The footswitch turns the effect and the relay on and off; the board starts up bypassed. Building and loading it: `firmware/README.md`.
 
 ## Glossary
 

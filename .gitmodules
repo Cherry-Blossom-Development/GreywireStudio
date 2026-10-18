@@ -1,0 +1,6 @@
+[submodule "pedals/controller-audio/firmware/lib/libDaisy"]
+	path = pedals/controller-audio/firmware/lib/libDaisy
+	url = https://github.com/electro-smith/libDaisy
+[submodule "pedals/controller-audio/firmware/lib/DaisySP"]
+	path = pedals/controller-audio/firmware/lib/DaisySP
+	url = https://github.com/electro-smith/DaisySP
