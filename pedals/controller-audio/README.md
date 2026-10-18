@@ -9,3 +9,4 @@ Planning (October 2026). See `SWITCHYARD_AUDIO_PLAN.md`. Decided: the effects ru
 ## Breadboard prototype
 
 - `SWITCHYARD_AUDIO_BREADBOARD_STAGE1.md` - stage 1 parts and connection list (Daisy Seed based: hear a digital delay after the Flashover breadboard)
+- `Switchyard Audio Breadboard Tayda Order.docx` - order checklist

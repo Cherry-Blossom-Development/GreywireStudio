@@ -2,7 +2,7 @@
 
 Oct 18, 2026
 
-This first prototype answers one question: do you like a digital delay added on top of the Flashover breadboard's sound? It's the audio half of Switchyard Audio on its own: a Daisy Seed running a delay, the analog circuits around it and the bypass relay. It has no phone, MIDI or setlist yet. Three knobs set the delay while we test; in the finished pedal those settings come from presets and the app. The plan is in `SWITCHYARD_AUDIO_PLAN.md`.
+This first prototype answers one question: do you like a digital delay added on top of the Flashover breadboard's sound? It's the audio half of Switchyard Audio on its own: a Daisy Seed running a delay, the analog circuits around it and the bypass relay. It has no phone, MIDI or setlist yet. Three knobs set the delay while we test; in the finished pedal those settings come from presets and the app. The plan is in `SWITCHYARD_AUDIO_PLAN.md`. Order checklist: `Switchyard Audio Breadboard Tayda Order.docx`.
 
 **Built on a Daisy Seed.** The Daisy Seed is a small board with the same kind of processor, converter and memory the finished pedal will use (see "Daisy Seed" in the Glossary). It plugs into a breadboard like a large chip, and nothing needs surface-mount soldering. Figures below come from Electrosmith's Daisy Seed datasheet v1.0.5.
 
@@ -28,7 +28,8 @@ Order a few spares of the cheap parts.
 | --- | --- | --- | --- |
 | 1 | Electrosmith Daisy Seed, 65 MB version | U1 | About $30, from Electrosmith or a music-electronics shop. Not sold by Tayda. If its two 20-pin headers come loose, they need soldering on |
 | 1 | TL072 dual op-amp, 8-pin DIP | U2 | Input buffer and mixer |
-| 1 | DPDT signal relay with a **9 V** coil, through-hole (e.g. HK19F-DC9V-SHG or Omron G5V-2-DC9) | K1 | The bypass. A 9 V coil runs straight from the 9V supply, so no 5 V regulator is needed |
+| 1 | DPDT signal relay, 5 V coil, 8-pin (Fujitsu NA-5W-K) | K1 | The bypass. A signal relay is made for small currents like a guitar signal; big power relays can make poor contact at these levels |
+| 1 | 78L05 5 V regulator, TO-92 | U3 | Powers the relay coil from the 9V supply |
 | 1 | 2N3904 NPN transistor | Q1 | Lets the Daisy switch the relay coil |
 
 ### Resistors (1/4 W metal film, 1%)
@@ -51,7 +52,7 @@ Order a few spares of the cheap parts.
 | 3 | 10 µF, 25 V or more | Electrolytic | C2 (to the Daisy input), C3 (from the Daisy output), C4 (to the output jack) |
 | 1 | 47 µF, 25 V or more | Electrolytic | C5, smooths the bias voltage |
 | 1 | 100 µF, 25 V or more | Electrolytic | C6, across the 9V supply |
-| 1 | 100 nF | Ceramic | C7, at the TL072's power pins |
+| 2 | 100 nF | Ceramic | C7 (at the TL072's power pins), C8 (at the 78L05 output) |
 
 ### Diodes
 
@@ -95,6 +96,10 @@ Daisy pins are numbered 1–40, counting down the left side from the USB end (1�
 | TL072 pin 8 | +9V rail |
 | TL072 pin 4 | Ground rail |
 | C7 (100 nF) | Between TL072 pins 8 and 4, as close to the chip as possible |
+| U3 (78L05) input pin | +9V rail. With the flat face toward you and the legs down, the pins are output, ground, input from left to right |
+| U3 ground pin | Ground rail |
+| U3 output pin | +5V (used only by the relay coil) |
+| C8 (100 nF) | Between U3's output and ground |
 
 Powering the Daisy from 9V and USB at the same time is safe, according to the datasheet, so it can stay plugged into the computer while you test.
 
@@ -108,7 +113,7 @@ Powering the Daisy from 9V and USB at the same time is safe, according to the da
 
 ### Bypass relay
 
-The relay has two separate switches inside (poles A and B). Each has a common pin, an NC pin (connected when the relay is off) and an NO pin (connected when it's on). Find which pins are which on the relay's datasheet; the layout differs between brands.
+The relay has two separate switches inside (poles A and B). Each has a common pin, an NC pin (connected when the relay is off) and an NO pin (connected when it's on). Find which pins are which on the NA-5W-K datasheet (linked from Tayda's product page) before wiring. Check its pin spacing on the datasheet too: if the pins don't line up with the breadboard holes, solder short wires to them.
 
 | From | To |
 | --- | --- |
@@ -119,9 +124,9 @@ The relay has two separate switches inside (poles A and B). Each has a common pi
 | Pole A NO | C1 (to the input buffer) |
 | Pole B common | J2 tip (output) |
 | Pole B NO | Output network (see Mixer and output) |
-| Coil, one end | +9V rail |
+| Coil, one end | +5V (U3 output) |
 | Coil, other end | Q1 collector |
-| D2 (1N4148) | Across the coil: cathode (striped end) to +9V, anode to Q1 collector |
+| D2 (1N4148) | Across the coil: cathode (striped end) to +5V, anode to Q1 collector |
 | Q1 emitter | Ground |
 | Q1 base | R10 (1k) to Daisy pin 9 (D8) |
 
