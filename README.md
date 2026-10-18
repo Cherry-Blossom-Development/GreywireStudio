@@ -30,5 +30,6 @@ pedals/
 |-------|------|------|--------|
 | [Distortion](pedals/distortion/) | Flashover | Distortion / overdrive | Design |
 | [Controller](pedals/controller/) | Switchyard | Control pedal (phone-connected) | Concept |
+| [Controller with audio](pedals/controller-audio/) | Switchyard Audio | Control pedal plus digital effects | Planning |
 
 Product names are working names pending a trademark search.
