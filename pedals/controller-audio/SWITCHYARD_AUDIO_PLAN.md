@@ -47,11 +47,13 @@ The clean ("dry") signal stays analog the whole way through. Only the effect sou
 | Analog input and output | Input buffer (1 MΩ, a normal pedal input), level matching into the codec, dry/wet mixer, output buffer | $2–5 |
 | Bypass relay | Connects input straight to output when the pedal is off or loses power | $2–4 |
 | Power | Separate clean supply for the audio parts; more current than Switchyard (see Power) | $3–6 |
-| Everything from Switchyard | Footswitches, readout, jacks, USB-C, phone charging, as in the Switchyard Product Document | $25–50 |
+| Everything else from Switchyard | Footswitches, readout, MIDI jacks, USB-C, power input, phone charging, circuit board and hardware, as in the Switchyard Product Document (its total minus the controller and enclosure, which are listed separately here) | $18–38 |
 | Enclosure | Larger than the 1590BB to fit the extra jacks; size to be decided | $10–20 |
-| **Total parts** | | **about $57–116** |
+| **Total parts** | | **about $50–104** |
 
 For comparison, Switchyard's estimate is about $29–58. Retail is usually 3–4× parts.
+
+The range is wide because nothing is designed yet. The low end assumes runs of a few hundred and cheaper part choices; the high end assumes small batches, pricier parts and features still undecided (stereo, kill dry, enclosure size). Every line landing at its high end at once is unlikely, so a realistic figure is around $65–80. It will narrow once there's a schematic and real quotes.
 
 **Two processors or one?** The STM32H7 has USB and could run the controls too, which would save the RP2040. Keeping the RP2040 means the control firmware is identical in both Switchyard versions, which matters while both are still candidates. Revisit for the production board.
 
