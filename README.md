@@ -31,5 +31,11 @@ pedals/
 | [Distortion](pedals/distortion/) | Flashover | Distortion / overdrive | Design |
 | [Controller](pedals/controller/) | Switchyard | Control pedal (phone-connected) | Concept |
 | [Controller with audio](pedals/controller-audio/) | Switchyard Audio | Control pedal plus digital effects | Planning |
+| Boost | Tap Changer | Clean boost | Idea |
+| Phaser | Three Phase | Analog phaser | Idea |
+| Tremolo | Rolling Blackout | Analog (optical) tremolo | Idea |
+| Chorus | Double Circuit | Analog (bucket brigade) chorus / vibrato | Idea |
 
-Product names are working names pending a trademark search.
+Product names are working names pending a trademark search (see `IP_RESEARCH.md`).
+
+The public website is https://greywirestudio.com, kept in the [GreywireStudio-Website](https://github.com/Cherry-Blossom-Development/GreywireStudio-Website) repository.

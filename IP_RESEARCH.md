@@ -14,7 +14,7 @@ This is a first look at patents, trademarks and licenses that could affect the G
 | Selling or adding effects through the app | One active patent (Cort, until 2032) covers timed "try before you buy" previews and an authentication cable | **Don't use time-limited trials or an authentication cable** |
 | Recording to the cloud through the pedal | One active Fender patent (until 2032) is close to the General Concept's "record and upload" idea | **Get legal review before building recording** |
 | Preset changes with delay or reverb tails | One active inMusic patent (until 2038) covers running old and new presets on two audio threads at once | **Use a different method if we add tails** |
-| Names | No live US trademark for Greywire, Flashover, Switchyard or Linework in music gear | File our own trademarks before launch; don't name the app "Switchyard" |
+| Names | No live US trademark for Greywire, Flashover, Switchyard or Linework in music gear, nor for the next four pedals (Tap Changer, Three Phase, Rolling Blackout, Double Circuit) | File our own trademarks before launch; don't name the app "Switchyard"; don't use "Brownout" (a live pedal mark) |
 | Licenses for code we use | All permissive (MIT, BSD) | Keep DaisySP-LGPL out; include the license notices with the product |
 
 ## Patents
@@ -87,6 +87,33 @@ Searched in the USPTO trademark database on Oct 18, 2026, including spacing and 
 | **Linework** | Live: LINEWORK AS (Norway), tattoo-studio booking software (classes 9, 42, 44); utility-tool companies | Low for a pedal series name |
 
 A web search also found no guitar product sold under any of these names. Unregistered use still counts in the US, so the attorney's search should cover that too.
+
+### Names for the next four pedals (Oct 19, 2026)
+
+Candidates for a clean boost, phaser, tremolo and chorus were checked the same way: the USPTO database for live marks (the name as written), plus web searches for pedals already sold under each name. Chosen names:
+
+| Pedal | Name | What exists |
+| --- | --- | --- |
+| Clean boost | **Tap Changer** | No US marks at all; no pedal found |
+| Phaser | **Three Phase** | Two live class 9 marks for unrelated goods: lineman training equipment (THREE PHASE INNOVATIONS) and helmet face shields (3PHASE); no pedal found |
+| Tremolo | **Rolling Blackout** | No live marks; no pedal found |
+| Chorus | **Double Circuit** | No US marks at all; no pedal found. Mr. Black sells a "DoubleChorus", which is similar wording but a different name |
+
+Backups that were also clear: Hot Stick (boost), Rotating Field and Phase Lag (phaser), Load Shed and Interrupter (tremolo), Crosstalk (chorus; Native Instruments sells a "Crosstalk Guitars" sample library).
+
+Rejected:
+
+| Name | Reason |
+| --- | --- |
+| **Brownout** | **Live mark for electronic effects pedals** (Jonathan Greenlee, classes 9 and 15). Don't use it for any pedal |
+| Step Up | Live class 9 mark covering loudspeakers (UNO S.L.); generic |
+| High Tension | Blackstar's HT-Boost is named after "high tension" voltage |
+| Feeder | Many live marks; also a well-known band |
+| Polyphase | Live electronics mark (Linear Technology, voltage regulator circuits) |
+| Flicker | Lastgasp Art Laboratories sells the FLIKRRR flickering tremolo |
+| Chopper | Diamond's tremolo calls its choppy mode the CHOPPER |
+| Corona | TC Electronic Corona Chorus |
+| Parallel Lines | A Blondie album |
 
 Recommended:
 
