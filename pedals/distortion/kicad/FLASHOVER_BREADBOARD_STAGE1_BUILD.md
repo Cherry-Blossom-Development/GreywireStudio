@@ -4,6 +4,8 @@ Oct 15, 2026
 
 This guide places every part of the stage 1 (Option A) circuit on one 830-point breadboard. The parts list and the connections it builds are in `FLASHOVER_BREADBOARD_STAGE1.md`. Each step ends with a check, so problems show up while they're easy to find.
 
+For the bench, use `FLASHOVER_BREADBOARD_STAGE1_HOLES.md` instead: it lists every placement as one line with exact holes, numbered to match the columns printed on the breadboard (−2, −1, 1 … 61). This guide counts columns 1–63 from the left edge.
+
 ## How the breadboard works
 
 - **Orientation:** lay the board flat with the column numbers along the top and **row a at the top**. Rows a–e form the **top half**, rows f–j form the **bottom half**, and the groove in the middle separates them.
