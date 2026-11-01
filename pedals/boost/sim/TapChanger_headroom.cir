@@ -1,0 +1,30 @@
+* Tap Changer - how loud a guitar signal can get before the boost clips
+* Full Boost, 220 Hz, at rising input levels, for three supply and op-amp
+* choices:
+*   cfg 0: TL072 at 9V (same op-amp model settings as Flashover's TL072)
+*   cfg 1: OPA1678 at 9V (output gets within about 0.8V of the rails)
+*   cfg 2: OPA1678 at about 17.5V from a charge pump
+*
+* Open in LTspice and press Run. Distortion (THD) for each run is in the
+* SPICE Output Log (View > SPICE Output Log).
+
+.param cfg=1 boost=1 Rp=10k Rw=150
+.param Vsup={if(cfg==2,17.5,9)} Rail={if(cfg==0,1.5,0.8)}
+.param En={if(cfg==0,18n,4.5n)} Gbw={if(cfg==0,3Meg,16Meg)} Slw={if(cfg==0,13Meg,9Meg)}
+.param Rsrc=10k
+.param amp=0.2 freq=220
+Vguitar SRC 0 SINE(0 {amp} {freq})
+
+.include TapChanger_circuit.inc
+
+.options plotwinsize=0
+.step param cfg list 0 1 2
+.step param amp list 0.1 0.2 0.3 0.4 0.6 0.8 1 1.5
+.tran 0 0.15 0.1 5u
+.four 220 7 11 V(out)
+
+* Output level, and the digital pot's terminal against its 0V-to-supply limit
+.meas TRAN out_pk MAX V(out)
+.meas TRAN pot_min MIN V(opout)
+.meas TRAN pot_max MAX V(opout)
+.end

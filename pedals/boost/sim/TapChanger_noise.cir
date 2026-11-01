@@ -1,0 +1,22 @@
+* Tap Changer - hiss added by the boost, TL072 against OPA1678
+* Noise from 20 Hz to 20 kHz with a 10k source standing in for a pickup. The
+* source's own noise is included, so these figures are what a player would
+* get, not the op-amp alone. Hum and digital noise aren't modelled.
+*
+* Open in LTspice and press Run. Results are in the SPICE Output Log
+* (View > SPICE Output Log).
+
+.param cfg=1 boost=1 Rp=10k Rw=150 Vsup=9
+.param Rail=0.8 En={if(cfg==0,18n,4.5n)} Gbw={if(cfg==0,3Meg,16Meg)} Slw={if(cfg==0,13Meg,9Meg)}
+.param Rsrc=10k
+Vguitar SRC 0 AC 1
+
+.include TapChanger_circuit.inc
+
+.step param cfg list 0 1
+.step param boost list 0 1
+.noise V(out) Vguitar dec 50 20 20k
+
+.meas NOISE out_noise INTEG V(onoise)
+.meas NOISE in_noise INTEG V(inoise)
+.end

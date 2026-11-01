@@ -31,7 +31,7 @@ pedals/
 | [Distortion](pedals/distortion/) | Flashover | Distortion / overdrive | Design |
 | [Controller](pedals/controller/) | Switchyard | Control pedal (phone-connected) | Concept |
 | [Controller with audio](pedals/controller-audio/) | Switchyard Audio | Control pedal plus digital effects | Planning |
-| Boost | Tap Changer | Clean boost | Idea |
+| [Boost](pedals/boost/) | Tap Changer | Clean boost | Design |
 | Phaser | Three Phase | Analog phaser | Idea |
 | Tremolo | Rolling Blackout | Analog (optical) tremolo | Idea |
 | Chorus | Double Circuit | Analog (bucket brigade) chorus / vibrato | Idea |

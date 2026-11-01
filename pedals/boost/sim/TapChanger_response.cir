@@ -1,0 +1,21 @@
+* Tap Changer - frequency response at five Boost settings
+* Checks the boost range and that the tone stays flat from 20 Hz to 20 kHz.
+*
+* Open in LTspice and press Run. Results are in the SPICE Output Log
+* (View > SPICE Output Log). Plot V(out) for the curves.
+
+.param boost=0.5 Rp=10k Rw=150 Vsup=9 Rail=0.8 En=4.5n Gbw=16Meg Slw=9Meg
+.param Rsrc=10k
+Vguitar SRC 0 AC 1
+
+.include TapChanger_circuit.inc
+
+.step param boost list 0 0.25 0.5 0.75 1
+.ac dec 100 10 100k
+
+.meas AC g20 FIND V(out) AT 20
+.meas AC g100 FIND V(out) AT 100
+.meas AC g1k FIND V(out) AT 1k
+.meas AC g5k FIND V(out) AT 5k
+.meas AC g20k FIND V(out) AT 20k
+.end
