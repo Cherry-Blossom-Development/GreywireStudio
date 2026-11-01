@@ -2,7 +2,7 @@
 
 Nov 1, 2026
 
-This builds the Tap Changer audio circuit on one 830-point breadboard, with an ordinary knob pot in place of the digital pot and a stomp switch in place of the bypass relay. The values come from `sim/TapChanger_circuit.inc`, and the parts are in `Tap Changer Breadboard Tayda Order.docx`. The wiring below was checked by script against that circuit, but nobody has built it yet.
+This builds the Tap Changer audio circuit on one 830-point breadboard, with an ordinary knob pot in place of the digital pot and a stomp switch in place of the bypass relay. The values come from `sim/TapChanger_circuit.inc`, and the parts are in `Tap Changer Breadboard Tayda Order.docx`. The wiring below was checked by script against that circuit, but nobody has built it yet. To see where everything goes, open `TAP_CHANGER_BREADBOARD_STAGE1_LAYOUT.html` or the picture `TAP_CHANGER_BREADBOARD_STAGE1_LAYOUT.png`.
 
 The only chip is a TL072 for now. It clips a little sooner than the OPA1678 planned for the finished pedal.
 

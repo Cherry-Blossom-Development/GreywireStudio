@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tap Changer Breadboard Layout</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: header, step selector, wide scrollable board diagram, then the selected step's placement table */
+:root {
+  --bg: #eef1ee; --panel: #ffffff; --fg: #1d2420; --muted: #5d6b63; --line: #cfd8d2;
+  --accent: #0f6e64; --accent-fg: #ffffff;
+  --board: #f6f4ec; --board-edge: #d9d4c4; --hole: #8f8a7c; --groove: #e4dfcf;
+  --rail-red: #d0343a; --rail-blue: #2f5fb3;
+  --s1: #c2410c; --s2: #7c3aed; --s3: #0369a1; --s4: #a16207; --s5: #047857; --s6: #be185d;
+  --font-display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141917; --panel: #1c2320; --fg: #e4ebe7; --muted: #9aaba2; --line: #2e3833;
+  --accent: #3fb8a8; --accent-fg: #0d1513; --board: #e9e6dc; --board-edge: #bdb7a5; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #141917; --panel: #1c2320; --fg: #e4ebe7; --muted: #9aaba2; --line: #2e3833;
+  --accent: #3fb8a8; --accent-fg: #0d1513; --board: #e9e6dc; --board-edge: #bdb7a5; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px; }
+header { display: grid; gap: 6px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 0; max-width: 70ch; }
+.mono { font-family: var(--font-mono); font-size: 0.92em; }
+.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.steps button { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  padding: 7px 12px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.steps button .dot { width: 10px; height: 10px; border-radius: 50%; }
+.steps button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.steps button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.board-scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.board-scroll svg { display: block; width: 100%; min-width: 1050px; height: auto; }
+.info { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .info { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
+.card h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 10px; }
+.check { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+td.ref { font-weight: 600; white-space: nowrap; }
+.legend { display: grid; gap: 8px; font-size: 0.9rem; }
+.legend div { display: flex; gap: 10px; align-items: center; }
+.legend svg { flex: none; }
+.note { color: var(--muted); font-size: 0.88rem; margin: 10px 0 0; }
+svg text { font-family: var(--font-body); }
+.lbl { font-size: 10px; font-weight: 600; paint-order: stroke; stroke: var(--board); stroke-width: 3px; stroke-linejoin: round; }
+.offlbl { font-size: 11px; font-weight: 600; fill: var(--fg); }
+.offsmall { font-size: 9px; fill: var(--muted); }
+.part { transition: opacity .2s; }
+@media (prefers-reduced-motion: reduce) { .part { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Tap Changer breadboard, stage 1</h1>
+    <p class="sub">Where every part goes on one 830-point breadboard, step by step. Pick a step to see what it adds; earlier steps fade into the background. Hover over or tap a part for its name. Columns use the numbers printed on your board (−2, −1, 1 to 61). The full instructions are in <span class="mono">TAP_CHANGER_BREADBOARD_STAGE1_BUILD.md</span>.</p>
+  </header>
+
+  <div class="steps" id="steps" role="group" aria-label="Build step"></div>
+
+  <div class="board-scroll"><svg id="board" viewBox="0 0 1320 615" role="img" aria-label="Breadboard layout diagram"></svg></div>
+
+  <div class="info">
+    <div class="card">
+      <h2 id="step-title"></h2>
+      <div class="table-scroll"><table><thead><tr><th>Part</th><th>Value</th><th>From</th><th>To</th></tr></thead><tbody id="rows"></tbody></table></div>
+      <p class="check" id="step-check"></p>
+    </div>
+    <div class="card">
+      <h2>Reading the diagram</h2>
+      <div class="legend" id="legend"></div>
+      <p class="note">Hole names: the letter is the row (a–e top half, f–j bottom half), the number is the column printed on the board. Any hole in the same column and half works the same, so the exact letter only matters for keeping parts from crowding each other. Rail holes have no printed name, so the table gives the nearest column.</p>
+      <p class="note">The bottom + rail isn't used in this build.</p>
+      <p class="note">Some boards put the red and blue rails in the opposite order. Follow the colors, not the positions. Unplug the power before changing anything.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const P = 20, X0 = 40, BY = 120;
+const idx = c => c < 0 ? c + 3 : c + 2;
+const colX = c => X0 + (idx(c) - 1) * P;
+const ROWY = { a: 186, b: 206, c: 226, d: 246, e: 266, f: 306, g: 326, h: 346, i: 366, j: 386 };
+const RAILY = { TB: 138, TR: 156, BR: 416, BG: 434 };
+const RAILNAME = { TB: 'top − rail', TR: 'top + rail', BR: 'bottom + rail', BG: 'bottom − rail' };
+const TOPY = 96, BOTY = 490;
+
+const STEPS = [
+  { n: 1, name: 'Rails and power', check: 'Plug in. Black probe on a − rail: about 8.6–8.8 V on the top + rail, 0 V on the bottom − rail.' },
+  { n: 2, name: 'The bias voltage', check: 'Wait about 20 seconds. b21: the same as your rail reading. a22: about 4.3 V, half your rail reading. d24: about 4.3 V, and it can read a little low.' },
+  { n: 3, name: 'The boost stage', check: 'No check on this step: this half of the chip won\'t settle until the input parts in the next step are in.' },
+  { n: 4, name: 'The input', check: 'Wait about 20 seconds. h21 (the same strip as chip pin 1): about 4.3 V at every Boost setting. Don\'t measure chip pin 3: the meter loads R3 and reads low.' },
+  { n: 5, name: 'The output', check: 'h13: 0 V, because C9 blocks the 4.3 V from reaching the amp.' },
+  { n: 6, name: 'Footswitch, LED and jacks', check: 'Power off, meter on continuity: the two jack tips beep in one footswitch position (bypass) and not the other. Plugged in: the LED lights with the boost on.' },
+];
+
+// Off-board parts and their terminals
+const OFF = [
+  { id: 'dc', step: 1, kind: 'jack', x: colX(1), y: 40, name: '9V DC jack', sub: 'center negative', top: true,
+    terms: { '+': [colX(-1), TOPY, 'sleeve lug (+)'], '-': [colX(1), TOPY, 'center-pin lug (−)'] } },
+  { id: 'pot', step: 3, kind: 'pot', x: colX(21), y: 548, name: 'Boost B10k', sub: 'front view, lugs pointing up',
+    terms: { 3: [colX(20), BOTY, 'lug 3'], 2: [colX(21), BOTY, 'lug 2'], 1: [colX(22), BOTY, 'lug 1'] } },
+  { id: 'led', step: 6, kind: 'led', x: colX(35.4), y: 540, name: 'LED',
+    terms: { A: [colX(35), BOTY + 14, 'long leg'], K: [colX(35.8), BOTY + 14, 'short leg'] } },
+  { id: 'in', step: 6, kind: 'jack', x: colX(40), y: 552, name: 'Input jack',
+    terms: { tip: [colX(39.2), BOTY + 26, 'tip lug'], sleeve: [colX(40.8), BOTY + 26, 'sleeve lug'] } },
+  { id: 'fs', step: 6, kind: 'fs', x: colX(46), y: 538, name: '3PDT footswitch', terms: {} },
+  { id: 'out', step: 6, kind: 'jack', x: colX(58), y: 552, name: 'Output jack',
+    terms: { tip: [colX(57.2), BOTY + 26, 'tip lug'], sleeve: [colX(58.8), BOTY + 26, 'sleeve lug'] } },
+];
+// footswitch lugs, numbered like a phone keypad
+{ const fs = OFF.find(o => o.id === 'fs');
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) fs.terms[r * 3 + c + 1] = [fs.x + (c - 1) * 24, fs.y - 28 + r * 22, 'lug ' + (r * 3 + c + 1)]; }
+const OFFNAME = { dc: 'DC jack', pot: 'Boost pot', in: 'Input jack', fs: 'Footswitch', led: 'LED', out: 'Output jack' };
+
+const CHIPS = [
+  { step: 2, ref: 'U1', value: 'TL072', col: 21 },
+];
+
+// [step, kind, ref, value, from, to]  (ecap: from = + leg; diode: from = plain end, to = striped end)
+const PARTS = [
+  [1, 'wire', 'Jumper', 'Joins the − rails', 'TB@-2', 'BG@-2'],
+  [1, 'wire', 'Jumper', 'Joins the − rails', 'TB@61', 'BG@61'],
+  [1, 'wire', 'Wire', 'DC +', 'dc:+', 'a-1'],
+  [1, 'wire', 'Wire', 'DC −', 'dc:-', 'TB@1'],
+  [1, 'sch', 'D3', '1N5817', 'b-1', 'TR@1'],
+  [1, 'ecap', 'C7', '100µF', 'TR@3', 'TB@3'],
+
+  [2, 'cer', 'C10', '100nF', 'TR@20', 'TB@20'],
+  [2, 'wire', 'Jumper', '+9V to pin 8', 'a21', 'TR@21'],
+  [2, 'wire', 'Jumper', 'pin 4 to GND', 'j24', 'BG@24'],
+  [2, 'res', 'R7', '1M', 'b24', 'TR@26'],
+  [2, 'res', 'R8', '1M', 'a24', 'TB@28'],
+  [2, 'ecap', 'C6', '10µF', 'c24', 'TB@25'],
+  [2, 'wire', 'Jumper', 'pin 7 to pin 6', 'd22', 'd23'],
+
+  [3, 'wire', 'Jumper', 'VB to column 18', 'c22', 'c18'],
+  [3, 'res', 'R4', '1.1k', 'i22', 'i18'],
+  [3, 'ecap', 'C3', '10µF', 'd18', 'g18'],
+  [3, 'wire', 'Wire', 'Pot lug 1', 'pot:1', 'g22'],
+  [3, 'wire', 'Wire', 'Pot lug 2', 'pot:2', 'g21'],
+  [3, 'wire', 'Link', 'Pot lug 2 to lug 3', 'pot:2', 'pot:3', {k:16}],
+
+  [4, 'res', 'R1', '2.2M', 'j30', 'BG@30'],
+  [4, 'film', 'C1', '100nF', 'h30', 'h27'],
+  [4, 'res', 'R2', '1k', 'g27', 'g23'],
+  [4, 'cer', 'C2', '100pF', 'j23', 'BG@23'],
+  [4, 'res', 'R3', '2.2M', 'h23', 'c23'],
+
+  [5, 'res', 'R12', '100', 'j21', 'j17'],
+  [5, 'film', 'C9', '1µF', 'i17', 'i13'],
+  [5, 'res', 'R11', '100k', 'j13', 'BG@13'],
+
+  [6, 'wire', 'Link', 'Lug 7 to lug 9', 'fs:7', 'fs:9', {k:34}],
+  [6, 'wire', 'Wire', 'Input tip', 'in:tip', 'fs:4', {k:-20}],
+  [6, 'wire', 'Wire', 'Output tip', 'out:tip', 'fs:6', {k:-20}],
+  [6, 'wire', 'Wire', 'LED short leg', 'led:K', 'fs:2', {k:-30}],
+  [6, 'wire', 'Wire', 'Circuit input', 'fs:1', 'g30', {via:[[31,472],[31,340]]}],
+  [6, 'wire', 'Wire', 'Circuit output', 'fs:3', 'g13', {via:[[12,460],[12,340]]}],
+  [6, 'wire', 'Wire', 'Footswitch GND', 'fs:5', 'BG@40'],
+  [6, 'res', 'R LED', '4.7k', 'TR@34', 'a35'],
+  [6, 'wire', 'Wire', 'LED long leg', 'b35', 'led:A'],
+  [6, 'wire', 'Wire', 'Input sleeve', 'in:sleeve', 'BG@42'],
+  [6, 'wire', 'Wire', 'Output sleeve', 'out:sleeve', 'BG@44'],
+];
+
+function pt(s) {
+  let m;
+  if ((m = /^([a-j])(-?\d+)$/.exec(s))) return [colX(+m[2]), ROWY[m[1]]];
+  if ((m = /^(TB|TR|BR|BG)@(-?\d+)$/.exec(s))) return [colX(+m[2]), RAILY[m[1]]];
+  const [id, t] = s.split(':'); const o = OFF.find(o => o.id === id);
+  return o.terms[t];
+}
+function desc(s) {
+  let m;
+  if ((m = /^([a-j])(-?\d+)$/.exec(s))) return +m[2] < 0 ? `${m[1]}(−${-m[2]})` : s;
+  if ((m = /^(TB|TR|BR|BG)@(-?\d+)$/.exec(s))) {
+    const where = m[2] === '-2' ? 'leftmost hole' : m[2] === '61' ? 'rightmost hole' : `nearest column ${m[2]}`;
+    return `${RAILNAME[m[1]]}, ${where}`;
+  }
+  const [id, t] = s.split(':'); const o = OFF.find(o => o.id === id);
+  return `${OFFNAME[id]} ${o.terms[t][2]}`;
+}
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const stepColor = n => `var(--s${n})`;
+
+const svg = document.getElementById('board');
+
+function drawBoard() {
+  const g = el('g', {}, svg);
+  el('rect', { x: 14, y: BY, width: 1292, height: 334, rx: 10, fill: 'var(--board)', stroke: 'var(--board-edge)', 'stroke-width': 2 }, g);
+  el('rect', { x: 22, y: 280, width: 1276, height: 12, rx: 3, fill: 'var(--groove)' }, g);
+  // rails
+  for (const [k, y] of Object.entries(RAILY)) {
+    const red = k === 'TR' || k === 'BR';
+    const ly = (k === 'TB' || k === 'TR') ? (k === 'TB' ? y - 9 : y + 9) : (k === 'BR' ? y - 9 : y + 9);
+    el('line', { x1: 30, x2: 1290, y1: ly, y2: ly, stroke: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'stroke-width': 1.5 }, g);
+    for (let i = 1; i <= 63; i++) el('rect', { x: X0 + (i - 1) * P - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
+    const t = el('text', { x: 24, y: y + 3.5, 'font-size': 10, 'font-weight': 700, fill: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'text-anchor': 'middle' }, g);
+    t.textContent = red ? '+' : '−';
+  }
+  const railTag = [['TB', 'GND'], ['TR', '+9V'], ['BG', 'GND']];
+  for (const [k, txt] of railTag) {
+    const red = k === 'TR' || k === 'BR';
+    const t = el('text', { x: 1300, y: RAILY[k] + 3.5, 'font-size': 9, 'font-weight': 700, fill: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'text-anchor': 'end' }, g);
+    t.textContent = txt;
+  }
+  for (const [r, y] of Object.entries(ROWY)) {
+    for (let i = 1; i <= 63; i++) el('rect', { x: X0 + (i - 1) * P - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
+    for (const x of [26, 1294]) { const t = el('text', { x, y: y + 3.5, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = r; }
+  }
+  for (let i = 1; i <= 63; i++) { const c = i < 3 ? i - 3 : i - 2;
+    if (c === -2 || c === -1 || c === 1 || c % 5 === 0) for (const [y, fs] of [[174, 9], [289.5, 8], [399, 9]]) {
+      const t = el('text', { x: colX(c), y, 'font-size': fs, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = c < 0 ? '−' + (-c) : c;
+    }
+  }
+}
+
+const groups = [];
+function partGroup(step, title) {
+  const g = el('g', { class: 'part', 'data-step': step }, svg);
+  const t = el('title', {}, g); t.textContent = title;
+  groups.push(g); return g;
+}
+function label(g, x, y, txt, color, anchor = 'middle') {
+  const t = el('text', { x, y, class: 'lbl', fill: color, 'text-anchor': anchor }, g); t.textContent = txt;
+}
+
+function drawOff(o) {
+  const g = partGroup(o.step, o.name); const c = stepColor(o.step);
+  if (o.kind === 'jack') {
+    el('rect', { x: o.x - 38, y: o.y - 14, width: 76, height: 28, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x, y: o.y + 1, class: 'offlbl', 'text-anchor': 'middle' }, g); t.textContent = o.name;
+    if (o.sub) { const s = el('text', { x: o.x, y: o.y + 11, class: 'offsmall', 'text-anchor': 'middle' }, g); s.textContent = o.sub; }
+  } else if (o.kind === 'pot') {
+    el('circle', { cx: o.x, cy: o.y, r: 22, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    el('circle', { cx: o.x, cy: o.y, r: 7, fill: c, opacity: 0.35 }, g);
+    const t = el('text', { x: o.x + 30, y: o.y + 1, class: 'offlbl' }, g); t.textContent = o.name;
+    if (o.sub) { const s = el('text', { x: o.x + 30, y: o.y + 13, class: 'offsmall' }, g); s.textContent = o.sub; }
+  } else if (o.kind === 'toggle') {
+    el('rect', { x: o.x - 30, y: o.y - 22, width: 60, height: 26, rx: 4, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    el('line', { x1: o.x, y1: o.y + 4, x2: o.x + 10, y2: o.y + 26, stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    const t = el('text', { x: o.x + 36, y: o.y - 4, class: 'offlbl' }, g); t.textContent = o.name;
+  } else if (o.kind === 'fs') {
+    el('rect', { x: o.x - 40, y: o.y - 44, width: 80, height: 82, rx: 8, fill: 'var(--panel)', stroke: c, 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x, y: o.y + 54, class: 'offlbl', 'text-anchor': 'middle' }, g); t.textContent = o.name;
+    const s = el('text', { x: o.x, y: o.y + 66, class: 'offsmall', 'text-anchor': 'middle' }, g); s.textContent = 'lug side, keypad numbering';
+  } else if (o.kind === 'led') {
+    el('circle', { cx: o.x, cy: o.y, r: 9, fill: '#e2342f', stroke: '#8f1d1a', 'stroke-width': 1 }, g);
+    el('line', { x1: o.x - 8, y1: BOTY + 14, x2: o.x - 4, y2: o.y - 8, stroke: '#888', 'stroke-width': 1.5 }, g);
+    el('line', { x1: o.x + 8, y1: BOTY + 14, x2: o.x + 4, y2: o.y - 8, stroke: '#888', 'stroke-width': 1.5 }, g);
+    const t = el('text', { x: o.x + 16, y: o.y + 4, class: 'offlbl' }, g); t.textContent = 'LED';
+  }
+  for (const [k, [x, y, nm]] of Object.entries(o.terms)) {
+    el('circle', { cx: x, cy: y, r: 4, fill: '#b9b4a6', stroke: '#6d685b', 'stroke-width': 1 }, g);
+    const short = o.kind === 'fs' ? k : o.kind === 'pot' ? k
+      : o.kind === 'led' ? ({ A: 'A', K: 'K' })[k] : (k === '+' ? '+' : k === '-' ? '−' : k);
+    const above = !o.top && o.kind !== 'fs' && o.kind !== 'led' && o.kind !== 'jack';
+    const ty = o.kind === 'fs' ? y + 3 : o.top ? y - 8 : above ? y + 15 : y + 15;
+    const tx = o.kind === 'fs' ? x + 7 : x;
+    const t = el('text', { x: tx, y: ty, class: 'offsmall', 'text-anchor': o.kind === 'fs' ? 'start' : 'middle' }, g); t.textContent = short;
+  }
+}
+
+function drawChip(ch) {
+  const g = partGroup(ch.step, `${ch.ref} ${ch.value}, columns ${ch.col}–${ch.col + 3}, notch left`);
+  const x1 = colX(ch.col) - 8, x2 = colX(ch.col + 3) + 8;
+  el('rect', { x: x1, y: ROWY.e - 9, width: x2 - x1, height: ROWY.f - ROWY.e + 18, rx: 3, fill: '#24262a' }, g);
+  el('path', { d: `M ${x1} 278 a 7 7 0 0 1 0 14`, fill: 'var(--board)' }, g);
+  el('circle', { cx: colX(ch.col), cy: ROWY.f - 1, r: 2, fill: '#cfcfcf' }, g);
+  for (let i = 0; i < 4; i++) { el('rect', { x: colX(ch.col + i) - 3, y: ROWY.e - 3, width: 6, height: 6, fill: '#c9c9c9' }, g);
+    el('rect', { x: colX(ch.col + i) - 3, y: ROWY.f - 3, width: 6, height: 6, fill: '#c9c9c9' }, g); }
+  const t = el('text', { x: x1 + 8, y: 289, 'font-size': 9, 'font-weight': 700, fill: '#f2f2f2' }, g);
+  t.textContent = ch.ref;
+  label(g, x1 - 2, ROWY.f + 16, `${ch.ref} ${ch.value} pin 1`, stepColor(ch.step), 'end');
+}
+
+const LABELS = { R3: [26.8, 249], R7: [27.8, 190], C6: [22, 208], R1: [33.6, 414], C2: [26.7, 414], R11: [16, 428] };
+function curve(a, b, force) {
+  const [x1, y1] = a, [x2, y2] = b, dy = y2 - y1;
+  if (force !== undefined) return `M ${x1} ${y1} C ${x1} ${y1 + force} ${x2} ${y2 + force} ${x2} ${y2}`;
+  if (Math.abs(dy) < 30) { const k = y1 < BY ? -30 : (Math.abs(x2 - x1) > 200 ? 100 : 50); return `M ${x1} ${y1} C ${x1} ${y1 + k} ${x2} ${y2 + k} ${x2} ${y2}`; }
+  return `M ${x1} ${y1} C ${x1} ${y1 + dy * 0.5} ${x2} ${y2 - dy * 0.5} ${x2} ${y2}`;
+}
+
+function drawPart([step, kind, ref, value, from, to, opt = {}]) {
+  const a = pt(from), b = pt(to), c = stepColor(step);
+  const title = `${ref === 'Wire' || ref === 'Jumper' || ref === 'Link' ? value : ref + ' ' + value}: ${desc(from)} to ${desc(to)}`;
+  const g = partGroup(step, title);
+  const offA = !/^[a-j]-?\d|@/.test(from), offB = !/^[a-j]-?\d|@/.test(to);
+  if (kind === 'wire') {
+    let d = (offA || offB) ? curve(a, b, opt.k) : `M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}`;
+    if (opt.via) d = `M ${a[0]} ${a[1]} L ${a[0]} ${opt.via[0][1]} ` + opt.via.map(([c, y]) => `L ${colX(c)} ${y}`).join(' ') + ` L ${b[0]} ${b[1]}`;
+    el('path', { d, fill: 'none', stroke: c, 'stroke-width': 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.9 }, g);
+    for (const [p, off] of [[a, offA], [b, offB]]) if (!off) el('circle', { cx: p[0], cy: p[1], r: 3.2, fill: c }, g);
+    return;
+  }
+  const [x1, y1] = a, [x2, y2] = b, len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+  el('line', { x1, y1, x2, y2, stroke: c, 'stroke-width': 1.8, 'stroke-linecap': 'round' }, g);
+  el('circle', { cx: x1, cy: y1, r: 3, fill: c }, g); el('circle', { cx: x2, cy: y2, r: 3, fill: c }, g);
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  const body = el('g', { transform: `translate(${mx} ${my}) rotate(${ang})` }, g);
+  const L = Math.max(10, Math.min(kind === 'res' ? 26 : 18, len - 8));
+  if (kind === 'res') {
+    el('rect', { x: -L / 2, y: -4.5, width: L, height: 9, rx: 4, fill: '#d9bd8c', stroke: '#8a6d3b', 'stroke-width': 1 }, body);
+  } else if (kind === 'film') {
+    el('rect', { x: -L / 2, y: -5.5, width: L, height: 11, rx: 2, fill: '#3d6fb5', stroke: '#22457a', 'stroke-width': 1 }, body);
+  } else if (kind === 'cer') {
+    el('rect', { x: -5, y: -5, width: 10, height: 10, rx: 4, fill: '#e2a33b', stroke: '#9b6a17', 'stroke-width': 1 }, body);
+  } else if (kind === 'ecap') {
+    el('rect', { x: -L / 2, y: -6, width: L, height: 12, rx: 3, fill: '#23395b', stroke: '#111d30', 'stroke-width': 1 }, body);
+    el('rect', { x: L / 2 - 5, y: -6, width: 4, height: 12, fill: '#b9c3d3' }, body);
+    const pl = el('text', { x: -L / 2 - 2, y: -8, 'font-size': 10, 'font-weight': 800, fill: c, 'text-anchor': 'middle' }, body); pl.textContent = '+';
+  } else {
+    const fill = kind === 'ge' ? '#e58b2a' : kind === 'si' ? '#e7a7a0' : '#2b2b2b';
+    const band = kind === 'sch' ? '#e8e8e8' : '#1b1b1b';
+    el('rect', { x: -L / 2, y: -3.5, width: L, height: 7, rx: 2, fill, stroke: '#5a3d1a', 'stroke-width': 0.8 }, body);
+    el('rect', { x: L / 2 - 4, y: -3.5, width: 2.5, height: 7, fill: band }, body);
+  }
+  // label offset perpendicular to the part
+  if (LABELS[ref]) { label(g, colX(LABELS[ref][0]), LABELS[ref][1], `${ref} ${value}`, c); return; }
+  const nx = -(y2 - y1) / (len || 1), ny = (x2 - x1) / (len || 1);
+  const s = ny > 0 ? -1 : 1;
+  label(g, mx + nx * 12 * s, my + ny * 12 * s + 3.5, `${ref} ${value}`, c);
+}
+
+drawBoard();
+OFF.forEach(drawOff);
+CHIPS.forEach(drawChip);
+PARTS.forEach(drawPart);
+
+// Legend
+const legend = document.getElementById('legend');
+const LEG = [
+  ['res', 'Resistor'], ['film', 'Film capacitor'], ['cer', 'Ceramic capacitor'],
+  ['ecap', 'Electrolytic capacitor (+ marked, pale stripe is −)'], ['ge', 'Diode, striped end is the cathode'], ['wire', 'Wire or jumper'], ['chip', 'Chip, notch on the left, pin 1 at the dot'],
+];
+for (const [k, txt] of LEG) {
+  const row = document.createElement('div');
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', 44); s.setAttribute('height', 16); s.setAttribute('viewBox', '0 0 44 16');
+  if (k === 'wire') el('path', { d: 'M 4 8 L 40 8', stroke: 'var(--muted)', 'stroke-width': 2.4, 'stroke-linecap': 'round' }, s);
+  else if (k === 'chip') { el('rect', { x: 8, y: 2, width: 28, height: 12, rx: 2, fill: '#24262a' }, s); el('circle', { cx: 12, cy: 11, r: 1.5, fill: '#ccc' }, s); }
+  else {
+    el('line', { x1: 2, y1: 8, x2: 42, y2: 8, stroke: 'var(--muted)', 'stroke-width': 1.6 }, s);
+    const m = { res: ['#d9bd8c', 22, 9], film: ['#3d6fb5', 16, 11], cer: ['#e2a33b', 10, 10], ecap: ['#23395b', 18, 12], ge: ['#e58b2a', 16, 7] }[k];
+    el('rect', { x: 22 - m[1] / 2, y: 8 - m[2] / 2, width: m[1], height: m[2], rx: 2, fill: m[0] }, s);
+    if (k === 'ge') el('rect', { x: 26, y: 4.5, width: 2.5, height: 7, fill: '#1b1b1b' }, s);
+    if (k === 'ecap') el('rect', { x: 26, y: 2, width: 4, height: 12, fill: '#b9c3d3' }, s);
+  }
+  const span = document.createElement('span'); span.textContent = txt;
+  row.append(s, span); legend.appendChild(row);
+}
+
+// Step selector
+const stepsEl = document.getElementById('steps');
+const buttons = [];
+function mkBtn(n, txt) {
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'step-btn-' + n;
+  if (n) { const d = document.createElement('span'); d.className = 'dot'; d.style.background = stepColor(n); b.appendChild(d); }
+  b.append(txt); b.addEventListener('click', () => show(n)); stepsEl.appendChild(b); buttons.push([n, b]);
+}
+mkBtn(0, 'All steps');
+STEPS.forEach(s => mkBtn(s.n, `${s.n}. ${s.name}`));
+
+function show(n) {
+  buttons.forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === n)));
+  for (const g of groups) {
+    const s = +g.dataset.step;
+    if (n === 0 || s === n) { g.style.display = ''; g.style.opacity = 1; }
+    else if (s < n) { g.style.display = ''; g.style.opacity = 0.22; }
+    else g.style.display = 'none';
+  }
+  const rows = document.getElementById('rows'); rows.innerHTML = '';
+  const title = document.getElementById('step-title'), check = document.getElementById('step-check');
+  const list = n === 0 ? [] : PARTS.filter(p => p[0] === n);
+  const chips = n === 0 ? [] : CHIPS.filter(c => c.step === n);
+  const add = cells => { const tr = document.createElement('tr');
+    cells.forEach((c, i) => { const td = document.createElement('td'); td.textContent = c; if (i === 0) td.className = 'ref'; if (i >= 2) td.classList.add('mono'); tr.appendChild(td); });
+    rows.appendChild(tr); };
+  if (n === 0) {
+    title.textContent = 'All steps';
+    check.textContent = 'Pick a step above to see its parts, holes and voltage check.';
+    STEPS.forEach(s => add([`Step ${s.n}`, s.name, `${PARTS.filter(p => p[0] === s.n).length + CHIPS.filter(c => c.step === s.n).length} items`, '']));
+    try { localStorage.setItem('tapchanger-step', '0'); } catch (e) {}
+    return;
+  }
+  const st = STEPS[n - 1];
+  title.textContent = `Step ${n}: ${st.name}`;
+  chips.forEach(c => add([c.ref, c.value, `columns ${c.col}–${c.col + 3}`, 'notch left, pin 1 in f' + c.col]));
+  list.forEach(([, kind, ref, value, from, to]) => {
+    const isWire = ref === 'Wire' || ref === 'Jumper' || ref === 'Link';
+    const v = isWire ? value : value + (kind === 'ecap' ? ' (+ at From)' : ['ge', 'si', 'sch'].includes(kind) ? ' (stripe at To)' : '');
+    add([ref, v, desc(from), desc(to)]);
+  });
+  check.textContent = 'Check: ' + st.check;
+  try { localStorage.setItem('tapchanger-step', String(n)); } catch (e) {}
+}
+let start = 0;
+try { const v = parseInt(localStorage.getItem('tapchanger-step'), 10); if (v >= 0 && v <= 6) start = v; } catch (e) {}
+show(start);
+</script>
+</html>

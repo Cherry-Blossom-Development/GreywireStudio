@@ -1,6 +1,6 @@
 # Boost Pedal (Tap Changer)
 
-A clean boost in the Linework series, with one Boost knob and a footswitch. It works on its own or controlled by the Switchyard control pedal. See `Tap Changer Product Document.docx`. Breadboard parts: `Tap Changer Breadboard Tayda Order.docx`. Build steps: `TAP_CHANGER_BREADBOARD_STAGE1_BUILD.md`.
+A clean boost in the Linework series, with one Boost knob and a footswitch. It works on its own or controlled by the Switchyard control pedal. See `Tap Changer Product Document.docx`. Breadboard parts: `Tap Changer Breadboard Tayda Order.docx`. Build steps: `TAP_CHANGER_BREADBOARD_STAGE1_BUILD.md`. Layout diagram: `TAP_CHANGER_BREADBOARD_STAGE1_LAYOUT.html`.
 
 ## Folders
 
