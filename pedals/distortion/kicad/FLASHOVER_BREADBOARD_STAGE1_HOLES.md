@@ -16,7 +16,7 @@ Lay the board flat with **row a at the top** and **column −2 on the left**. If
 
 - In each column, holes a–e are joined to each other, and holes f–j are joined to each other. The groove in the middle separates the two halves.
 - Each rail (the long + and − rows along the edges) is joined along its whole length. Rail holes don't line up exactly with the columns, so "at column 41" just means the nearest rail hole to column 41. Any hole in the right rail works electrically.
-- On some boards each rail has a gap halfway along (a break in the printed red or blue line). If yours does, put a short jumper across the gap on all four rails before step 1.
+- On some boards each rail has a gap halfway along (a break in the printed red or blue line). If yours does, put a short jumper across the gap on all four rails before step 1. - completed
 
 **What each rail carries:**
 
@@ -42,14 +42,14 @@ Unplug the 9 V supply whenever you place parts. Plug it in only for the checks.
 
 ## Step 1: rails and power
 
-- [ ] **1.1** Jumper wire: top − rail at column −2 to bottom − rail at column −2
-- [ ] **1.2** Jumper wire: top − rail at column 60 to bottom − rail at column 60
-- [ ] **1.3** Wire: DC jack sleeve lug (+, the outer barrel) to **a(−1)**
-- [ ] **1.4** Wire: DC jack center-pin lug (−) to top − rail at column 1
-- [ ] **1.5** D3, 1N5817 diode: plain end in **b(−1)**, striped end in top + rail at column 1
-- [ ] **1.6** C7, 100 µF electrolytic: long (+) leg in top + rail at column 3, striped (−) leg in top − rail at column 3
-- [ ] **1.7** C10, 100 nF ceramic: top + rail at column 7 to top − rail at column 7
-- [ ] **1.8** C11, 100 nF ceramic: top + rail at column 36 to top − rail at column 36
+- [ ] **1.1** Jumper wire: top − rail at column −2 to bottom − rail at column −2 - done
+- [ ] **1.2** Jumper wire: top − rail at column 60 to bottom − rail at column 60 - done
+- [ ] **1.3** Wire: DC jack sleeve lug (+, the outer barrel) to **a(−1)** - done
+- [ ] **1.4** Wire: DC jack center-pin lug (−) to top − rail at column 1 - done
+- [ ] **1.5** D3, 1N5817 diode: plain end in **b(−1)**, striped end in top + rail at column 1 - done
+- [ ] **1.6** C7, 100 µF electrolytic: long (+) leg in top + rail at column 3, striped (−) leg in top − rail at column 3 - done
+- [ ] **1.7** C10, 100 nF ceramic: top + rail at column 7 to top − rail at column 7 - done
+- [ ] **1.8** C11, 100 nF ceramic: top + rail at column 36 to top − rail at column 36 - done
 
 Pedal supplies are center negative: the center pin is ground and the outer sleeve is +9 V. If you're unsure which jack lug is which, plug the supply's plug in (unpowered) and find out with the meter on continuity.
 
