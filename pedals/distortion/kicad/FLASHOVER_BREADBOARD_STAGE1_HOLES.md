@@ -15,8 +15,8 @@ Lay the board flat with **row a at the top** and **column −2 on the left**. If
 **What's connected inside the board:**
 
 - In each column, holes a–e are joined to each other, and holes f–j are joined to each other. The groove in the middle separates the two halves.
-- Each rail (the long + and − rows along the edges) is joined along its whole length. Rail holes don't line up exactly with the columns, so "at column 41" just means the nearest rail hole to column 41. Any hole in the right rail works electrically.
-- On some boards each rail has a gap halfway along (a break in the printed red or blue line). If yours does, put a short jumper across the gap on all four rails before step 1. - completed
+- Each rail (the long + and − rows along the edges) is joined along its whole length. Rail holes come in groups of five lined up with columns 1–5, 7–11, 13–17 and so on up to 55–59, with no rail hole at columns 6, 12, 18 … 54, and none at −2, −1, 60 or 61. Any hole in the right rail works electrically, so a rail column is only a suggestion.
+- On some boards each rail has a gap halfway along (a break in the printed red or blue line). If yours does, put a short jumper across the gap on all four rails before step 1 (the layout diagram shows them from column 29 to 31, and from 27 to 32 on the bottom + rail, where D4 and D5 use 29 and 31). - completed
 
 **What each rail carries:**
 
@@ -42,14 +42,14 @@ Unplug the 9 V supply whenever you place parts. Plug it in only for the checks.
 
 ## Step 1: rails and power
 
-- [ ] **1.1** Jumper wire: top − rail at column −2 to bottom − rail at column −2 - done
-- [ ] **1.2** Jumper wire: top − rail at column 60 to bottom − rail at column 60 - done
+- [ ] **1.1** Jumper wire: top − rail at column 4 to bottom − rail at column 4 - done
+- [ ] **1.2** Jumper wire: top − rail at column 59 to bottom − rail at column 59 - done
 - [ ] **1.3** Wire: DC jack sleeve lug (+, the outer barrel) to **a(−1)** - done
 - [ ] **1.4** Wire: DC jack center-pin lug (−) to top − rail at column 1 - done
 - [ ] **1.5** D3, 1N5817 diode: plain end in **b(−1)**, striped end in top + rail at column 1 - done
 - [ ] **1.6** C7, 100 µF electrolytic: long (+) leg in top + rail at column 3, striped (−) leg in top − rail at column 3 - done
 - [ ] **1.7** C10, 100 nF ceramic: top + rail at column 7 to top − rail at column 7 - done
-- [ ] **1.8** C11, 100 nF ceramic: top + rail at column 36 to top − rail at column 36 - done
+- [ ] **1.8** C11, 100 nF ceramic: top + rail at column 37 to top − rail at column 37 - done
 
 Pedal supplies are center negative: the center pin is ground and the outer sleeve is +9 V. If you're unsure which jack lug is which, plug the supply's plug in (unpowered) and find out with the meter on continuity.
 
@@ -82,8 +82,8 @@ Unplug before step 2.
 
 - [ ] **3.1** Chip U1, LM741, notch pointing left: pin 1 in **f9**, pin 4 in **f12**, pin 5 in **e12**, pin 8 in **e9**
 - [ ] **3.2** Jumper wire: **a10** to top + rail at column 10
-- [ ] **3.3** Jumper wire: **j12** to bottom − rail at column 12
-- [ ] **3.4** R1, 1M resistor: **g1** to bottom − rail at column −1
+- [ ] **3.3** Jumper wire: **j12** to bottom − rail at column 11
+- [ ] **3.4** R1, 1M resistor: **g1** to bottom − rail at column 2
 - [ ] **3.5** C1, 10 nF film capacitor: **f1** to **f4**
 - [ ] **3.6** R2, 10k resistor: **j4** to **j11**
 - [ ] **3.7** C2, 1 nF film capacitor: **i11** to bottom − rail at column 13
@@ -158,7 +158,7 @@ Then connect to the board:
 
 - [ ] **6.5** Wire: footswitch lug 1 to **j1** (circuit input)
 - [ ] **6.6** Wire: footswitch lug 3 to **j51** (circuit output)
-- [ ] **6.7** Wire: footswitch lug 5 to bottom − rail at column 6
+- [ ] **6.7** Wire: footswitch lug 5 to bottom − rail at column 5
 - [ ] **6.8** LED resistor, 4.7k: top + rail at column 27 to **b28**
 - [ ] **6.9** Wire: LED long leg (anode) to **e28**
 - [ ] **6.10** Wire: input jack sleeve lug to bottom − rail at column 1

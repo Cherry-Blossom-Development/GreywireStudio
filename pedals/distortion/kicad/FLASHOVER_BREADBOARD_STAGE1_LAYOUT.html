@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <title>Flashover Breadboard Layout</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -77,7 +78,7 @@ svg text { font-family: var(--font-body); }
       <h2>Reading the diagram</h2>
       <div class="legend" id="legend"></div>
       <p class="note">Hole names: the letter is the row (a–e top half, f–j bottom half), the number is the column. Any hole in the same column and half works the same, so the exact letter only matters for keeping parts from crowding each other.</p>
-      <p class="note">Some boards put the red and blue rails in the opposite order. Follow the colors, not the positions. Unplug the power before changing anything.</p>
+      <p class="note">Column numbers are the ones printed on the board, the same as in <span class="mono">FLASHOVER_BREADBOARD_STAGE1_HOLES.md</span>: the two leftmost columns are −2 and −1, and the third is 1. Rail holes come in groups of five, lined up with columns 1–59, and each rail is split between columns 29 and 31. The four short rail gap links bridge the splits. Any hole on a rail works the same, so a rail column is only a suggestion. Unplug the power before changing anything.</p>
     </div>
   </div>
 </div>
@@ -87,16 +88,23 @@ const NS = 'http://www.w3.org/2000/svg';
 const P = 20, X0 = 40, BY = 120;
 const colX = c => X0 + (c - 1) * P;
 const ROWY = { a: 186, b: 206, c: 226, d: 246, e: 266, f: 306, g: 326, h: 346, i: 366, j: 386 };
-const RAILY = { TB: 138, TR: 156, VB: 416, BG: 434 };
+const RAILY = { TB: 138, TR: 156, BG: 416, VB: 434 };
+// The board's printed column numbers: the two leftmost columns are -2 and -1, the third is 1.
+const lab = c => c <= 2 ? c - 3 : c - 2;
+const labTxt = c => lab(c) < 0 ? '−' + (-lab(c)) : String(lab(c));
+const holeName = (r, c) => lab(c) < 0 ? `${r}(${labTxt(c)})` : `${r}${lab(c)}`;
+// Rail holes: groups of five lined up with columns 1-59, one empty column between groups,
+// and a break in the rail (and its printed line) between columns 29 and 31.
+const isRail = c => c >= 3 && c <= 61 && (c - 3) % 6 !== 5;
 const RAILNAME = { TB: 'top blue rail (GND)', TR: 'top red rail (+9V)', VB: 'bottom red rail (VB)', BG: 'bottom blue rail (GND)' };
 const TOPY = 96, BOTY = 490;
 
 const STEPS = [
   { n: 1, name: 'Rails and power', check: 'Power up. Black probe on a blue rail: about 8.6–8.8 V on the top red rail, 0 V on the bottom blue rail.' },
-  { n: 2, name: 'The 4.5 V bias (VB)', check: 'About 4.5 V on T43, T41 and the bottom red rail (give it a few seconds), and about 8.7 V on T40.' },
-  { n: 3, name: 'Input and gain stage', check: 'About 4.5 V on T13 (LM741 pin 6) at any Gain setting.' },
-  { n: 4, name: 'Clipping and Soft/Hard', check: 'About 4.5 V on B20 in both switch positions.' },
-  { n: 5, name: 'Tone, output amp and Level', check: 'About 4.5 V on B40 and B42, and 0 V on B53 (the output).' },
+  { n: 2, name: 'The 4.5 V bias (VB)', check: 'About 4.5 V on T41, T39 and the bottom red rail (give it a few seconds), and about 8.7 V on T38.' },
+  { n: 3, name: 'Input and gain stage', check: 'About 4.5 V on T11 (LM741 pin 6) at any Gain setting.' },
+  { n: 4, name: 'Clipping and Soft/Hard', check: 'About 4.5 V on B18 in both switch positions.' },
+  { n: 5, name: 'Tone, output amp and Level', check: 'About 4.5 V on B38 and B40, and 0 V on B51 (the output).' },
   { n: 6, name: 'Footswitch, LED and jacks', check: 'Power off, meter on continuity: the two jack tips beep in one footswitch position (bypass) and not the other. Powered: the LED lights with the effect on.' },
 ];
 
@@ -132,14 +140,18 @@ const CHIPS = [
 
 // [step, kind, ref, value, from, to]  (ecap: from = + leg; diode: from = anode, to = striped cathode)
 const PARTS = [
-  [1, 'wire', 'Jumper', 'GND link', 'TB@1', 'BG@1'],
-  [1, 'wire', 'Jumper', 'GND link', 'TB@62', 'BG@62'],
+  [1, 'wire', 'Jumper', 'GND link', 'TB@6', 'BG@6'],
+  [1, 'wire', 'Jumper', 'GND link', 'TB@61', 'BG@61'],
   [1, 'wire', 'Wire', 'DC +', 'dc:+', 'a2'],
   [1, 'wire', 'Wire', 'DC −', 'dc:-', 'TB@3'],
   [1, 'sch', 'D3', '1N5817', 'b2', 'TR@3'],
   [1, 'ecap', 'C7', '100µF', 'TR@5', 'TB@5'],
   [1, 'cer', 'C10', '100nF', 'TR@9', 'TB@9'],
-  [1, 'cer', 'C11', '100nF', 'TR@38', 'TB@38'],
+  [1, 'cer', 'C11', '100nF', 'TR@39', 'TB@39'],
+  [1, 'wire', 'Jumper', 'Rail gap link', 'TB@31', 'TB@33'],
+  [1, 'wire', 'Jumper', 'Rail gap link', 'TR@31', 'TR@33'],
+  [1, 'wire', 'Jumper', 'Rail gap link', 'BG@31', 'BG@33'],
+  [1, 'wire', 'Jumper', 'Rail gap link', 'VB@29', 'VB@34'],
 
   [2, 'wire', 'Jumper', '+9V to pin 8', 'a40', 'TR@40'],
   [2, 'wire', 'Jumper', 'pin 4 to GND', 'j43', 'BG@43'],
@@ -152,8 +164,8 @@ const PARTS = [
   [2, 'wire', 'Jumper', 'VB to rail', 'e46', 'VB@46'],
 
   [3, 'wire', 'Jumper', '+9V to pin 7', 'a12', 'TR@12'],
-  [3, 'wire', 'Jumper', 'pin 4 to GND', 'j14', 'BG@14'],
-  [3, 'res', 'R1', '1M', 'g3', 'BG@2'],
+  [3, 'wire', 'Jumper', 'pin 4 to GND', 'j14', 'BG@13'],
+  [3, 'res', 'R1', '1M', 'g3', 'BG@4'],
   [3, 'film', 'C1', '10nF', 'f3', 'f6'],
   [3, 'res', 'R2', '10k', 'j6', 'j13'],
   [3, 'film', 'C2', '1nF', 'i13', 'BG@15'],
@@ -167,7 +179,7 @@ const PARTS = [
 
   [4, 'film', 'C4', '1µF', 'b13', 'b17'],
   [4, 'res', 'R6', '10k', 'c17', 'f20'],
-  [4, 'wire', 'Jumper', 'B20 to B21', 'g20', 'g21'],
+  [4, 'wire', 'Jumper', 'B18 to B19', 'g20', 'g21'],
   [4, 'res', 'R10', '1M', 'h20', 'VB@19'],
   [4, 'film', 'C5', '1nF', 'i20', 'VB@21'],
   [4, 'wire', 'Wire', 'Toggle center', 'tog:C', 'j20'],
@@ -185,7 +197,7 @@ const PARTS = [
   [5, 'wire', 'Wire', 'Tone lug 1', 'tone:1', 'j26'],
   [5, 'wire', 'Wire', 'Tone lug 3', 'tone:3', 'j23'],
   [5, 'wire', 'Wire', 'Tone lug 2', 'tone:2', 'j42'],
-  [5, 'wire', 'Jumper', 'B40 to B37', 'g40', 'g37'],
+  [5, 'wire', 'Jumper', 'B38 to B35', 'g40', 'g37'],
   [5, 'res', 'R16', '30k', 'h37', 'h41'],
   [5, 'res', 'R17', '10k', 'i41', 'VB@39'],
   [5, 'wire', 'Wire', 'Level lug 3', 'level:3', 'j37'],
@@ -200,7 +212,7 @@ const PARTS = [
   [6, 'wire', 'Wire', 'LED cathode', 'led:K', 'fs:2'],
   [6, 'wire', 'Wire', 'Effect in', 'fs:1', 'j3'],
   [6, 'wire', 'Wire', 'Effect out', 'fs:3', 'j53'],
-  [6, 'wire', 'Wire', 'Footswitch GND', 'fs:5', 'BG@8'],
+  [6, 'wire', 'Wire', 'Footswitch GND', 'fs:5', 'BG@7'],
   [6, 'res', 'R LED', '4.7k', 'TR@29', 'b30'],
   [6, 'wire', 'Wire', 'LED anode', 'e30', 'led:A'],
   [6, 'wire', 'Wire', 'Input sleeve', 'in:sleeve', 'BG@3'],
@@ -216,8 +228,8 @@ function pt(s) {
 }
 function desc(s) {
   let m;
-  if ((m = /^([a-j])(\d+)$/.exec(s))) return `${s} (${'abcde'.includes(m[1]) ? 'T' : 'B'}${m[2]})`;
-  if ((m = /^(TB|TR|VB|BG)@(\d+)$/.exec(s))) return RAILNAME[m[1]];
+  if ((m = /^([a-j])(\d+)$/.exec(s))) return `${holeName(m[1], +m[2])} (${'abcde'.includes(m[1]) ? 'T' : 'B'}${labTxt(+m[2])})`;
+  if ((m = /^(TB|TR|VB|BG)@(\d+)$/.exec(s))) return `${RAILNAME[m[1]]} at column ${labTxt(+m[2])}`;
   const [id, t] = s.split(':'); const o = OFF.find(o => o.id === id);
   return `${OFFNAME[id]} ${o.terms[t][2]}`;
 }
@@ -234,9 +246,11 @@ function drawBoard() {
   // rails
   for (const [k, y] of Object.entries(RAILY)) {
     const red = k === 'TR' || k === 'VB';
-    const ly = (k === 'TB' || k === 'TR') ? (k === 'TB' ? y - 9 : y + 9) : (k === 'VB' ? y - 9 : y + 9);
-    el('line', { x1: 30, x2: 1290, y1: ly, y2: ly, stroke: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'stroke-width': 1.5 }, g);
-    for (let c = 1; c <= 63; c++) el('rect', { x: colX(c) - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
+    // blue rail is the upper row of each pair (line above it), red the lower (line below it)
+    const ly = red ? y + 9 : y - 9;
+    for (const [c1, c2] of [[3, 31], [33, 61]])
+      el('line', { x1: colX(c1) - 8, x2: colX(c2) + 8, y1: ly, y2: ly, stroke: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'stroke-width': 1.5 }, g);
+    for (let c = 1; c <= 63; c++) if (isRail(c)) el('rect', { x: colX(c) - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
     const t = el('text', { x: 24, y: y + 3.5, 'font-size': 10, 'font-weight': 700, fill: red ? 'var(--rail-red)' : 'var(--rail-blue)', 'text-anchor': 'middle' }, g);
     t.textContent = red ? '+' : '−';
   }
@@ -250,12 +264,12 @@ function drawBoard() {
     for (let c = 1; c <= 63; c++) el('rect', { x: colX(c) - 2.5, y: y - 2.5, width: 5, height: 5, rx: 1, fill: 'var(--hole)' }, g);
     for (const x of [26, 1294]) { const t = el('text', { x, y: y + 3.5, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = r; }
   }
-  for (let c = 1; c <= 63; c++) if (c === 1 || c % 5 === 0) for (const y of [174, 400 - 2]) {
-    if (y > 300) continue;
-    const t = el('text', { x: colX(c), y, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = c;
+  const shown = c => lab(c) < 0 || lab(c) === 1 || lab(c) % 5 === 0;
+  for (let c = 1; c <= 63; c++) if (shown(c)) {
+    const t = el('text', { x: colX(c), y: 174, 'font-size': 9, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = labTxt(c);
   }
-  for (let c = 1; c <= 63; c++) if (c === 1 || c % 5 === 0) {
-    const t = el('text', { x: colX(c), y: 289.5, 'font-size': 8, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = c;
+  for (let c = 1; c <= 63; c++) if (shown(c)) {
+    const t = el('text', { x: colX(c), y: 289.5, 'font-size': 8, fill: '#8a8475', 'text-anchor': 'middle', 'font-family': 'var(--font-mono)' }, g); t.textContent = labTxt(c);
   }
 }
 
@@ -305,7 +319,7 @@ function drawOff(o) {
 }
 
 function drawChip(ch) {
-  const g = partGroup(ch.step, `${ch.ref} ${ch.value}, columns ${ch.col}–${ch.col + 3}, notch left`);
+  const g = partGroup(ch.step, `${ch.ref} ${ch.value}, columns ${labTxt(ch.col)}–${labTxt(ch.col + 3)}, notch left`);
   const x1 = colX(ch.col) - 8, x2 = colX(ch.col + 3) + 8;
   el('rect', { x: x1, y: ROWY.e - 9, width: x2 - x1, height: ROWY.f - ROWY.e + 18, rx: 3, fill: '#24262a' }, g);
   el('path', { d: `M ${x1} 278 a 7 7 0 0 1 0 14`, fill: 'var(--board)' }, g);
@@ -329,7 +343,10 @@ function drawPart([step, kind, ref, value, from, to]) {
   const g = partGroup(step, title);
   const offA = !/^[a-j]\d|@/.test(from), offB = !/^[a-j]\d|@/.test(to);
   if (kind === 'wire') {
-    const d = (offA || offB) ? curve(a, b) : `M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}`;
+    const sameRail = from.includes('@') && to.includes('@') && a[1] === b[1];
+    const bulge = (from.startsWith('TB') || from.startsWith('BG')) ? -9 : 9;
+    const d = sameRail ? `M ${a[0]} ${a[1]} Q ${(a[0] + b[0]) / 2} ${a[1] + bulge * 2} ${b[0]} ${b[1]}`
+      : (offA || offB) ? curve(a, b) : `M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}`;
     el('path', { d, fill: 'none', stroke: c, 'stroke-width': 2.4, 'stroke-linecap': 'round', opacity: 0.9 }, g);
     for (const [p, off] of [[a, offA], [b, offB]]) if (!off) el('circle', { cx: p[0], cy: p[1], r: 3.2, fill: c }, g);
     return;
@@ -424,7 +441,7 @@ function show(n) {
   }
   const st = STEPS[n - 1];
   title.textContent = `Step ${n}: ${st.name}`;
-  chips.forEach(c => add([c.ref, c.value, `columns ${c.col}–${c.col + 3}`, 'notch left, pin 1 in f' + c.col]));
+  chips.forEach(c => add([c.ref, c.value, `columns ${labTxt(c.col)}–${labTxt(c.col + 3)}`, 'notch left, pin 1 in ' + holeName('f', c.col)]));
   list.forEach(([, kind, ref, value, from, to]) => {
     const isWire = ref === 'Wire' || ref === 'Jumper' || ref === 'Link';
     const v = isWire ? value : value + (kind === 'ecap' ? ' (+ at From)' : ['ge', 'si', 'sch'].includes(kind) ? ' (stripe at To)' : '');
