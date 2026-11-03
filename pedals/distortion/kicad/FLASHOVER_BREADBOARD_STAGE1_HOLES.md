@@ -62,16 +62,16 @@ Unplug before step 2.
 
 ## Step 2: the 4.5 V bias (VB)
 
-- [ ] **2.1** Chip U2, TL072, notch pointing left: pin 1 in **f38**, pin 4 in **f41**, pin 5 in **e41**, pin 8 in **e38**
-- [ ] **2.2** Jumper wire: **a38** to top + rail at column 38
-- [ ] **2.3** Jumper wire: **j41** to bottom − rail at column 41
-- [ ] **2.4** R7, 1M resistor: **b41** to top + rail at column 41
-- [ ] **2.5** R8, 1M resistor: **a41** to top − rail at column 45
-- [ ] **2.6** C6, 10 µF electrolytic: long (+) leg in **c41**, striped (−) leg in top − rail at column 43
-- [ ] **2.7** Jumper wire: **c39** to **c40**
-- [ ] **2.8** R18, 100 Ω resistor: **d40** to **d44**
-- [ ] **2.9** C15, 10 µF electrolytic: long (+) leg in **c44**, striped (−) leg in top − rail at column 47
-- [ ] **2.10** Jumper wire: **e44** to bottom + rail at column 44 (this makes the bottom + rail the 4.5 V VB rail)
+- [ ] **2.1** Chip U2, TL072, notch pointing left: pin 1 in **f38**, pin 4 in **f41**, pin 5 in **e41**, pin 8 in **e38** - done
+- [ ] **2.2** Jumper wire: **a38** to top + rail at column 38 - done
+- [ ] **2.3** Jumper wire: **j41** to bottom − rail at column 41 - done
+- [ ] **2.4** R7, 1M resistor: **b41** to top + rail at column 41 - done
+- [ ] **2.5** R8, 1M resistor: **a41** to top − rail at column 45 - done
+- [ ] **2.6** C6, 10 µF electrolytic: long (+) leg in **c41**, striped (−) leg in top − rail at column 43 - done
+- [ ] **2.7** Jumper wire: **c39** to **c40** - done
+- [ ] **2.8** R18, 100 Ω resistor: **d40** to **d44** - done
+- [ ] **2.9** C15, 10 µF electrolytic: long (+) leg in **c44**, striped (−) leg in top − rail at column 47 - done
+- [ ] **2.10** Jumper wire: **e44** to bottom + rail at column 44 (this makes the bottom + rail the 4.5 V VB rail) - done
 
 **Check:** power up, black probe on ground.
 
