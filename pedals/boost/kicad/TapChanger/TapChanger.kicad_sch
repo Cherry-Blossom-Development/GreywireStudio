@@ -1,0 +1,304 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "198e4c1a-e407-5a85-ab62-b00b029668d0")
+	(paper "A4")
+	(title_block
+		(title "Tap Changer")
+		(date "2026-11-03")
+		(rev "0.1")
+		(company "GreywireStudio")
+		(comment 1 "Tap Changer clean boost - Linework series - main board")
+	)
+	(lib_symbols
+	)
+	(text "TAP CHANGER"
+		(exclude_from_sim no)
+		(at 40.64 38.1 0)
+		(effects (font (size 3 3) (bold yes)) (justify left))
+		(uuid "e3417f93-4fd3-4d86-8af5-4b7adbc57495")
+	)
+	(text "Clean boost pedal, Linework series.  Main board, version 0.1 (schematic draft, not yet built).\nOne non-inverting op-amp stage with a digital pot in its feedback: Boost from about +1 dB to +20 dB.\nValues match the LTspice model in pedals/boost/sim/TapChanger_circuit.inc.\nPower, controller, MIDI and bypass are copied from Flashover, with the same GPIO numbers."
+		(exclude_from_sim no)
+		(at 40.64 45.72 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "ed970483-faf9-4f13-baef-495d0b35a7db")
+	)
+	(text "Signal flow:  input jack (Bypass)  ->  Audio  ->  output jack (Bypass)"
+		(exclude_from_sim no)
+		(at 30.48 86.36 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "2bd97b54-6bbd-47fd-a5cd-d527c8cf39eb")
+	)
+	(text "Two boards, as on Flashover.  This main board holds the audio circuit, controller, digital pot,\nMIDI, bypass and all five jacks.  The Boost knob, its LED ring and the panel LEDs are on the\ncontrol board (project TapChanger_Controls), which plugs into J7 on the Board Connector sheet.\nThe enclosure isn't chosen yet (Hammond 125B is the first to check), so no board layout yet."
+		(exclude_from_sim no)
+		(at 30.48 129.54 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "e81ea6c9-9ac3-4735-a838-03235dd25c67")
+	)
+	(text "Footprints: surface-mount for assembly, through-hole for jacks, the encoder, panel LEDs\nand the regulator (laid flat).  Audio-path capacitors (C1, C2, C9) must be C0G or film, not X7R."
+		(exclude_from_sim no)
+		(at 30.48 157.48 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "c4b50f35-d31f-46d3-83c1-8411ab5da6b1")
+	)
+	(sheet
+		(at 30.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "2eea72ca-8d6c-56f5-93b0-3c8e006c196b")
+		(property "Sheetname" "Audio"
+			(at 30.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "audio.kicad_sch"
+			(at 30.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a9fbf5cc-be20-5622-8e52-f1b81762f83b")
+		(property "Sheetname" "Power and Bias"
+			(at 93.98 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 93.98 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c762c4d2-2f67-5a86-8eea-184a2df6efce")
+		(property "Sheetname" "Bypass"
+			(at 157.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "bypass.kicad_sch"
+			(at 157.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "62b4188c-5a89-5aad-b4b0-f59503b132c8")
+		(property "Sheetname" "Controller"
+			(at 30.48 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "controller.kicad_sch"
+			(at 30.48 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "815ce92c-2af3-5939-9ff7-f2471d3a6266")
+		(property "Sheetname" "Digital Pot"
+			(at 93.98 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "digital_pot.kicad_sch"
+			(at 93.98 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "bcc5b566-3ee2-561f-b12e-54e9416497b4")
+		(property "Sheetname" "MIDI"
+			(at 157.48 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "midi.kicad_sch"
+			(at 157.48 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 220.98 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "5376cb21-ced7-53fb-bbe8-ed25ff865b45")
+		(property "Sheetname" "Board Connector"
+			(at 220.98 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "board_connector.kicad_sch"
+			(at 220.98 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger"
+				(path "/198e4c1a-e407-5a85-ab62-b00b029668d0"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

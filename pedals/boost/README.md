@@ -8,4 +8,6 @@ A clean boost in the Linework series, with one Boost knob and a footswitch. It w
 
 ## Status
 
-Design - audio circuit simulated, nothing built yet. There is no KiCad project yet.
+Design - audio circuit simulated, nothing built yet. Breadboard parts not ordered yet.
+
+KiCad schematics for both boards are drafted in `kicad/` (Nov 3, 2026); see `kicad/README.md`. No board layout yet.

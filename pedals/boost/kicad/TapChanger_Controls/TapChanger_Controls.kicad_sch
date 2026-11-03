@@ -1,0 +1,142 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "6b8c3823-3f85-5f67-adb7-ebbc56e94b0e")
+	(paper "A4")
+	(title_block
+		(title "Tap Changer Controls")
+		(date "2026-11-03")
+		(rev "0.1")
+		(company "GreywireStudio")
+		(comment 1 "Tap Changer control board - Boost knob, LED ring and panel LEDs")
+	)
+	(lib_symbols
+	)
+	(text "TAP CHANGER CONTROLS"
+		(exclude_from_sim no)
+		(at 40.64 38.1 0)
+		(effects (font (size 3 3) (bold yes)) (justify left))
+		(uuid "cf4361a5-4d75-483e-9327-b8275256023f")
+	)
+	(text "Control board for Tap Changer, version 0.1.  It sits behind the top panel:\nthe Boost endless knob with its 11-LED ring, and the On and Link LEDs.\nIt plugs into J7 on the main board (project TapChanger) through J8 on its underside."
+		(exclude_from_sim no)
+		(at 40.64 45.72 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "8794d53f-8940-4aa3-845e-aa0fbd6ab44d")
+	)
+	(sheet
+		(at 30.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "bc733dcc-cbda-5fca-9727-1e3dceebfe3c")
+		(property "Sheetname" "Boost Knob"
+			(at 30.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "boost_knob.kicad_sch"
+			(at 30.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger_Controls"
+				(path "/6b8c3823-3f85-5f67-adb7-ebbc56e94b0e"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4c58086b-c2f1-5bd3-9499-710d1a3e1c0c")
+		(property "Sheetname" "LED Ring"
+			(at 93.98 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "led_ring.kicad_sch"
+			(at 93.98 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger_Controls"
+				(path "/6b8c3823-3f85-5f67-adb7-ebbc56e94b0e"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 58.42)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "97eb1026-c6ea-5843-8697-8eec8d01f9b9")
+		(property "Sheetname" "Board Connector"
+			(at 157.48 57.7084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "board_connector.kicad_sch"
+			(at 157.48 79.3246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "TapChanger_Controls"
+				(path "/6b8c3823-3f85-5f67-adb7-ebbc56e94b0e"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
