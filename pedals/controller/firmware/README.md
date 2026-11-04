@@ -35,7 +35,7 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 
 ## Not done yet
 
-- **Building for the Pico.** The `pico/` code hasn't been compiled. It needs the Pico SDK in `lib/pico-sdk`, plus CMake (see Building).
+- **Running on a Pico.** Both programs build with no warnings (Nov 4, 2026), but neither has run on real hardware yet. Switchyard's firmware is about 37 KB.
 - **Firmware updates** (commands 30-32). For now Switchyard is updated by holding BOOTSEL and copying the `.uf2` file. The stand-in answers firmware commands with "unknown command".
 - **Phone charging** (stage 2): the USB-C power controller, the power role swap, and VBUS_EN. That needs a USB Power Delivery stack.
 - **The stand-in keeps its channel and presets in memory only,** so it forgets them at power-off. Real pedals must keep them (spec: "Settings survive power off").
@@ -49,7 +49,7 @@ The PC simulation needs only a C compiler. WinLibs GCC is installed through wing
 make -C test test
 ```
 
-To build for the Pico you need the Arm GNU Toolchain (installed), Ninja (installed), CMake, and the Pico SDK 2.3.1 with its TinyUSB submodule in `lib/pico-sdk`. Then:
+To build for the Pico you need the Arm GNU Toolchain, Ninja and CMake, which are all installed. CMake came through `pip install --user cmake`, so it lives in `%APPDATA%\Python\Python312\Scripts`. You also need the Pico SDK 2.3.1, which is a git submodule in `lib/pico-sdk`; after cloning the repo, run `git submodule update --init` there and in its `lib/tinyusb`. The first build also downloads and builds Raspberry Pi's `picotool`, which makes the `.uf2` files, using the WinLibs GCC compiler. Then:
 
 ```
 cmake -S . -B build -G Ninja

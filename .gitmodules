@@ -4,3 +4,6 @@
 [submodule "pedals/controller-audio/firmware/lib/DaisySP"]
 	path = pedals/controller-audio/firmware/lib/DaisySP
 	url = https://github.com/electro-smith/DaisySP
+[submodule "pedals/controller/firmware/lib/pico-sdk"]
+	path = pedals/controller/firmware/lib/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk

@@ -26,7 +26,7 @@ set(CORE core/lw_proto.c)
 add_executable(switchyard
     ${CORE} core/switchyard.c
     pico/switchyard_main.c pico/flash_store.c pico/ht16k33.c pico/usb_descriptors.c)
-target_include_directories(switchyard PRIVATE core pico)
+target_include_directories(switchyard PRIVATE core pico pico/usb)   # pico/usb: TinyUSB settings, Switchyard only
 if(SWITCHYARD_BOARD STREQUAL "pcb")
     target_compile_definitions(switchyard PRIVATE BOARD_HAS_SENSE_9V=1)
 endif()
