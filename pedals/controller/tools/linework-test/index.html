@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linework test tool</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Linework test tool <span class="sub">stands in for the phone app while testing Switchyard</span></h1>
+  <div id="conn">
+    <span id="conn-midi">
+      <label>MIDI in <select id="midi-in"></select></label>
+      <label>MIDI out <select id="midi-out"></select></label>
+      <button id="btn-midi">Connect</button>
+    </span>
+    <button id="btn-sim" hidden>Use the simulated loop</button>
+    <span id="conn-state" class="badge off">Not connected</span>
+  </div>
+</header>
+
+<main>
+  <div class="col">
+    <section>
+      <h2>Switchyard</h2>
+      <div class="row">
+        <div class="readout" id="readout">--.--</div>
+        <div>
+          <div class="row">
+            <button id="btn-prev" title="Jump to the previous part">&larr; Previous</button>
+            <button id="btn-next" title="Jump to the next part">Next &rarr;</button>
+            <button id="btn-pos">Get position</button>
+          </div>
+          <div class="row">
+            <label>Part <input id="jump-n" type="number" min="1" value="1" class="n"></label>
+            <button id="btn-jump">Jump</button>
+          </div>
+          <div id="pos-why" class="note"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="btn-info">Switchyard info</button>
+        <button id="btn-status">Loop status</button>
+        <span id="loop-state" class="badge">Loop: unknown</span>
+      </div>
+      <div id="info" class="note"></div>
+    </section>
+
+    <section>
+      <h2>Pedals on the loop</h2>
+      <div class="row">
+        <button id="btn-scan">Scan loop</button>
+        <button id="btn-list">Get pedal list</button>
+      </div>
+      <table id="pedals">
+        <thead><tr><th>Pos</th><th>Ch</th><th>Model</th><th>Firmware</th><th>Serial</th><th></th></tr></thead>
+        <tbody><tr><td colspan="6" class="note">Press Scan loop.</td></tr></tbody>
+      </table>
+      <div class="row">
+        <label>Channel <input id="pd-ch" type="number" min="1" max="16" value="1" class="n"></label>
+        <label>Preset <input id="pd-slot" type="number" min="1" max="128" value="1" class="n"></label>
+        <button id="btn-pc">Program change</button>
+        <button id="btn-store">Store current settings</button>
+        <button id="btn-read">Read preset</button>
+        <button id="btn-report">Report settings</button>
+      </div>
+      <div id="pd-out" class="note"></div>
+    </section>
+
+    <section>
+      <h2>Setlist</h2>
+      <p class="note">One line per part: <code>song.part pedal:preset ...</code>. Define the pedals first:
+        <code>scan N</code> is the pedal at position N in the last scan, <code>other N</code> is another brand's pedal on MIDI channel N.</p>
+      <textarea id="sl-text" rows="10" spellcheck="false">wrap: no
+pedal A = scan 1
+pedal B = scan 2
+pedal S = other 3
+
+1.1  A:1 S:1
+1.2  A:2 B:1
+2.1  A:3 B:2 S:4
+2.2  B:3
+</textarea>
+      <div class="row">
+        <label>Setlist ID <input id="sl-id" type="number" min="0" value="1" class="n"></label>
+        <button id="btn-upload">Send setlist</button>
+        <button id="btn-slinfo">Setlist info</button>
+      </div>
+      <div id="sl-out" class="note"></div>
+    </section>
+
+    <section>
+      <h2>Other brands' pedals</h2>
+      <div class="row">
+        <select id="ob-kind"><option value="pc">Program change</option><option value="cc">Control change</option></select>
+        <label>Channel <input id="ob-ch" type="number" min="1" max="16" value="1" class="n"></label>
+        <label><span id="ob-v1-label">Preset</span> <input id="ob-v1" type="number" min="0" max="128" value="1" class="n"></label>
+        <label id="ob-v2-wrap" hidden>Value <input id="ob-v2" type="number" min="0" max="127" value="64" class="n"></label>
+        <button id="btn-ob">Send</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Raw message</h2>
+      <div class="row">
+        <input id="raw" class="wide" placeholder="F0 7D 4C 57 40 40 F7" spellcheck="false">
+        <button id="btn-raw">Send</button>
+      </div>
+    </section>
+
+    <section id="sim-panel" hidden>
+      <h2>Simulated loop</h2>
+      <p class="note">Switchyard and three stand-in pedals, running the real firmware core on this computer.</p>
+      <div class="row">
+        <button id="sim-down">Down footswitch</button>
+        <button id="sim-up">Up footswitch</button>
+      </div>
+      <div class="row" id="sim-cables"></div>
+    </section>
+  </div>
+
+  <div class="col log-col">
+    <section class="log-section">
+      <h2>Messages <span class="row inline">
+        <label><input type="checkbox" id="log-hex" checked> hex</label>
+        <button id="btn-clear">Clear</button></span></h2>
+      <div id="log"></div>
+    </section>
+  </div>
+</main>
+
+<script src="lw.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 |---|---|
 | `core/` | The logic, in plain C with no Pico code, so it also runs on a PC |
 | `pico/` | The Pico hardware layer: MIDI UARTs, USB MIDI, flash storage, footswitches, LEDs and display |
-| `test/` | A PC simulation of a whole loop, which checks the core against the spec |
+| `test/` | A PC simulation of a whole loop, which checks the core against the spec (`sim.c`), and a bridge that lets the test tool in `../tools/linework-test/` drive the same loop (`bridge.c`) |
 
 `core/` holds three files:
 - `lw_proto` holds the shared protocol pieces: the message header, the 7-bit number packing, CRC-32 (see Glossary) and a MIDI parser.
