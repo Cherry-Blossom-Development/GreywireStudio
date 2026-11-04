@@ -1,0 +1,268 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "65d767db-6369-5b10-9dff-2a1ed6fa0f23")
+	(paper "A4")
+	(title_block
+		(title "Switchyard")
+		(date "2026-11-04")
+		(rev "0.1")
+		(company "GreywireStudio")
+		(comment 1 "Switchyard control pedal - Linework series")
+	)
+	(lib_symbols
+	)
+	(text "SWITCHYARD"
+		(exclude_from_sim no)
+		(at 40.64 38.1 0)
+		(effects (font (size 3 3) (bold yes)) (justify left))
+		(uuid "fcc68ad1-5984-4e0e-a4f8-832db36a02d3")
+	)
+	(text "Control pedal, Linework series.  Version 0.1 (schematic draft, not yet built).\nA phone plugs into USB-C; two footswitches step down and up through the setlist and send\neach Linework pedal its preset around the MIDI loop.  No audio passes through Switchyard."
+		(exclude_from_sim no)
+		(at 40.64 45.72 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "b99fad89-1b34-48de-a3dc-4605d65912a4")
+	)
+	(text "Signal flow:  phone (USB) <-> controller -> MIDI loop out -> pedals -> MIDI loop in -> controller\n                                                     controller -> MIDI out for other brands"
+		(exclude_from_sim no)
+		(at 30.48 91.44 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "c45e07e3-186b-4d6d-b283-4c9ea0d772fa")
+	)
+	(text "One board.  Whether the display and LEDs move to a second board behind the lid, as on Flashover,\nis decided with the enclosure layout (1590BB size is the first to check, for two footswitches).\nSame RP2040, flash, 3.3V regulator and MIDI parts as Flashover and Tap Changer.\nNew here: the 9V-to-5V converter, USB-C with its power controller, and the keep-alive charge switch.\nPart references and GPIO numbers match the stage 1 breadboard (SWITCHYARD_BREADBOARD_STAGE1.md)."
+		(exclude_from_sim no)
+		(at 30.48 129.54 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "ea827490-640f-49e3-9ad4-a372bfb303d9")
+	)
+	(text "Footprints: surface-mount for assembly, through-hole for the jacks and panel LEDs.\nThe footswitches are wired off-board to JST connectors.  The display (DS1) sits behind a window in the lid."
+		(exclude_from_sim no)
+		(at 30.48 160.02 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "289f8a54-403f-4e6e-8908-3d6135c24ffa")
+	)
+	(sheet
+		(at 30.48 63.5)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "80108e2c-4d70-5349-b73f-f71781b846a3")
+		(property "Sheetname" "Power"
+			(at 30.48 62.7884 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 30.48 84.4046 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 63.5)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "106c3883-c4c7-5e74-9942-98cc7f62b21a")
+		(property "Sheetname" "USB"
+			(at 93.98 62.7884 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "usb.kicad_sch"
+			(at 93.98 84.4046 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 63.5)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "957d402b-5e8c-5586-b3be-06b612efce5f")
+		(property "Sheetname" "Controller"
+			(at 157.48 62.7884 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "controller.kicad_sch"
+			(at 157.48 84.4046 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "6223f0f6-0b00-5af0-97da-35532c8b99fd")
+		(property "Sheetname" "MIDI"
+			(at 30.48 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "midi.kicad_sch"
+			(at 30.48 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 93.98 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "e8d28f28-d99b-5fc5-bc93-46aaf2286fad")
+		(property "Sheetname" "Panel"
+			(at 93.98 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "panel.kicad_sch"
+			(at 93.98 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 99.06)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a6c9add9-03d3-5acb-9de4-c047d459d965")
+		(property "Sheetname" "Mounting"
+			(at 157.48 98.3484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "mounting.kicad_sch"
+			(at 157.48 119.9646 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Switchyard"
+				(path "/65d767db-6369-5b10-9dff-2a1ed6fa0f23"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
