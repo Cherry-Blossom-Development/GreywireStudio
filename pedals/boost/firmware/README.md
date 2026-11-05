@@ -65,7 +65,7 @@ The tools are the same as Flashover's; see `pedals/distortion/firmware/README.md
 
 ## Not done yet
 
-- **Firmware updates over MIDI, and recovery mode.** As for Flashover, these wait for the shared loader. The Product Document suggests footswitch plus knob push for Tap Changer's recovery mode.
+- **Firmware updates over MIDI and recovery mode** are written (Nov 5, 2026) but not run on hardware. Recovery mode: hold the footswitch and press the knob while plugging in, as the Product Document suggests. Build output includes `tapchanger_full.uf2` (loader + firmware) for a blank chip.
 - **The knob's push** does nothing. The Product Document leaves open whether it should.
 - **Things to check on a breadboard:**
   - The digital pot's distortion, which is the main open question for this pedal.

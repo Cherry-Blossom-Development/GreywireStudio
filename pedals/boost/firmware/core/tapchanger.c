@@ -38,7 +38,8 @@ uint8_t tc_pot_code(uint8_t value)
 }
 
 static uint32_t now(tapchanger *t) { return t->hal.now_ms(t->hal.ctx); }
-static bool want_on(const tapchanger *t) { return t->pd.value[TC_ON] != 0; }
+/* on, unless a firmware update is under way: then the pedal stays in bypass */
+static bool want_on(const tapchanger *t) { return t->pd.value[TC_ON] != 0 && !pd_updating(&t->pd); }
 
 static uint8_t target(tapchanger *t) { return t->duck ? 255 : tc_pot_code(t->pd.value[TC_BOOST]); }
 
@@ -133,7 +134,7 @@ void tc_init(tapchanger *t, const tc_hal *hal, bool setup)
     memset(t, 0, sizeof *t);
     t->hal = *hal;
     pd_hal ph = {
-        .ctx = t, .now_ms = pd_now, .send = pd_send, .flash = hal->flash,
+        .ctx = t, .now_ms = pd_now, .send = pd_send, .flash = hal->flash, .update = hal->fw,
         .ncontrols = TC_NCONTROLS,
         .cc = {20, 80},
         .kind = {PD_KNOB, PD_ONOFF},

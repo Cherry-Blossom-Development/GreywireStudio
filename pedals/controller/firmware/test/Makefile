@@ -5,7 +5,7 @@ CC = gcc
 endif
 LW = ../../../../libraries/linework
 CFLAGS = -std=c11 -Wall -Wextra -Wno-unused-function -O1 -g -I../core -I$(LW)
-CORE = $(LW)/lw_proto.c ../core/switchyard.c $(LW)/pedal.c $(LW)/pd_store.c
+CORE = $(LW)/lw_proto.c ../core/switchyard.c $(LW)/pedal.c $(LW)/pd_store.c $(LW)/lw_fw.c
 
 all: sim bridge
 

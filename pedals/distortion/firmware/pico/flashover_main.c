@@ -17,6 +17,7 @@
 #include "lw_input.h"
 #include "lw_chips.h"
 #include "pedal_flash.h"
+#include "lw_update.h"
 #include "flashover.h"
 
 static flashover fo;
@@ -118,9 +119,12 @@ int main(void)
     fo_hal hal = {
         .now_ms = hal_now, .midi_send = hal_send, .set_pot = hal_pot, .set_relays = hal_relays,
         .set_leds = hal_leds, .set_link_led = hal_link, .flash = &pedal_flash,
+        .fw = &lw_update_hal,
     };
     lw_serial(hal.serial);
     fo_init(&fo, &hal, setup);
+    if (lw_fw_take_announce(&lw_flash_whole))
+        pd_announce(&fo.pd, 1000);     /* first start of a new version: introduce it */
     debug_start(setup);
     lw_enc_init(3, ENC_A, ENC_B);
 

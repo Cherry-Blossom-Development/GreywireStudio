@@ -4,7 +4,8 @@
 # in pedals/controller/firmware/lib/pico-sdk, shared with Switchyard and Flashover):
 #   cmake -S . -B build -G Ninja
 #   cmake --build build
-# Output: build/tapchanger.uf2, and build/tapchanger_debug.uf2 for a breadboard
+# Output: build/tapchanger_full.uf2 (loader + firmware, for a blank chip) and build/tapchanger.uf2
+# (the firmware alone, once the loader is on); tapchanger_debug*.uf2 for a breadboard
 cmake_minimum_required(VERSION 3.13)
 
 if(NOT DEFINED PICO_SDK_PATH)
@@ -17,7 +18,7 @@ project(tapchanger_firmware C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 pico_sdk_init()
 
-set(LW ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/linework)
+include(${CMAKE_CURRENT_LIST_DIR}/../../../libraries/linework/pico/linework.cmake)   # sets LW
 set(SRC core/tapchanger.c pico/tapchanger_main.c
     ${LW}/lw_proto.c ${LW}/pedal.c ${LW}/pd_store.c ${LW}/lw_ui.c
     ${LW}/pico/pedal_flash.c ${LW}/pico/lw_midi.c ${LW}/pico/lw_input.c ${LW}/pico/lw_chips.c)
@@ -29,8 +30,15 @@ foreach(T tapchanger tapchanger_debug)
     target_link_libraries(${T} PRIVATE pico_stdlib pico_unique_id hardware_uart hardware_i2c
         hardware_flash hardware_sync hardware_irq)
     pico_enable_stdio_uart(${T} 0)          # UART0 is MIDI
+    linework_firmware(${T})                  # runs at 32 KB, after the loader; takes updates
     pico_add_extra_outputs(${T})
 endforeach()
 target_compile_definitions(tapchanger_debug PRIVATE TC_DEBUG_USB=1)
 pico_enable_stdio_usb(tapchanger_debug 1)
 pico_enable_stdio_usb(tapchanger 0)
+
+# the loader (model 01 01; recovery: footswitch + knob push held; Link LED on GPIO20), and
+# loader + firmware in one file for a blank chip
+linework_loader(tapchanger 0x01 0x01 15 8 20)
+linework_full(tapchanger tapchanger_loader)
+linework_full(tapchanger_debug tapchanger_loader)

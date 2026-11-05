@@ -169,10 +169,11 @@ Each encoder signal gets a 10k pull-up to +3V3. A and B also get a 10 nF capacit
 ## Loading the firmware and testing
 
 Build output is in `../firmware/build/`:
-- **`flashover_debug.uf2`:** the same firmware, plus a report on the Pico's USB serial port. Use this one for stage 2.
-- **`flashover.uf2`:** the plain version.
+- **`flashover_debug_full.uf2`:** the loader plus the firmware with a report on the Pico's USB serial port. Use this one for stage 2.
+- **`flashover_full.uf2`:** the same without the report.
+- `flashover_debug.uf2` and `flashover.uf2` are the firmware alone, for later updates once the loader is on.
 
-1. Hold the Pico's BOOTSEL button while plugging its USB cable into the computer. It appears as a drive; copy `flashover_debug.uf2` onto it. The Pico restarts by itself.
+1. Hold the Pico's BOOTSEL button while plugging its USB cable into the computer. It appears as a drive; copy `flashover_debug_full.uf2` onto it. The Pico restarts by itself.
 2. Open the Pico's serial port (any serial terminal at any speed, for example PuTTY, or the Arduino IDE's Serial Monitor). Within 2 seconds of power-up it prints:
    ```
    Flashover 0.1.0 debug

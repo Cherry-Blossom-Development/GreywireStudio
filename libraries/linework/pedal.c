@@ -1,4 +1,5 @@
 #include "pedal.h"
+#include "lw_fw.h"
 #include <string.h>
 
 #define T_QUIET 1000           /* MIDI in quiet this long: send Loop break reports, once a second */
@@ -82,6 +83,87 @@ static void ack(lw_pedal *p, uint8_t qq, uint8_t cmd, uint8_t st)
     lw_put(&m, st);
     lw_end(&m);
     out(p, m.b, m.n);
+}
+
+/* Firmware data is acknowledged with its block number */
+static void ack_block(lw_pedal *p, uint8_t qq, uint8_t st, unsigned n)
+{
+    lw_msg m;
+    lw_begin(&m, LW_ACK, qq);
+    lw_put(&m, p->channel);
+    lw_put(&m, LW_FW_DATA);
+    lw_put(&m, st);
+    lw_put14(&m, n);
+    lw_end(&m);
+    out(p, m.b, m.n);
+}
+
+/* ---------------------------------------------------------------- firmware update */
+
+static void fw_begin(lw_pedal *p, uint8_t qq, const uint8_t *b)
+{
+    if (!p->hal.update) {
+        ack(p, qq, LW_FW_BEGIN, ST_UNKNOWN);
+        return;
+    }
+    uint32_t size = b[0] | (uint32_t)b[1] << 7 | (uint32_t)b[2] << 14;
+    uint32_t crc = lw_get32(&b[3]);
+    int st = p->hal.update->begin(p->hal.update->ctx, size, crc);
+    if (st != ST_OK) {
+        p->fw_state = 0;
+        ack(p, qq, LW_FW_BEGIN, (uint8_t)st);
+        return;
+    }
+    p->fw_state = 1;                            /* bypass now; the ack waits for the erase */
+    p->fw_qq = qq;
+}
+
+static void fw_data(lw_pedal *p, uint8_t qq, const uint8_t *b, int len)
+{
+    unsigned n = len >= 3 ? lw_get14(&b[1]) : 0;
+    if (!p->hal.update) {
+        ack_block(p, qq, ST_UNKNOWN, n);
+        return;
+    }
+    if (len != 3 + FW_PACKED + 1) {
+        ack_block(p, qq, ST_RANGE, n);
+        return;
+    }
+    if (p->fw_state == 1) {
+        ack_block(p, qq, ST_BUSY, n);
+        return;
+    }
+    if (p->fw_state != 2) {
+        ack_block(p, qq, ST_RANGE, n);           /* no Firmware: begin */
+        return;
+    }
+    if (lw_fw_checksum(&b[3], FW_PACKED) != b[3 + FW_PACKED]) {
+        ack_block(p, qq, ST_CHECKSUM, n);       /* Switchyard resends it */
+        return;
+    }
+    uint8_t data[FW_BLOCK];
+    lw_unpack7(&b[3], FW_BLOCK, data);
+    ack_block(p, qq, (uint8_t)p->hal.update->block(p->hal.update->ctx, n, data), n);
+}
+
+static void fw_finish(lw_pedal *p, uint8_t qq)
+{
+    if (!p->hal.update) {
+        ack(p, qq, LW_FW_FINISH, ST_UNKNOWN);
+        return;
+    }
+    if (p->fw_state != 2) {
+        ack(p, qq, LW_FW_FINISH, p->fw_state == 1 ? ST_BUSY : ST_RANGE);
+        return;
+    }
+    int st = p->hal.update->finish(p->hal.update->ctx);
+    ack(p, qq, LW_FW_FINISH, (uint8_t)st);
+    if (st == ST_OK) {
+        p->fw_state = 3;                        /* restart once the ack has gone out */
+        p->fw_at = now(p);
+    } else {
+        p->fw_state = 0;                        /* the old firmware carries on */
+    }
 }
 
 static void put_pairs(lw_pedal *p, lw_msg *m, const uint8_t *vals)
@@ -197,6 +279,11 @@ static void linework(lw_pedal *p, const uint8_t *m, int n)
         }
         return;
     }
+    if (cmd == LW_FW_BEGIN && len == LW_SERIAL_LEN + 8) {     /* addressed by serial, like Assign */
+        if (memcmp(b, p->hal.serial, LW_SERIAL_LEN) == 0)
+            fw_begin(p, qq, &b[LW_SERIAL_LEN]);
+        return;
+    }
     if (len < 1 || b[0] != p->channel || p->channel > 0x0F)
         return;                                 /* the rest are addressed by channel */
     switch (cmd) {
@@ -245,8 +332,11 @@ static void linework(lw_pedal *p, const uint8_t *m, int n)
         out(p, r.b, r.n);
         break;
     }
-    case LW_FW_BEGIN: case LW_FW_DATA: case LW_FW_FINISH:
-        ack(p, qq, cmd, ST_UNKNOWN);            /* firmware updates aren't written yet */
+    case LW_FW_DATA:
+        fw_data(p, qq, b, len);
+        break;
+    case LW_FW_FINISH:
+        fw_finish(p, qq);
         break;
     default:
         ack(p, qq, cmd, ST_UNKNOWN);
@@ -334,6 +424,13 @@ void pd_set_channel(lw_pedal *p, uint8_t ch)
     save_state(p);                              /* at once: a channel is worth keeping */
 }
 
+void pd_announce(lw_pedal *p, uint32_t ms)
+{
+    p->announce_at = now(p) + ms;
+    if (!p->announce_at)
+        p->announce_at = 1;
+}
+
 bool pd_linked(const lw_pedal *p)
 {
     return p->position && p->channel <= 0x0F && p->hal.now_ms(p->hal.ctx) - p->heard < T_QUIET;
@@ -345,6 +442,19 @@ void pd_poll(lw_pedal *p)
     for (int i = 0; i < p->hal.ncontrols; i++)
         if (p->pending[i] && t - p->sent_at[i] >= PD_REPORT_MS)
             send_cc(p, i);
+    if (p->announce_at && (int32_t)(t - p->announce_at) >= 0) {
+        p->announce_at = 0;
+        identity(p);                            /* a newly installed version introduces itself */
+    }
+    /* firmware update: erase a sector at a time, in gaps on MIDI in; then ack the Begin */
+    if (p->fw_state == 1 && t - p->last_byte >= 5) {
+        if (p->hal.update->erase_step(p->hal.update->ctx)) {
+            p->fw_state = 2;
+            ack(p, p->fw_qq, LW_FW_BEGIN, ST_OK);
+        }
+    }
+    if (p->fw_state == 3 && t - p->fw_at >= 50)
+        p->hal.update->restart(p->hal.update->ctx);
     if (p->position && t - p->heard >= T_QUIET && t - p->reported >= 1000) {
         lw_msg m;
         lw_begin(&m, LW_LOOP_BREAK, 0);

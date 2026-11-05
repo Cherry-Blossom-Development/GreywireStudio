@@ -118,11 +118,16 @@ cmake -S . -B build -G Ninja -Dpicotool_DIR=C:/Users/dalla/Repo/GreywireStudio/p
 cmake --build build
 ```
 
-This gives `build/flashover.uf2`, about 30 KB of program. The board has no USB, so the first firmware goes in through the programming header (SWD, see Glossary). On a Pico breadboard, hold BOOTSEL while plugging it in and copy the file across.
+This gives:
+- `build/flashover_full.uf2`: the loader and the firmware together, for a blank chip or a new Pico.
+- `build/flashover.uf2`: the firmware alone, about 32 KB, for once the loader is on.
+- `build/flashover_debug_full.uf2` and `build/flashover_debug.uf2`: the same with the USB report.
+
+The firmware runs at 32 KB into flash, after the loader (see `libraries/linework/README.md`). The board has no USB, so the first firmware goes in through the programming header (SWD, see Glossary); after that, updates come over MIDI. On a Pico breadboard, hold BOOTSEL while plugging it in and copy the `_full` file across.
 
 ## Not done yet
 
-- **Firmware updates over MIDI** (commands 30–32) and **recovery mode**. Both need a small loader program that keeps two copies of the firmware. For now the pedal answers "unknown command".
+- **Firmware updates over MIDI and recovery mode** are written (Nov 5, 2026) and pass the update simulation, but haven't run on hardware. Recovery mode: hold the footswitch and Soft/Hard while plugging in. The app doesn't send updates yet.
 - **Knob pushes** do nothing. The Product Document leaves open whether pressing a knob resets it.
 - **LED colour and brightness**, and dimming for dark stages: there's no message for dimming yet.
 - **Knob feel (taper).** Gain and Level are linear, to match the breadboard. A Distortion+ normally uses a log Gain pot. If linear feels bunched up at one end, a curve is a small change in `fo_pot_code`.

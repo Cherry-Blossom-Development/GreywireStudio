@@ -6,7 +6,7 @@ endif
 LW = ../../../../libraries/linework
 SY = ../../../controller/firmware/core
 CFLAGS = -std=c11 -Wall -Wextra -Wno-unused-function -O1 -g -I../core -I$(LW) -I$(SY)
-SRC = ../core/tapchanger.c $(LW)/lw_ui.c $(LW)/lw_proto.c $(LW)/pedal.c $(LW)/pd_store.c $(SY)/switchyard.c
+SRC = ../core/tapchanger.c $(LW)/lw_ui.c $(LW)/lw_proto.c $(LW)/pedal.c $(LW)/pd_store.c $(LW)/lw_fw.c $(SY)/switchyard.c
 
 all: tc_sim
 

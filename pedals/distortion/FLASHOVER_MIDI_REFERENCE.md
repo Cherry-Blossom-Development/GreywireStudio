@@ -114,7 +114,7 @@ These can be settled when stage 2 of the breadboard brings in the RP2040. The fi
 - [x] Accept the SysEx byte layouts above, or change them, then copy them into the Linework Control Specification.
 - [ ] CC 81 from other brands' controllers: many send 0 and 127 for a switch. Proposal: any value of 1 or more means Hard. *Firmware: does this for now.*
 - [ ] Fine adjustment (CC 52–54): support it now for the pots' full 256 steps, or wait until 128 steps proves too coarse. *Firmware: ignores them for now.*
-- [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time? *Firmware: firmware updates aren't written yet; it answers "unknown command".*
+- [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time? *Firmware: passes them on, like everything else (Nov 5, 2026). Data block format and checksum: `libraries/linework/README.md`.*
 - [ ] How fast to send hand changes: 10 ms or 20 ms between messages per knob. *Firmware: 20 ms (`PD_REPORT_MS` in `libraries/linework/pedal.h`).*
 - [ ] Apply a new manufacturer ID from the MIDI Association before sale (small annual fee).
 

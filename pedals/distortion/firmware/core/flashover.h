@@ -42,6 +42,7 @@ typedef struct {
     void (*set_leds)(void *ctx, const uint8_t pwm[FO_LEDS]);
     void (*set_link_led)(void *ctx, bool on);
     const lw_flash *flash;
+    const pd_fw_hal *fw;       /* optional: firmware updates over MIDI */
     uint8_t serial[LW_SERIAL_LEN];
     uint8_t brightness;        /* LED brightness 1-255; 0 means the default */
 } fo_hal;

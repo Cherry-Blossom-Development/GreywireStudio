@@ -53,7 +53,8 @@ static void ramp(flashover *f, uint32_t ms)
 /* ---------------------------------------------------------------- relays */
 
 static bool want_hard(const flashover *f) { return f->pd.value[FO_MODE] != 0; }
-static bool want_on(const flashover *f) { return f->pd.value[FO_ON] != 0; }
+/* on, unless a firmware update is under way: then the pedal stays in bypass */
+static bool want_on(const flashover *f) { return f->pd.value[FO_ON] != 0 && !pd_updating(&f->pd); }
 
 static void set_relays(flashover *f)
 {
@@ -151,7 +152,7 @@ void fo_init(flashover *f, const fo_hal *hal, bool setup)
     memset(f, 0, sizeof *f);
     f->hal = *hal;
     pd_hal ph = {
-        .ctx = f, .now_ms = pd_now, .send = pd_send, .flash = hal->flash,
+        .ctx = f, .now_ms = pd_now, .send = pd_send, .flash = hal->flash, .update = hal->fw,
         .ncontrols = FO_NCONTROLS,
         .cc = {20, 21, 22, 81, 80},
         .kind = {PD_KNOB, PD_KNOB, PD_KNOB, PD_SWITCH, PD_ONOFF},

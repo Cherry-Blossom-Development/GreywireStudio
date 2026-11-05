@@ -37,7 +37,7 @@ target_link_libraries(switchyard PRIVATE pico_stdlib pico_unique_id hardware_uar
 pico_add_extra_outputs(switchyard)
 
 add_executable(standin
-    ${CORE} ${LW}/pedal.c ${LW}/pd_store.c
+    ${CORE} ${LW}/pedal.c ${LW}/pd_store.c ${LW}/lw_fw.c
     pico/standin_main.c ${LW}/pico/pedal_flash.c)
 target_include_directories(standin PRIVATE core pico ${LW} ${LW}/pico)
 target_link_libraries(standin PRIVATE pico_stdlib pico_unique_id hardware_uart hardware_flash hardware_sync)
