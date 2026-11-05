@@ -11,6 +11,9 @@ CLASSES = [("Power", 0.4, 0.6, 0.3, ["+9V", "+5V", "VB", "GND", "Net-(D3-A)"]),
            ("Logic power", 0.2, 0.45, 0.2, ["+3V3", "*+1V1"])]
 CLEARANCE = 0.15
 EDGE = 0.3
+# The breakout board's LED driver has 0.4 mm-pitch pins, including GND and +5V: a 0.4 mm power
+# track can't leave them, so power tracks are narrower there (it carries well under 0.2 A).
+POWER_WIDTH = {"Flashover_Breakout.kicad_pro": 0.25}
 
 
 def apply(pro):
@@ -18,7 +21,9 @@ def apply(pro):
     base = dict(ns["classes"][0])
     # small signal vias (0.45 / 0.2 mm) so the router can escape fine-pitch chips
     base.update(name="Default", clearance=CLEARANCE, track_width=0.2, via_diameter=0.45, via_drill=0.2)
-    ns["classes"] = [base] + [dict(base, name=n, track_width=w, priority=i, via_diameter=vd, via_drill=vh)
+    pw = POWER_WIDTH.get(pro.get("meta", {}).get("filename"))
+    ns["classes"] = [base] + [dict(base, name=n, track_width=(pw if pw and n == "Power" else w), priority=i,
+                                   via_diameter=vd, via_drill=vh)
                               for i, (n, w, vd, vh, _) in enumerate(CLASSES)]
     ns["netclass_patterns"] = [{"netclass": n, "pattern": p} for n, *_, pats in CLASSES for p in pats]
     rules = pro.setdefault("board", {}).setdefault("design_settings", {}).setdefault("rules", {})

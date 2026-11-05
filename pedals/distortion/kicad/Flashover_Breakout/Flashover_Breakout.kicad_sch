@@ -1,0 +1,76 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "270c98be-51d2-51d5-85e6-141b7f438733")
+	(paper "A4")
+	(title_block
+		(title "Flashover Breakout")
+		(date "2026-11-05")
+		(rev "0.1")
+		(company "GreywireStudio")
+		(comment 1 "Flashover breakout board - digital pots and LED driver for the breadboard")
+	)
+	(lib_symbols
+	)
+	(text "FLASHOVER BREAKOUT BOARD"
+		(exclude_from_sim no)
+		(at 40.64 38.1 0)
+		(effects (font (size 3 3) (bold yes)) (justify left))
+		(uuid "5ae7d71c-efb2-4e01-8fdc-dd2b5ec74eab")
+	)
+	(text "For the breadboard prototype (stages 2-5).  The three MCP45HV51 digital pots and the IS31FL3236A\nLED driver from the Flashover main board, which only come in tiny surface-mount packages, on a\nsmall 2-layer board that JLCPCB assembles.  Two rows of 30 pins, 17.78 mm (0.7\") apart like a\nRaspberry Pi Pico, so it straddles a breadboard's centre gap."
+		(exclude_from_sim no)
+		(at 40.64 45.72 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "48a7ddf6-b8fe-4d60-93e8-1a4242b2177f")
+	)
+	(text "Same chips, addresses, supporting parts and references as the main board, so the firmware runs\nunchanged.  The LED driver here is the QFN-44 package (the main board has the TQFP-48 one)."
+		(exclude_from_sim no)
+		(at 40.64 99.06 0)
+		(effects (font (size 1.27 1.27)) (justify left))
+		(uuid "a40722cc-0e2e-455b-9b93-958dc05e2282")
+	)
+	(sheet
+		(at 48.26 71.12)
+		(size 50.8 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "268f1092-660a-5b50-87a6-bc7461c91660")
+		(property "Sheetname" "Breakout"
+			(at 48.26 70.4084 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "breakout.kicad_sch"
+			(at 48.26 92.0246 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "Flashover_Breakout"
+				(path "/270c98be-51d2-51d5-85e6-141b7f438733"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

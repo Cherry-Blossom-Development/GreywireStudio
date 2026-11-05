@@ -5,6 +5,7 @@
 
 static const uint8_t POT_ADDR[3] = {ADDR_POT_GAIN, ADDR_POT_TONE, ADDR_POT_LEVEL};
 static bool leds_ok;
+static bool pot_ok[3];
 
 void pots_init(void)
 {
@@ -19,8 +20,12 @@ void pots_init(void)
 bool pot_write(int pot, uint8_t code)
 {
     uint8_t b[2] = {0x00, code};
-    return i2c_write_timeout_us(i2c0, POT_ADDR[pot], b, 2, false, 1000) == 2;
+    pot_ok[pot] = i2c_write_timeout_us(i2c0, POT_ADDR[pot], b, 2, false, 1000) == 2;
+    return pot_ok[pot];
 }
+
+bool pot_answered(int pot) { return pot_ok[pot]; }
+bool leds_answered(void) { return leds_ok; }
 
 static bool reg(uint8_t r, uint8_t v)
 {

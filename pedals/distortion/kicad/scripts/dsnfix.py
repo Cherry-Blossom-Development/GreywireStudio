@@ -4,6 +4,7 @@
 import fnmatch
 import re
 
+import os
 import rules
 
 
@@ -33,7 +34,10 @@ def fix(fn, boundary=None):
     a = s.index("(class kicad_default")
     end = s.index(")", s.index(")", s.index(f"(clearance {cl})", a)) + 1)   # end of (rule ...), then of (class ...)
     extra = ""
+    pw = rules.POWER_WIDTH.get(os.path.splitext(os.path.basename(fn))[0] + ".kicad_pro")
     for cname, w, *_ in rules.CLASSES:
+        if pw and cname == "Power":
+            w = pw
         if groups[cname]:
             extra += (f"\n    (class {cname.replace(' ', '_')} {' '.join(groups[cname])}\n"
                       f"      (circuit\n        (use_via \"Via[0-3]_600:300_um\")\n      )\n"

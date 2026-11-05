@@ -48,3 +48,49 @@ for old_y, new_y in (("-3.1", "-4.1"), ("8.1", "9.1")):
 s = re.sub(r"\((start|end) (-?[\d.]+) -4\.6\)", r"(\1 \2 -5.8)", s)
 s = re.sub(r"\((start|end) (-?[\d.]+) 9\.6\)", r"(\1 \2 10.8)", s)
 write(name, s)
+
+
+# ---------------------------------------------------------------- IS31FL3236A, QFN-44 5 x 5 mm
+# The LED driver in the package JLCPCB stocks (IS31FL3236A-QFLS2-TR). Land pattern from the
+# Lumissil datasheet (rev. I, "Recommended land pattern, QFN-44"): 0.25 x 0.80 mm pads at 0.4 mm
+# pitch, 11 a side, inner edges 4.0 mm apart; exposed pad 2.45 x 2.45 mm (the datasheet's thin tabs
+# out to the corners are left off). Pin 1 at the top of the left side, counting anticlockwise.
+# Body outline, silkscreen and courtyard come from KiCad's QFN-40 5 x 5 mm, the same body.
+src = "QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm"
+s = open(KIFP + "Package_DFN_QFN.pretty/" + src + ".kicad_mod", encoding="utf-8").read()
+name = "QFN-44-1EP_5x5mm_P0.4mm_EP2.45x2.45mm"
+s = rename(s, src, name, "QFN, 44 pin, 5 x 5 mm, 0.4 mm pitch, IS31FL3236A-QFLS2 "
+                         "(https://www.lumissil.com/assets/pdf/core/IS31FL3236A_DS.pdf, recommended land pattern)")
+s = s.replace(src, name)
+head = s[:s.index('\t(pad ')]
+pads = []
+P = 0.4
+C = 2.4                     # pad centre: inner edge 2.0 + half of 0.8
+# The end pads of neighbouring sides would touch at the corners. As in the datasheet's pattern,
+# they are trimmed there: their inner edge stops at 2.15 and the inner corner is chamfered,
+# leaving 0.21 mm between them.
+CHAMFER = {0: "top_right", 10: "bottom_right", 11: "top_left", 21: "top_right",
+           22: "bottom_left", 32: "top_left", 33: "bottom_left", 43: "bottom_right"}
+for i in range(44):
+    side, k = divmod(i, 11)
+    o = (k - 5) * P
+    end = i in CHAMFER
+    c, ln = (2.475, 0.65) if end else (C, 0.8)
+    if side == 0:
+        at, size = (-c, o), (ln, 0.25)           # left, top to bottom
+    elif side == 1:
+        at, size = (o, c), (0.25, ln)            # bottom, left to right
+    elif side == 2:
+        at, size = (c, -o), (ln, 0.25)           # right, bottom to top
+    else:
+        at, size = (-o, -c), (0.25, ln)          # top, right to left
+    extra = f'\t\t(chamfer_ratio 0.5)\n\t\t(chamfer {CHAMFER[i]})\n' if end else ''
+    pads.append(f'\t(pad "{i + 1}" smd roundrect\n\t\t(at {at[0]:g} {at[1]:g})\n\t\t(size {size[0]:g} {size[1]:g})\n'
+                f'\t\t(layers "F.Cu" "F.Mask" "F.Paste")\n\t\t(roundrect_rratio 0.25)\n{extra}\t)')
+pads.append('\t(pad "45" smd rect\n\t\t(at 0 0)\n\t\t(size 2.45 2.45)\n\t\t(property pad_prop_heatsink)\n'
+            '\t\t(layers "F.Cu" "F.Mask")\n\t\t(zone_connect 2)\n\t)')
+for x in (-0.62, 0.62):                           # paste on the exposed pad in four windows, about 64%
+    for y in (-0.62, 0.62):
+        pads.append(f'\t(pad "" smd roundrect\n\t\t(at {x:g} {y:g})\n\t\t(size 0.98 0.98)\n'
+                    f'\t\t(layers "F.Paste")\n\t\t(roundrect_rratio 0.25)\n\t)')
+write(name, head + '\n'.join(pads) + '\n\t(embedded_fonts no)\n)\n')

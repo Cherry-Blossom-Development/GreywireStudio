@@ -1,6 +1,6 @@
 # Flashover generator scripts
 
-These Python scripts generate the Flashover KiCad projects (`../Flashover` and `../Flashover_Controls`).
+These Python scripts generate the Flashover KiCad projects (`../Flashover` and `../Flashover_Controls`), and the breakout board for the breadboard (`../Flashover_Breakout`).
 
 **Once a board is routed by hand in KiCad, its KiCad file is the master copy.**
 - **Control board:** routed by hand on 2026-10-10, so the scripts no longer touch it.
@@ -14,13 +14,17 @@ These Python scripts generate the Flashover KiCad projects (`../Flashover` and `
 | `gen_flashover.py` | Writes both schematics and their project files. Uses `kigen.py` and `kisym.py` | any Python 3 |
 | `rules.py` | Design rules and net classes, written into the `.kicad_pro` files | (imported) |
 | `netlists.sh` | Exports both netlists to `build/`, for the placement script | bash |
-| `make_footprints.py` | Writes the custom footprints into `libraries/GreywireStudio.pretty` (the Bourns PEC11R encoder) | any Python 3 |
+| `make_footprints.py` | Writes the custom footprints into `libraries/GreywireStudio.pretty` (the Bourns PEC11R encoder, and the IS31FL3236A's QFN-44) | any Python 3 |
 | `gen_pcb.py [--controls]` | Places every part on the main board (and, with `--controls`, the control board), in 1590BB pedal coordinates, and adds the board outline and copper planes | KiCad's Python |
 | `swap_encoders.py` | One-off, already run: put the PEC11R footprint on the hand-routed control board, keeping its routing | KiCad's Python |
 | `drill_template.py` | Draw `Flashover_drill_template.pdf`: a 1:1 printable drilling template for the top panel and the jack walls, with positions read from the control board | Python with matplotlib |
 | `fanout.py <project>` | Adds a short track and a via from each surface-mount pad down to its inner plane (GND on both boards, +5V on the control board) | KiCad's Python |
 | `route.sh <project> [passes]` | Autoroutes with Freerouting (`route.py` and `dsnfix.py` handle the round trip), then adds ground pours | bash |
 | `make_boards.sh [max passes]` | Rebuilds the main board: netlists, placement, fan-out, autoroute, then `drc.sh` | bash |
+| `gen_breakout.py` | Writes the breakout board's schematic (digital pots and LED driver for the stage 2-5 breadboard) | any Python 3 |
+| `gen_breakout_pcb.py` | Places the breakout board's parts and pin labels; then `route.sh Flashover_Breakout` | KiCad's Python |
+| `breakout_fab.sh` | Writes the breakout board's JLCPCB files (gerbers zip, BOM, CPL) into `../Flashover_Breakout/fab/` | bash |
+| `add_is31_qfn_symbol.py` | One-off, already run: adds the IS31FL3236A-QF symbol (QFN-44) to the shared library | any Python 3 |
 | `drc.sh` | Runs the design rule check, with schematic parity, on both boards and prints a summary | bash |
 | `render.sh` | Renders both boards to `build/*_pcb.png` | bash |
 

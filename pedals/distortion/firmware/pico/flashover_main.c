@@ -2,7 +2,13 @@
  *
  * Power-up: holding the footswitch while plugging in starts setup mode (pick a channel with
  * Gain, press the footswitch to save). Recovery mode (footswitch and Soft/Hard held) needs the
- * update loader, which isn't written yet. */
+ * update loader, which isn't written yet.
+ *
+ * Built as flashover_debug (FO_DEBUG_USB=1), it also reports over the Pico's USB serial port:
+ * which chips answered at power-up, then a line whenever a setting, the channel or the link
+ * changes. For the breadboard, before the LED rings are wired. */
+#include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
 #include "hardware/uart.h"
@@ -155,6 +161,48 @@ static void buttons_poll(void)
     }
 }
 
+/* ---------------------------------------------------------------- debug reports (USB serial) */
+
+#if FO_DEBUG_USB
+static void debug_start(bool setup)
+{
+    sleep_ms(1500);                          /* time for the computer to open the serial port */
+    printf("\nFlashover %u.%u.%u debug%s\n", FO_FW[0], FO_FW[1], FO_FW[2], setup ? ", setup mode" : "");
+    const char *name[3] = {"U7 Gain", "U8 Tone", "U9 Level"};
+    for (int k = 0; k < 3; k++)
+        printf("  pot %-8s %s\n", name[k], pot_answered(k) ? "answered" : "NOT ANSWERING (check wiring, 9V and 3.3V)");
+    printf("  LED driver %s\n", leds_answered() ? "answered" : "not answering (fine until stage 3)");
+}
+
+static void debug_poll(void)
+{
+    static char last[160];
+    static uint32_t at;
+    uint32_t t = to_ms_since_boot(get_absolute_time());
+    if (t - at < 50)
+        return;
+    at = t;
+    char line[160];
+    const uint8_t *v = fo.pd.value;
+    char ch[4] = "-";
+    if (fo.pd.channel <= 15)
+        snprintf(ch, sizeof ch, "%u", fo.pd.channel + 1u);
+    if (fo.setup)
+        snprintf(line, sizeof line, "setup mode: channel %u (press the footswitch to save)", fo.setup_ch + 1u);
+    else
+        snprintf(line, sizeof line, "gain %3u  tone %3u  level %3u  %s  %s  | pots %3u %3u %3u | ch %s  pos %u  %s",
+                 v[FO_GAIN], v[FO_TONE], v[FO_LEVEL], v[FO_MODE] ? "Hard" : "Soft", v[FO_ON] ? "on " : "off",
+                 fo.pot[0], fo.pot[1], fo.pot[2], ch, fo.pd.position, fo.link ? "linked" : "");
+    if (strcmp(line, last) != 0) {
+        strcpy(last, line);
+        printf("%s\n", line);
+    }
+}
+#else
+static void debug_start(bool setup) { (void)setup; }
+static void debug_poll(void) {}
+#endif
+
 /* ---------------------------------------------------------------- main */
 
 static void out_pin(uint pin)
@@ -167,6 +215,9 @@ static void out_pin(uint pin)
 int main(void)
 {
     pedal_flash_check();
+#if FO_DEBUG_USB
+    stdio_init_all();
+#endif
     out_pin(PIN_HARD_SEL);                   /* relays off: Soft, bypassed */
     out_pin(PIN_FX_ON);
     out_pin(PIN_LINK_LED);
@@ -187,6 +238,7 @@ int main(void)
         u = (u << 8) | id.id[i];
     lw_serial_from_u64(u, hal.serial);
     fo_init(&fo, &hal, setup);
+    debug_start(setup);
     encoders_init();
 
     uint32_t last_ms = hal_now(NULL);
@@ -200,6 +252,7 @@ int main(void)
         }
         encoders_poll();
         fo_poll(&fo);
+        debug_poll();
         while (!ring_empty(&tx) && uart_is_writable(uart0))
             uart_putc_raw(uart0, (char)ring_get(&tx));
     }
