@@ -19,9 +19,9 @@ pico_sdk_init()
 
 set(LW ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/linework)
 
-set(SRC core/flashover.c
-    ${LW}/lw_proto.c ${LW}/pedal.c ${LW}/pd_store.c ${LW}/pico/pedal_flash.c
-    pico/flashover_main.c pico/chips.c)
+set(SRC core/flashover.c pico/flashover_main.c
+    ${LW}/lw_proto.c ${LW}/pedal.c ${LW}/pd_store.c ${LW}/lw_ui.c
+    ${LW}/pico/pedal_flash.c ${LW}/pico/lw_midi.c ${LW}/pico/lw_input.c ${LW}/pico/lw_chips.c)
 
 # flashover: the pedal.  flashover_debug: the same, plus reports on the Pico's USB serial port
 # (for the breadboard; the board has no USB).

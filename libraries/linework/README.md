@@ -7,13 +7,17 @@ The C code every Linework pedal shares. It's plain C with no Pico code (except i
 | `lw_proto` | The Linework Control Specification 0.2 basics: the message header (one constant, to change when a paid MIDI Association ID arrives), commands, 7-bit number packing, CRC-32 and a MIDI parser |
 | `pedal` | A pedal's loop behaviour: merging, position count, identity, channel, settings report, 128 presets, hand-change reports (at most one per control every 20 ms), loop-break reports, and saving all of it to flash |
 | `pd_store` | The settings log in flash: 12-byte records in two 4 KB sectors, compacted when full, safe against power cuts |
+| `lw_ui` | Panel helpers: the endless knobs' speed-up, the 11-LED rings (bar or dot), LED brightness, and pot ramps |
 | `pico/ring.h` | A byte ring buffer for UART data |
 | `pico/pedal_flash` | `pd_store`'s flash access on the RP2040, in the last 64 KB of flash |
+| `pico/lw_midi` | The MIDI loop on UART0 with buffers, and the pedal's serial number from the flash chip's ID |
+| `pico/lw_input` | Endless knobs (encoders, on GPIO interrupts) and debounced buttons |
+| `pico/lw_chips` | The MCP45HV51 digital pots and the IS31FL3236A LED driver on I2C |
 
 **Used by:**
 - Switchyard's `standin` pedal (`pedals/controller/firmware/`), and Switchyard's own code uses `lw_proto`.
 - Flashover (`pedals/distortion/firmware/`).
-- Tap Changer, later.
+- Tap Changer (`pedals/boost/firmware/`).
 
 A pedal describes its controls in `pd_hal`: the control change numbers, in the order its settings are reported, and each control's kind:
 - **knob:** 0–127
@@ -22,4 +26,4 @@ A pedal describes its controls in `pd_hal`: the control change numbers, in the o
 
 It also gives an `apply` callback, which the hardware follows on every change.
 
-The tests live with their users: `pedals/controller/firmware/test` (62 checks) and `pedals/distortion/firmware/test` (57 checks). Run both after changing anything here.
+The tests live with their users: `pedals/controller/firmware/test` (62 checks), `pedals/distortion/firmware/test` (57 checks) and `pedals/boost/firmware/test` (31 checks). Run all three after changing anything here.

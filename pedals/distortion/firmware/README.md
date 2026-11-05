@@ -7,9 +7,9 @@ Started Nov 5, 2026. This is the firmware for the RP2040 on Flashover's main boa
 | Folder | What's in it |
 |---|---|
 | `core/` | `flashover.c`: Flashover's own behaviour, in plain C with no Pico code |
-| `pico/` | The hardware layer: the MIDI UART, the encoders and buttons, the I2C chips and the relays |
+| `pico/` | The pin plan and the main program: relays, LEDs and the debug report. The MIDI port, encoders, buttons and I2C chips use the shared code in `libraries/linework/pico/` |
 | `test/` | `fo_sim.c`: a PC simulation of Flashover on a loop with Switchyard and a stand-in pedal |
-| `../../../libraries/linework/` | The Linework code shared with Switchyard's stand-in pedal and later pedals: the protocol, the pedal's loop behaviour, and the settings log in flash |
+| `../../../libraries/linework/` | The Linework code shared with Tap Changer and Switchyard's stand-in pedal: the protocol, the pedal's loop behaviour, the settings log in flash, the knob and ring helpers, and the RP2040 drivers |
 
 ## What it does
 

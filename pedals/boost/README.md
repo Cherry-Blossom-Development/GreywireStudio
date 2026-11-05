@@ -5,6 +5,8 @@ A clean boost in the Linework series, with one Boost knob and a footswitch. It w
 ## Folders
 
 - `sim/` - LTspice simulations of the circuit
+- `kicad/` - schematics for both boards
+- `firmware/` - firmware for the RP2040 (started Nov 5, 2026; not yet run on hardware)
 
 ## Status
 

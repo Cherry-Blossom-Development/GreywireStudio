@@ -1,4 +1,5 @@
 #include "flashover.h"
+#include "lw_ui.h"
 #include <string.h>
 
 #define DEFAULT_BRIGHTNESS 128
@@ -43,14 +44,9 @@ static void ramp(flashover *f, uint32_t ms)
 {
     int step = (int)(ms * FO_RAMP);
     for (int k = 0; k < 3; k++) {
-        uint8_t t = target(f, k), c = f->pot[k];
-        if (c == t)
-            continue;
-        if (c < t)
-            c = (uint8_t)(t - c > step ? c + step : t);
-        else
-            c = (uint8_t)(c - t > step ? c - step : t);
-        write_pot(f, k, c);
+        uint8_t t = target(f, k);
+        if (f->pot[k] != t)
+            write_pot(f, k, lw_ramp(f->pot[k], t, step));
     }
 }
 
@@ -101,34 +97,6 @@ static void relays_poll(flashover *f, uint32_t t)
 
 /* ---------------------------------------------------------------- LEDs */
 
-/* light 0-256 per LED, then brightness with a rough gamma so dim steps look even */
-static uint8_t pwm(unsigned light, unsigned bright)
-{
-    unsigned g = (light * light) >> 8;
-    unsigned v = (g * bright) >> 8;      /* a sliver of the next LED rounds to off */
-    return (uint8_t)(v > 255 ? 255 : v);
-}
-
-/* x is the position on the ring in 1/256ths of an LED step, 0 to 10 x 256 */
-static void ring_bar(unsigned *light, unsigned x)
-{
-    for (unsigned k = 0; k < FO_RING; k++) {
-        unsigned at = k * 256u;
-        light[k] = x >= at ? 256u : (x + 256u > at ? x + 256u - at : 0u);
-    }
-}
-
-static void ring_dot(unsigned *light, unsigned x)
-{
-    unsigned k = x / 256u, frac = x % 256u;
-    memset(light, 0, FO_RING * sizeof *light);
-    light[k] = 256u - frac;
-    if (frac && k + 1 < FO_RING)
-        light[k + 1] = frac;
-}
-
-static unsigned ring_x(uint8_t v) { return ((unsigned)v * 10u * 256u + 63u) / 127u; }
-
 void fo_render(const flashover *f, uint8_t out[FO_LEDS], uint32_t t)
 {
     unsigned light[FO_LEDS];
@@ -144,15 +112,15 @@ void fo_render(const flashover *f, uint8_t out[FO_LEDS], uint32_t t)
         light[FO_LED_SOFT] = phase ? 256 : 0;
         light[FO_LED_HARD] = phase ? 0 : 256;
     } else {
-        ring_bar(&light[0], ring_x(f->pd.value[FO_GAIN]));
-        ring_dot(&light[FO_RING], ring_x(f->pd.value[FO_TONE]));
-        ring_bar(&light[2 * FO_RING], ring_x(f->pd.value[FO_LEVEL]));
+        lw_ring_bar(&light[0], f->pd.value[FO_GAIN]);
+        lw_ring_dot(&light[FO_RING], f->pd.value[FO_TONE]);
+        lw_ring_bar(&light[2 * FO_RING], f->pd.value[FO_LEVEL]);
         /* the LEDs show what the relays are doing, or about to do */
         light[want_hard(f) ? FO_LED_HARD : FO_LED_SOFT] = 256;
         light[FO_LED_ON] = want_on(f) ? 256 : 0;
     }
     for (int i = 0; i < FO_LEDS; i++)
-        out[i] = pwm(light[i], bright);
+        out[i] = lw_led_pwm(light[i], bright);
 }
 
 static void leds_poll(flashover *f, uint32_t t, bool force)
@@ -223,13 +191,8 @@ void fo_turn(flashover *f, int knob, int detents)
         }
         return;
     }
-    /* one step per click when turned slowly, up to 4 when spun: 128 steps is about 5 turns
-     * slowly or a bit over 1 turn quickly (24 clicks per turn) */
-    uint32_t t = now(f), gap = t - f->last_detent[knob];
-    f->last_detent[knob] = t;
-    int step = gap < 30 ? 4 : gap < 80 ? 2 : 1;
-    int v = f->pd.value[knob] + detents * step;
-    pd_set_control(&f->pd, knob, (uint8_t)(v < 0 ? 0 : v > 127 ? 127 : v));
+    int step = lw_knob_step(&f->last_detent[knob], now(f));
+    pd_set_control(&f->pd, knob, (uint8_t)lw_knob_add(f->pd.value[knob], detents, step));
 }
 
 void fo_press(flashover *f, int button)

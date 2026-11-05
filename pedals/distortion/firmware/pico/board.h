@@ -25,7 +25,7 @@
 #define PIN_LED_SCL    19
 #define PIN_LINK_LED   20
 
-#define MIDI_BAUD 31250
+
 
 /* I2C addresses (7-bit): MCP45HV51 is 0111 1 A1 A0, IS31FL3236A with AD at ground is 0111 100 */
 #define ADDR_POT_GAIN  0x3C /* U7: A1 = 0, A0 = 0 */
