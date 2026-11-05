@@ -2,8 +2,10 @@
  * and MIDI out (GP0). It answers Switchyard like a Linework pedal (core/pedal.c), so the
  * whole loop can be tested before Flashover has its MIDI parts.
  *
+ * It keeps its channel, presets and current values in flash (the last 64 KB), as real pedals do.
+ *
  * Debug: open the Pico's USB serial port (115200, any terminal). It prints the position and
- * channel when they change. Typing 1-4 turns "knob" 1-4 up by 8, to test hand-change reports. */
+ * channel when they change. Typing 1-3 turns "knob" 1-3 up by 8 and 4 switches it on or off, to test hand-change reports. */
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
@@ -12,6 +14,7 @@
 
 #include "board.h"
 #include "ring.h"
+#include "pedal_flash.h"
 #include "pedal.h"
 
 #define PIN_ONBOARD_LED 25
@@ -31,6 +34,7 @@ static void on_uart0(void)
 
 int main(void)
 {
+    pedal_flash_check();
     stdio_init_all();
     gpio_init(PIN_ONBOARD_LED);
     gpio_set_dir(PIN_ONBOARD_LED, GPIO_OUT);
@@ -48,7 +52,9 @@ int main(void)
         .fw = {0, 1, 0},
         .ncontrols = 4,
         .cc = {20, 21, 22, 80},              /* knobs 1-3 and on/off, as in the spec's Message map */
+        .kind = {PD_KNOB, PD_KNOB, PD_KNOB, PD_ONOFF},
         .value = {64, 64, 64, 0},
+        .flash = &pedal_flash,
     };
     pico_unique_board_id_t id;
     pico_get_unique_board_id(&id);
@@ -81,7 +87,9 @@ int main(void)
         int c = getchar_timeout_us(0);
         if (c >= '1' && c <= '4') {
             int k = c - '1';
-            pd_set_control(&pedal, k, (uint8_t)((pedal.value[k] + 8) & 0x7F));
+            uint8_t v = k == 3 ? (uint8_t)(pedal.value[3] ? 0 : 127)        /* 4: on/off toggles */
+                               : (uint8_t)((pedal.value[k] + 8) & 0x7F);
+            pd_set_control(&pedal, k, v);
             printf("knob %d = %u\n", k + 1, pedal.value[k]);
         }
     }

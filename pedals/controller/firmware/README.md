@@ -8,17 +8,17 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 | `pico/` | The Pico hardware layer: MIDI UARTs, USB MIDI, flash storage, footswitches, LEDs and display |
 | `test/` | A PC simulation of a whole loop, which checks the core against the spec (`sim.c`), and a bridge that lets the test tool in `../tools/linework-test/` drive the same loop (`bridge.c`) |
 
-`core/` holds three files:
-- `lw_proto` holds the shared protocol pieces: the message header, the 7-bit number packing, CRC-32 (see Glossary) and a MIDI parser.
-- `switchyard` is the controller itself.
-- `pedal` is a Linework pedal's loop behaviour. The stand-in uses it, and it's meant to become the shared code for Flashover and Tap Changer.
+`core/` holds `switchyard`, the controller itself. The code shared with the pedals is in `libraries/linework/` at the top of the repo (moved there on Nov 5, 2026, for Flashover):
+- `lw_proto` holds the protocol pieces: the message header, the 7-bit number packing, CRC-32 (see Glossary) and a MIDI parser.
+- `pedal` is a Linework pedal's loop behaviour, which the stand-in and Flashover both use.
+- `pd_store` keeps a pedal's settings in flash.
 
 ## Two programs
 
 | Program | Runs on | Does |
 |---|---|---|
 | `switchyard` | The Switchyard Pico | The controller: USB MIDI to the phone, the MIDI loop, the setlist, footswitches, LEDs and the song.part display |
-| `standin` | The second Pico | Acts like a Linework pedal on the loop. Its USB serial port prints its position and channel, and typing 1-4 turns a "knob" so you can test hand-change reports |
+| `standin` | The second Pico | Acts like a Linework pedal on the loop, and keeps its channel, presets and settings in flash like a real pedal. Its USB serial port prints its position and channel; typing 1-3 turns a "knob" and 4 switches it on or off, to test hand-change reports |
 
 ## What works (checked in the simulation)
 
@@ -38,7 +38,6 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 - **Running on a Pico.** Both programs build with no warnings (Nov 4, 2026), but neither has run on real hardware yet. Switchyard's firmware is about 37 KB.
 - **Firmware updates** (commands 30-32). For now Switchyard is updated by holding BOOTSEL and copying the `.uf2` file. The stand-in answers firmware commands with "unknown command".
 - **Phone charging** (stage 2): the USB-C power controller, the power role swap, and VBUS_EN. That needs a USB Power Delivery stack.
-- **The stand-in keeps its channel and presets in memory only,** so it forgets them at power-off. Real pedals must keep them (spec: "Settings survive power off").
 - **USB IDs:** the USB IDs are TinyUSB's development numbers. A free product ID from Raspberry Pi is needed before selling.
 
 ## Building

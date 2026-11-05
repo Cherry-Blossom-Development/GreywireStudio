@@ -21,12 +21,14 @@ pico_sdk_init()
 # breadboard (stage 1): no SENSE_9V divider, so 9V is reported as present
 set(SWITCHYARD_BOARD "breadboard" CACHE STRING "breadboard or pcb")
 
-set(CORE core/lw_proto.c)
+# shared Linework code (libraries/linework): protocol, pedal behaviour, settings in flash
+set(LW ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/linework)
+set(CORE ${LW}/lw_proto.c)
 
 add_executable(switchyard
     ${CORE} core/switchyard.c
     pico/switchyard_main.c pico/flash_store.c pico/ht16k33.c pico/usb_descriptors.c)
-target_include_directories(switchyard PRIVATE core pico pico/usb)   # pico/usb: TinyUSB settings, Switchyard only
+target_include_directories(switchyard PRIVATE core pico pico/usb ${LW} ${LW}/pico)   # pico/usb: TinyUSB settings, Switchyard only
 if(SWITCHYARD_BOARD STREQUAL "pcb")
     target_compile_definitions(switchyard PRIVATE BOARD_HAS_SENSE_9V=1)
 endif()
@@ -35,10 +37,10 @@ target_link_libraries(switchyard PRIVATE pico_stdlib pico_unique_id hardware_uar
 pico_add_extra_outputs(switchyard)
 
 add_executable(standin
-    ${CORE} core/pedal.c
-    pico/standin_main.c)
-target_include_directories(standin PRIVATE core pico)
-target_link_libraries(standin PRIVATE pico_stdlib pico_unique_id hardware_uart)
+    ${CORE} ${LW}/pedal.c ${LW}/pd_store.c
+    pico/standin_main.c ${LW}/pico/pedal_flash.c)
+target_include_directories(standin PRIVATE core pico ${LW} ${LW}/pico)
+target_link_libraries(standin PRIVATE pico_stdlib pico_unique_id hardware_uart hardware_flash hardware_sync)
 pico_enable_stdio_usb(standin 1)      # debug messages over the Pico's USB serial port
 pico_enable_stdio_uart(standin 0)     # UART0 is the MIDI loop
 pico_add_extra_outputs(standin)

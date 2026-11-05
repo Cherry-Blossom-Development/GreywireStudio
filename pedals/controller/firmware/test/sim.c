@@ -3,7 +3,7 @@
  * phone app on USB. Runs the core code unchanged and checks it against the
  * Linework Control Specification 0.2.
  *
- * Build and run (any C compiler):  make -C test   or   gcc -I../core sim.c ../core/lw_proto.c ../core/switchyard.c ../core/pedal.c -o sim && ./sim
+ * Build and run (any C compiler):  make -C test   or   gcc -I../core -I../../../../libraries/linework sim.c ../core/switchyard.c ../../../../libraries/linework/lw_proto.c ../../../../libraries/linework/pedal.c ../../../../libraries/linework/pd_store.c -o sim && ./sim
  */
 #include <stdio.h>
 #include <stdlib.h>

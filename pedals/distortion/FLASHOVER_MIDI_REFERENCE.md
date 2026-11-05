@@ -52,7 +52,7 @@ These six messages are fixed by the Linework Control Specification and the Flash
 
 **Level in Hard mode.** Flashover cuts Level to about 38% internally in Hard mode, to match loudness. CC 22 always carries the player's Level setting, never the cut value, so the knob and the app agree.
 
-**Resolution.** CC values have 128 steps, but the MCP45HV51 pots have 257. The spec reserves CC 52–54 as fine-adjust partners for CC 20–22. Flashover can ignore them at first and map 0–127 across the full pot range.
+**Resolution.** CC values have 128 steps, but the MCP45HV51 pots have 256 (wiper codes 00–FF; checked against Microchip's datasheet in November 2026). The spec reserves CC 52–54 as fine-adjust partners for CC 20–22. Flashover can ignore them at first and map 0–127 across the full pot range.
 
 **Messages Flashover ignores but passes on:** notes, pitch bend, aftertouch, MIDI clock, start/stop and all other CC numbers. Other brands' MIDI controllers can still use Flashover with the six messages above, since they're all standard MIDI.
 
@@ -109,13 +109,13 @@ In the identity replies, `dd` is Flashover's channel (`7F` until one is assigned
 
 ## Open decisions
 
-No firmware exists yet, so these can be settled when stage 2 of the breadboard brings in the RP2040.
+These can be settled when stage 2 of the breadboard brings in the RP2040. The first firmware (`firmware/`, November 2026) has a provisional answer for some of them, marked below; changing one is a one-line edit.
 
 - [x] Accept the SysEx byte layouts above, or change them, then copy them into the Linework Control Specification.
-- [ ] CC 81 from other brands' controllers: many send 0 and 127 for a switch. Proposal: any value of 1 or more means Hard.
-- [ ] Fine adjustment (CC 52–54): support it now for the pots' full 257 steps, or wait until 128 steps proves too coarse.
-- [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time?
-- [ ] How fast to send hand changes: 10 ms or 20 ms between messages per knob.
+- [ ] CC 81 from other brands' controllers: many send 0 and 127 for a switch. Proposal: any value of 1 or more means Hard. *Firmware: does this for now.*
+- [ ] Fine adjustment (CC 52–54): support it now for the pots' full 256 steps, or wait until 128 steps proves too coarse. *Firmware: ignores them for now.*
+- [ ] Firmware data blocks: should Flashover pass them on like everything else, or drop the ones addressed to itself to save loop time? *Firmware: firmware updates aren't written yet; it answers "unknown command".*
+- [ ] How fast to send hand changes: 10 ms or 20 ms between messages per knob. *Firmware: 20 ms (`PD_REPORT_MS` in `libraries/linework/pedal.h`).*
 - [ ] Apply a new manufacturer ID from the MIDI Association before sale (small annual fee).
 
 ## Glossary

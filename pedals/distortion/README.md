@@ -8,6 +8,7 @@ The design files still use the internal name GS1.
 
 - `kicad/` - KiCad project (schematic and PCB layout)
 - `sim/` - LTspice simulations of the circuit
+- `firmware/` - firmware for the RP2040 (started November 2026; not yet run on hardware)
 
 ## Status
 
