@@ -18,7 +18,7 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 | Program | Runs on | Does |
 |---|---|---|
 | `switchyard` | The Switchyard Pico | The controller: USB MIDI to the phone, the MIDI loop, the setlist, footswitches, LEDs and the song.part display |
-| `standin` | The second Pico | Acts like a Linework pedal on the loop, and keeps its channel, presets and settings in flash like a real pedal. Its USB serial port prints its position and channel; typing 1-3 turns a "knob" and 4 switches it on or off, to test hand-change reports |
+| `standin` | The second Pico | Acts like a Linework pedal on the loop, and keeps its channel, presets and settings in flash like a real pedal. Its USB serial port prints its position and channel; typing 1-3 turns a "knob" and 4 switches it on or off, to test hand-change reports. It runs after the shared pedal loader and takes firmware updates like a real pedal |
 
 ## What works (checked in the simulation)
 
@@ -47,7 +47,6 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 ## Not done yet
 
 - **Running on a Pico.** Everything builds with no warnings (Nov 6, 2026), but none of it has run on real hardware yet. Switchyard's firmware is about 41 KB, and its loader about 25 KB.
-- **The stand-in Pico doesn't take updates:** it answers firmware commands with "unknown command". The simulated stand-ins in `test/` do take them.
 - **Phone charging** (stage 2): the USB-C power controller, the power role swap, and VBUS_EN. That needs a USB Power Delivery stack.
 - **USB IDs:** the USB IDs are TinyUSB's development numbers. A free product ID from Raspberry Pi is needed before selling.
 
@@ -69,7 +68,13 @@ cmake --build build
 This gives:
 - `build/switchyard_full.uf2`: Switchyard's loader and firmware together. Use it the first time, or after anything else has been on the Pico.
 - `build/switchyard.uf2`: the firmware alone. This is the file the app (or the test tool) sends to update Switchyard over USB. Copying it on by BOOTSEL also works, once the loader is on.
-- `build/standin.uf2`: the stand-in pedal.
+- `build/standin_full.uf2`: the stand-in pedal with the shared pedal loader. Use it the first time.
+- `build/standin.uf2` and `build/standin_next.uf2`: the stand-in's firmware alone. They are the same program, reporting versions 0.1.0 and 0.1.1. To try a real pedal update on the breadboard:
+  1. Scan the loop in the test tool.
+  2. Send `standin_next.uf2` to the stand-in.
+  3. Watch it come back as 0.1.1.
+  4. Send `standin.uf2` to go back.
+- **Stand-in recovery mode:** connect GP2 and GP3 to ground while plugging it in. Its onboard LED flashes quickly.
 
 To load a file, hold the Pico's BOOTSEL button while plugging it into the computer, then copy the file onto the drive that appears. For the board, add `-DSWITCHYARD_BOARD=pcb` to the first command; that turns on the 9V sense input.
 

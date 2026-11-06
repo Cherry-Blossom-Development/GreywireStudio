@@ -2,7 +2,9 @@
  * and MIDI out (GP0). It answers Switchyard like a Linework pedal (core/pedal.c), so the
  * whole loop can be tested before Flashover has its MIDI parts.
  *
- * It keeps its channel, presets and current values in flash (the last 64 KB), as real pedals do.
+ * It keeps its channel, presets and current values in flash (the last 64 KB), as real pedals do,
+ * and takes firmware updates through the shared loader (libraries/linework/pico/loader.c).
+ * standin_next.uf2 is the same program reporting firmware 0.1.1, to have something to send.
  *
  * Debug: open the Pico's USB serial port (115200, any terminal). It prints the position and
  * channel when they change. Typing 1-3 turns "knob" 1-3 up by 8 and 4 switches it on or off, to test hand-change reports. */
@@ -16,6 +18,11 @@
 #include "ring.h"
 #include "pedal_flash.h"
 #include "pedal.h"
+#include "lw_update.h"
+
+#ifndef STANDIN_FW_PATCH
+#define STANDIN_FW_PATCH 0
+#endif
 
 #define PIN_ONBOARD_LED 25
 
@@ -49,12 +56,13 @@ int main(void)
     pd_hal hal = {
         .now_ms = hal_now, .send = hal_send,
         .model = {0x7F, 0x7F},               /* test model: not a real pedal */
-        .fw = {0, 1, 0},
+        .fw = {0, 1, STANDIN_FW_PATCH},
         .ncontrols = 4,
         .cc = {20, 21, 22, 80},              /* knobs 1-3 and on/off, as in the spec's Message map */
         .kind = {PD_KNOB, PD_KNOB, PD_KNOB, PD_ONOFF},
         .value = {64, 64, 64, 0},
         .flash = &pedal_flash,
+        .update = &lw_update_hal,
     };
     pico_unique_board_id_t id;
     pico_get_unique_board_id(&id);
@@ -63,6 +71,9 @@ int main(void)
         u = (u << 8) | id.id[i];
     lw_serial_from_u64(u, hal.serial);
     pd_init(&pedal, &hal);
+    if (lw_fw_take_announce(&lw_flash_whole))
+        pd_announce(&pedal, 1000);           /* first start of a new version: introduce it */
+    printf("stand-in pedal, firmware 0.1.%d\n", STANDIN_FW_PATCH);
 
     uint8_t shown_pos = 0xFF, shown_ch = 0xFE;
     int shown_preset = -2;

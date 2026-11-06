@@ -25,12 +25,8 @@ None of the firmware has run on real hardware yet.
    - up to 4 firmware blocks in flight at once
 2. ~~Web MIDI test tool: "send firmware"~~ **Done Nov 6** (commit 9dd729e). Tried in headless Chrome on the simulated loop: the real `flashover.uf2` (28 KB) took 12 s. Switchyard now refreshes a pedal's version when it introduces itself after an update, and scans again, because the restarted pedal has lost its place in the loop.
 3. ~~Switchyard's own firmware updates over USB~~ **Done Nov 6.** Switchyard has its own loader with a USB recovery mode, and a flash layout that keeps the setlists at 1 MB. Approved: recovery mode is both footswitches held while plugging in, and the display shows `----` while erasing, then `--42` and so on.
-4. **Possible next terminal steps:**
-   - Put each pedal's recovery buttons into its Product Document, as the spec asks:
-     - Flashover: footswitch + Soft/Hard;
-     - Tap Changer: footswitch + knob push;
-     - Switchyard: both footswitches.
-   - Let the stand-in Pico take updates, so the Switchyard breadboard can try a pedal update for real.
+4. ~~Recovery buttons in the Product Documents~~ **Done Nov 6.** Tap Changer's document now says footswitch + knob push, and Switchyard's says both footswitches; Flashover's already said footswitch + Soft/Hard. The status lines and Tap Changer's model number are brought up to date.
+5. ~~Stand-in Pico takes updates~~ **Done Nov 6.** It runs after the shared loader. `standin_next.uf2` is the same program reporting 0.1.1, so the Switchyard breadboard can try a real pedal update. The breadboard guide now says to load the `_full.uf2` files the first time.
 
 ## Waiting on the breadboard (don't do yet)
 

@@ -9,7 +9,9 @@
 #   build/switchyard_full.uf2  Switchyard's loader + firmware, for a blank chip or a new Pico
 #   build/switchyard.uf2       the firmware alone, once the loader is on; also what the app sends
 #                              to update Switchyard over USB
-#   build/standin.uf2          the stand-in pedal
+#   build/standin_full.uf2     the stand-in pedal with its loader, for a new Pico; then
+#   build/standin.uf2, standin_next.uf2   its firmware alone, versions 0.1.0 and 0.1.1, to try
+#                              sending a pedal update from the test tool
 cmake_minimum_required(VERSION 3.13)
 
 if(NOT DEFINED PICO_SDK_PATH)
@@ -55,11 +57,18 @@ pico_add_linker_script_override_path(switchyard_loader ${LW}/pico/link_loader FI
 pico_add_extra_outputs(switchyard_loader)
 linework_full(switchyard switchyard_loader)
 
-add_executable(standin
-    ${CORE} ${LW}/pedal.c ${LW}/pd_store.c ${LW}/lw_fw.c
-    pico/standin_main.c ${LW}/pico/pedal_flash.c)
-target_include_directories(standin PRIVATE core pico ${LW} ${LW}/pico)
-target_link_libraries(standin PRIVATE pico_stdlib pico_unique_id hardware_uart hardware_flash hardware_sync)
-pico_enable_stdio_usb(standin 1)      # debug messages over the Pico's USB serial port
-pico_enable_stdio_uart(standin 0)     # UART0 is the MIDI loop
-pico_add_extra_outputs(standin)
+# the stand-in pedal, in two versions so an update can be tried: standin.uf2 reports firmware
+# 0.1.0 and standin_next.uf2 reports 0.1.1. Both run after the shared pedal loader (model 7F 7F;
+# recovery: GP2 and GP3 both held to ground at power-up; the onboard LED on GP25 flashes)
+foreach(T standin standin_next)
+    add_executable(${T} ${CORE} ${LW}/pedal.c ${LW}/pd_store.c pico/standin_main.c ${LW}/pico/pedal_flash.c)
+    target_include_directories(${T} PRIVATE core pico ${LW} ${LW}/pico)
+    target_link_libraries(${T} PRIVATE pico_stdlib pico_unique_id hardware_uart hardware_flash hardware_sync)
+    pico_enable_stdio_usb(${T} 1)      # debug messages over the Pico's USB serial port
+    pico_enable_stdio_uart(${T} 0)     # UART0 is the MIDI loop
+    linework_firmware(${T})            # runs at 32 KB, after the loader; takes updates
+    pico_add_extra_outputs(${T})
+endforeach()
+target_compile_definitions(standin_next PRIVATE STANDIN_FW_PATCH=1)
+linework_loader(standin 0x7F 0x7F 2 3 25)
+linework_full(standin standin_loader)

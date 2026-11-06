@@ -187,5 +187,10 @@ Cable the loop: Switchyard J1 (loop out) → stand-in MIDI in → stand-in MIDI 
 
 1. With the Pico out of the breadboard, plug in the 9V supply. Check for about 8.7 V at L7805 pin 1, 5 V at pin 3, and about 4.7 V at D2's striped end.
 2. Unplug the 9V and fit the Pico. Plug in the 9V again and check for 3.3 V at Pico pin 36.
-3. Load the firmware from the computer, over the Pico's USB socket.
+3. Load the firmware from the computer, over the Pico's USB socket:
+   1. Hold the Pico's white BOOTSEL button while plugging its USB cable into the computer. A drive called RPI-RP2 appears.
+   2. Copy `switchyard_full.uf2` from `pedals/controller/firmware/build/` onto that drive. The Pico restarts by itself.
+   3. Load the stand-in Pico the same way, with `standin_full.uf2`.
+
+   The `_full` files hold the loader as well as the firmware, so they're the ones to use the first time. Later updates can go through the test tool instead.
 4. Then connect the phone. A Pico without firmware shows up as a USB drive, so load the firmware first.
