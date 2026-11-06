@@ -18,7 +18,9 @@
 #define PIN_LED_SCL    19
 #define PIN_LINK_LED   20
 
+#ifndef ADDR_POT
 #define ADDR_POT       0x3C /* U2: A1 = 0, A0 = 0 */
+#endif                      /* the breadboard build uses 0x3D: the 10k Tone pot on Flashover's breakout */
 #define ADDR_LEDS      0x3C /* U7 on the control board, AD at ground, on its own bus */
 
 /* If the knob turns the wrong way on the first board, set this to true */

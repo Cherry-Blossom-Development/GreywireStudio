@@ -192,7 +192,10 @@ Build output is in `../firmware/build/`:
    - **Check 2:** each knob changes the sound as the old pot did. Gain up is more distortion, Tone up is brighter, Level up is louder.
    - **Check 3:** a slow turn moves 1 per click; a quick spin moves faster.
 4. **Memory:** set the knobs, wait 3 seconds, unplug everything and plug back in. The report should show the same settings.
-5. **Setup mode:** hold the footswitch button while plugging in. The report says "setup mode". Turn Gain to pick a channel and press the button to save.
+5. **Setup mode:**
+   1. Unplug the 9 V supply and the USB cable.
+   2. Hold the footswitch button while plugging the USB cable back in, then plug in the 9 V. The Pico has to start up with the button held, and with USB connected so the report can be seen.
+   3. The report says "setup mode". Turn Gain to pick a channel, and press the button to save.
 
 **Hum while the USB cable is in:** the computer's ground joins the amp's through the cable, which can hum. It doesn't hurt anything. For listening tests, unplug the USB cable and run from the 9 V supply alone; the settings and the firmware stay.
 

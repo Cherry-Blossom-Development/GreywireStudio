@@ -23,7 +23,9 @@ set(SRC core/tapchanger.c pico/tapchanger_main.c
     ${LW}/lw_proto.c ${LW}/pedal.c ${LW}/pd_store.c ${LW}/lw_ui.c
     ${LW}/pico/pedal_flash.c ${LW}/pico/lw_midi.c ${LW}/pico/lw_input.c ${LW}/pico/lw_chips.c)
 
-foreach(T tapchanger tapchanger_debug)
+# tapchanger_breakout_debug: for the stage 2 breadboard (TAP_CHANGER_BREADBOARD_STAGE2.md), which
+# borrows Flashover's breakout board and uses its 10k Tone pot (address 0x3D) as the Boost pot
+foreach(T tapchanger tapchanger_debug tapchanger_breakout_debug)
     add_executable(${T} ${SRC})
     target_include_directories(${T} PRIVATE core pico ${LW} ${LW}/pico)
     target_compile_options(${T} PRIVATE -Wall -Wextra -Wno-unused-function -Wno-unused-parameter)
@@ -35,6 +37,8 @@ foreach(T tapchanger tapchanger_debug)
 endforeach()
 target_compile_definitions(tapchanger_debug PRIVATE TC_DEBUG_USB=1)
 pico_enable_stdio_usb(tapchanger_debug 1)
+target_compile_definitions(tapchanger_breakout_debug PRIVATE TC_DEBUG_USB=1 ADDR_POT=0x3D)
+pico_enable_stdio_usb(tapchanger_breakout_debug 1)
 pico_enable_stdio_usb(tapchanger 0)
 
 # the loader (model 01 01; recovery: footswitch + knob push held; Link LED on GPIO20), and
@@ -42,3 +46,4 @@ pico_enable_stdio_usb(tapchanger 0)
 linework_loader(tapchanger 0x01 0x01 15 8 20)
 linework_full(tapchanger tapchanger_loader)
 linework_full(tapchanger_debug tapchanger_loader)
+linework_full(tapchanger_breakout_debug tapchanger_loader)

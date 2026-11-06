@@ -61,6 +61,8 @@ This gives:
   boost  64 (+10.8 dB)  off  | pot 52 | ch 1  pos 1  linked
   ```
 
+- `build/tapchanger_breakout_debug.uf2` (and `_full.uf2` with the loader): the debug build for the stage 2 breadboard (`../TAP_CHANGER_BREADBOARD_STAGE2.md`). It borrows Flashover's breakout board, so it talks to the breakout's 10k Tone pot at address 3D instead of 3C.
+
 The tools are the same as Flashover's; see `pedals/distortion/firmware/README.md`.
 
 ## Not done yet

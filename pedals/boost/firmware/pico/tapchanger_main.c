@@ -37,7 +37,7 @@ static void debug_start(bool setup)
 {
     sleep_ms(1500);                          /* time for the computer to open the serial port */
     printf("\nTap Changer %u.%u.%u debug%s\n", TC_FW[0], TC_FW[1], TC_FW[2], setup ? ", setup mode" : "");
-    printf("  pot U2 Boost %s\n", pot_ok ? "answered" : "NOT ANSWERING (check wiring, 9V and 3.3V)");
+    printf("  Boost pot (address %02X) %s\n", ADDR_POT, pot_ok ? "answered" : "NOT ANSWERING (check wiring, 9V and 3.3V)");
     printf("  LED driver   %s\n", lw_leds_answered() ? "answered" : "not answering");
 }
 

@@ -28,6 +28,8 @@ None of the firmware has run on real hardware yet.
 4. ~~Recovery buttons in the Product Documents~~ **Done Nov 6.** Tap Changer's document now says footswitch + knob push, and Switchyard's says both footswitches; Flashover's already said footswitch + Soft/Hard. The status lines and Tap Changer's model number are brought up to date.
 5. ~~Stand-in Pico takes updates~~ **Done Nov 6.** It runs after the shared loader. `standin_next.uf2` is the same program reporting 0.1.1, so the Switchyard breadboard can try a real pedal update. The breadboard guide now says to load the `_full.uf2` files the first time.
 
+6. ~~Tap Changer breadboard stage 2 guide~~ **Done Nov 6** (uncommitted): `pedals/boost/TAP_CHANGER_BREADBOARD_STAGE2.md`. It borrows Flashover's stage 2 boards (Pico, breakout, Gain encoder, footswitch button), so it needs no new parts. A new firmware build, `tapchanger_breakout_debug`, uses the breakout's 10k Tone pot. Test 3 is the digital pot's distortion, Tap Changer's main risk. Flashover's stage 2 setup-mode step is also corrected: hold the button while plugging in the USB cable.
+
 ## Waiting on the breadboard (don't do yet)
 
 - Flashover main board:
