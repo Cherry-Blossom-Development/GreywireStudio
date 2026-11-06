@@ -121,6 +121,63 @@ async function main() {
     catch (e) { check(e.message.includes(why), `"${bad}" -> ${e.message}`); }
   }
 
+  console.log('9. Firmware update');
+  {
+    // packing: 64 bytes take 74, and come back the same
+    const d = Array.from({ length: 64 }, (_, i) => (i * 37 + 200) & 255);
+    const pk = LW.pack7(d);
+    check(pk.length === 74 && pk.every(b => b < 128) && JSON.stringify(LW.unpack7(pk, 64)) === JSON.stringify(d), 'pack7 / unpack7');
+    // a .uf2 for the firmware alone, and the refusal of one with the loader
+    const uf2 = (addr, data) => {
+      const b = new Uint8Array(512), v = new DataView(b.buffer);
+      v.setUint32(0, 0x0A324655, true); v.setUint32(4, 0x9E5D5157, true); v.setUint32(8, 0x2000, true);
+      v.setUint32(12, addr, true); v.setUint32(16, data.length, true); v.setUint32(28, 0xE48BFF56, true);
+      b.set(data, 32); v.setUint32(508, 0x0AB16F30, true);
+      return b;
+    };
+    const page = k => new Uint8Array(256).fill(k);
+    const file = new Uint8Array([...uf2(0x10008000, page(1)), ...uf2(0x10008100, page(2))]);
+    const img = LW.firmwareImage(file, 'x.uf2');
+    check(img.length === 512 && img[0] === 1 && img[511] === 2, 'reads a firmware .uf2');
+    try { LW.firmwareImage(uf2(0x10000000, page(1)), 'x_full.uf2'); check(false, 'should refuse a .uf2 with the loader'); }
+    catch (e) { check(/loader/.test(e.message), 'refuses a .uf2 with the loader: ' + e.message); }
+
+    // send 8 KB to the pedal at position 2 (channel 2) and watch it restart with a new version
+    const before = (await client.scan())[1];
+    const image = new Uint8Array(8 * 1024 + 10).map((_, i) => (i * 7 + (i >> 8)) & 255);
+    const stages = new Set();
+    let blocksOut = 0, most = 0;
+    const outs = new Map();
+    client.onMessage = (m, dir) => {
+      if (LW.isLinework(m) && LW.cmdOf(m) === LW.CMD.FW_DATA && dir === 'out') { blocksOut++; outs.set(LW.qqOf(m), 1); }
+      if (LW.isLinework(m) && LW.cmdOf(m) === LW.CMD.ACK && LW.bodyOf(m)[1] === LW.CMD.FW_DATA) outs.delete(LW.qqOf(m));
+      most = Math.max(most, outs.size);
+    };
+    const ticker = setInterval(() => run(50), 5);   // keeps simulated time moving while it waits
+    let got;
+    try {
+      got = await client.sendFirmware({ serial: before.serial, channel: before.channel }, image, p => stages.add(p.stage));
+    } finally { clearInterval(ticker); }
+    const blocks = Math.ceil(image.length / 64);
+    check(got && got.join('.') === '0.1.1', 'the pedal restarted and reports 0.1.1: ' + got);
+    check(['erasing', 'sending', 'checking', 'restarting'].every(s => stages.has(s)), 'progress stages ' + [...stages]);
+    check(blocksOut === blocks, `each block sent once (${blocksOut} of ${blocks})`);
+    check(most > 1 && most <= 4, `several blocks in flight, never more than 4 (most ${most})`);
+    await run(1000);                                // Switchyard rescans, since the pedal lost its place
+    const after = await client.pedalList();
+    check(after.length === 3 && after[1].position === 2 && after[1].channel === before.channel && after[1].firmware.join('.') === '0.1.1',
+      'pedal list: new version, same place and channel: ' + JSON.stringify(after.map(p => [p.position, p.channel, p.firmware.join('.')])));
+    const kept = await client.readPreset(1, 4);
+    check(JSON.stringify(kept) === '[[20,11],[21,22],[22,33],[80,127]]', 'presets kept through the update');
+
+    // a pedal that isn't there: no answer to the begin
+    try {
+      await client.sendFirmware({ serial: Array(10).fill(0x7E), channel: 9 }, image, () => {}, { beginTimeout: 300 });
+      check(false, 'an unknown serial should fail');
+    } catch (e) { check(/no answer/.test(e.message), 'unknown serial: ' + e.message); }
+    client.onMessage = (m, dir) => log.push(dir + ' ' + LW.describe(m));
+  }
+
   check(LW.crc32(Buffer.from('123456789')) === 0xCBF43926, 'CRC-32 check value');
   check(log.some(l => l.startsWith('in Position: part 3, song 2.1')), 'log descriptions');
 

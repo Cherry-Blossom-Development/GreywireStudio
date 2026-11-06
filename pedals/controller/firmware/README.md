@@ -31,6 +31,8 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 - **Stepping:** Up, Down and Jump send each pedal its program change. Other brands get theirs on their own MIDI out. Stopping at the end, or wrapping around, follows the setlist's setting. The display shows song.part.
 - **Loop breaks:** a pulled cable between pedals 2 and 3 is reported as "look at pedal 2"; a pulled cable from Switchyard's MIDI out is reported as "look at that cable". When the cable goes back in, Switchyard reports the repair and scans again.
 - **Two pedals on one channel:** a scan moves one of them to a free channel.
+
+**After a pedal's firmware update** (added Nov 6, 2026; checked by `fw_sim` and the test tool's checks, not by `sim.c`): the pedal restarts and introduces itself with a fresh identity reply. Switchyard updates that pedal's firmware version in its pedal list. A restarted pedal has lost its place in the loop, so Switchyard also scans again; channels stay the same.
 - **Power cycle:** Switchyard comes back on the saved part and resends its program changes.
 
 ## Not done yet

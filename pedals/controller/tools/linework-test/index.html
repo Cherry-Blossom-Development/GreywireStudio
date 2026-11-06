@@ -69,6 +69,23 @@
     </section>
 
     <section>
+      <h2>Firmware update</h2>
+      <p class="note">Sends a pedal its firmware: the firmware-only <code>.uf2</code> (such as <code>flashover.uf2</code>, not
+        <code>flashover_full.uf2</code>) or a <code>.bin</code>. The pedal stays in bypass while it updates, and keeps its old
+        firmware if anything goes wrong.</p>
+      <div class="row">
+        <label>Pedal <select id="fw-pedal"><option value="">(scan the loop first)</option></select></label>
+        <input id="fw-file" type="file" accept=".uf2,.bin">
+      </div>
+      <div class="row">
+        <button id="btn-fw">Send firmware</button>
+        <button id="btn-fw-stop" disabled>Stop</button>
+        <progress id="fw-bar" max="1" value="0"></progress>
+      </div>
+      <div id="fw-out" class="note"></div>
+    </section>
+
+    <section>
       <h2>Setlist</h2>
       <p class="note">One line per part: <code>song.part pedal:preset ...</code>. Define the pedals first:
         <code>scan N</code> is the pedal at position N in the last scan, <code>other N</code> is another brand's pedal on MIDI channel N.</p>

@@ -32,6 +32,7 @@ function connected(send, label) {
   $('conn-state').textContent = label;
   $('conn-state').className = 'badge ok';
   document.querySelectorAll('main button').forEach(b => { b.disabled = false; });
+  $('btn-fw-stop').disabled = true;
 }
 
 function setDisabled() {
@@ -157,6 +158,14 @@ function showPedals(list) {
     b.onclick = () => { $('pd-ch').value = p.channel + 1; };
     tr.cells[5].appendChild(b);
   }
+  const sel = $('fw-pedal'), keep = sel.value;
+  sel.innerHTML = list.length ? '' : '<option value="">(scan the loop first)</option>';
+  for (const p of list) {
+    const o = new Option(`Position ${p.position}: ch ${p.channel <= 15 ? p.channel + 1 : '-'}, model ${LW.hex(p.model)}, ` +
+      `firmware ${p.firmware.join('.')}`, LW.serialHex(p.serial));
+    if (o.value === keep) o.selected = true;
+    sel.add(o);
+  }
 }
 
 /* run an action, showing errors (and optionally the result) in a note */
@@ -196,6 +205,39 @@ $('btn-read').onclick = () => act('pd-out', () => client.readPreset(num('pd-ch')
   pairs => `Preset ${num('pd-slot')}: ` + pairs.map(([c, v]) => `CC${c}=${v}`).join(', '));
 $('btn-report').onclick = () => act('pd-out', () => client.reportSettings(num('pd-ch') - 1),
   pairs => 'Settings: ' + pairs.map(([c, v]) => `CC${c}=${v}`).join(', '));
+
+let fwStop = false;
+$('btn-fw').onclick = () => act('fw-out', async () => {
+  const p = pedals.find(x => LW.serialHex(x.serial) === $('fw-pedal').value);
+  if (!p) throw new Error('Pick a pedal (press Scan loop first)');
+  if (p.channel > 15) throw new Error('That pedal has no channel yet; scan the loop again');
+  const f = $('fw-file').files[0];
+  if (!f) throw new Error('Pick a firmware file');
+  const image = LW.firmwareImage(new Uint8Array(await f.arrayBuffer()), f.name);
+  fwStop = false;
+  $('btn-fw').disabled = true;
+  $('btn-fw-stop').disabled = false;
+  const t0 = Date.now(), kb = (image.length / 1024).toFixed(1);
+  const words = { erasing: 'Erasing the spare copy', checking: 'Checking', restarting: 'Restarting the pedal' };
+  try {
+    const got = await client.sendFirmware(p, image, s => {
+      $('fw-bar').value = s.total ? s.done / s.total : 0;
+      const secs = (Date.now() - t0) / 1000;
+      $('fw-out').textContent = s.stage === 'sending'
+        ? `Sending ${kb} KB: block ${s.done} of ${s.total} (${(s.done * 64 / 1024 / Math.max(secs, 0.1)).toFixed(1)} KB/s)`
+        : words[s.stage] + '...';
+    }, { cancel: () => fwStop });
+    return { got, secs: (Date.now() - t0) / 1000 };
+  } finally {
+    $('btn-fw').disabled = false;
+    $('btn-fw-stop').disabled = true;
+  }
+}, ({ got, secs }) => {
+  client.pedalList().then(showPedals).catch(() => {});
+  return got ? `Done in ${secs.toFixed(0)} s. The pedal restarted with firmware ${got.join('.')}.`
+    : `Sent and checked in ${secs.toFixed(0)} s, but the pedal hasn't introduced itself yet. Press Scan loop to check its version.`;
+});
+$('btn-fw-stop').onclick = () => { fwStop = true; };
 
 $('btn-upload').onclick = () => act('sl-out', async () => {
   const sl = LW.parseSetlist($('sl-text').value, pedals);

@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "switchyard.h"
 #include "pedal.h"
+#include "lw_fw.h"
 
 /* ---------------------------------------------------------------- simulated world */
 
@@ -103,15 +104,59 @@ static sy_hal syhal = {
 static lw_pedal P[NPED];
 static void ped_send(void *c, const uint8_t *m, int n) { cable_put(&link_[(intptr_t)c + 1], m, n); }
 
+/* Each stand-in has its own 2 MB flash chip, laid out like a real pedal's (lw_fw.h): the
+ * firmware, the download area, the update record, and its settings in the last 64 KB. So it
+ * keeps its settings and takes firmware updates through the real code. A simulated install
+ * raises the last number of its firmware version, 0.1.0 -> 0.1.1 and so on. */
+#define CHIP (2u * 1024u * 1024u)
+static uint8_t chip[NPED][CHIP];
+static void ch_read(void *c, uint32_t off, void *buf, uint32_t n) { memcpy(buf, (uint8_t *)c + off, n); }
+static void ch_write(void *c, uint32_t off, const void *buf, uint32_t n)
+{
+    for (uint32_t i = 0; i < n; i++)
+        ((uint8_t *)c)[off + i] &= ((const uint8_t *)buf)[i];
+}
+static void ch_erase(void *c, uint32_t off, uint32_t n) { memset((uint8_t *)c + off, 0xFF, n); }
+static lw_flash whole[NPED], settings[NPED];
+static lw_fw_rx rx[NPED];
+static bool restart_asked[NPED];
+static uint8_t fw_patch[NPED];
+static int u_begin(void *c, uint32_t size, uint32_t crc) { int k = (int)(intptr_t)c; return lw_fw_begin(&rx[k], &whole[k], size, crc); }
+static bool u_erase(void *c) { return lw_fw_erase_step(&rx[(intptr_t)c]); }
+static int u_block(void *c, uint32_t n, const uint8_t *d) { return lw_fw_block(&rx[(intptr_t)c], n, d); }
+static int u_finish(void *c) { return lw_fw_finish(&rx[(intptr_t)c]); }
+static void u_restart(void *c) { restart_asked[(intptr_t)c] = true; }
+static pd_fw_hal upd[NPED];
+
 static void make_pedal(int k)
 {
+    if (!whole[k].read) {                            /* first power-up: a blank chip */
+        memset(chip[k], 0xFF, CHIP);
+        whole[k] = (lw_flash){chip[k], ch_read, ch_write, ch_erase};
+        settings[k] = (lw_flash){chip[k] + CHIP - 64 * 1024, ch_read, ch_write, ch_erase};
+        upd[k] = (pd_fw_hal){(void *)(intptr_t)k, u_begin, u_erase, u_block, u_finish, u_restart};
+    }
     pd_hal h = {
         .ctx = (void *)(intptr_t)k, .now_ms = now_ms, .send = ped_send,
-        .model = {0x7F, 0x7F}, .fw = {0, 1, 0},
+        .update = &upd[k], .flash = &settings[k],
+        .model = {0x7F, 0x7F}, .fw = {0, 1, fw_patch[k]},
         .ncontrols = 4, .cc = {20, 21, 22, 80}, .value = {64, 64, 64, 0},
     };
     lw_serial_from_u64(0x1234567800000000ull + (uint64_t)(k + 1) * 0x10101ull, h.serial);
     pd_init(&P[k], &h);
+}
+
+/* the watchdog restart after an update: the loader installs it, then the firmware starts */
+static void restart_pedal(int k)
+{
+    restart_asked[k] = false;
+    int did = FW_DID_NOTHING;
+    lw_fw_boot(&whole[k], false, &did);
+    if (did == FW_DID_INSTALL)
+        fw_patch[k]++;
+    make_pedal(k);
+    if (lw_fw_take_announce(&whole[k]))
+        pd_announce(&P[k], 1000);
 }
 
 static void tick(void)
@@ -127,8 +172,11 @@ static void tick(void)
             else
                 sy_loop_byte(&SY, (uint8_t)b);
         }
-    for (int k = 0; k < NPED; k++)
+    for (int k = 0; k < NPED; k++) {
         pd_poll(&P[k]);
+        if (restart_asked[k])
+            restart_pedal(k);
+    }
     sy_poll(&SY);
 }
 

@@ -48,6 +48,65 @@
     return (~crc) >>> 0;
   }
 
+  /* Firmware: data packing (spec, Firmware packing): each group of up to 7 bytes travels as one
+   * byte of their top bits (bit i = byte i), then their low 7 bits. 64 bytes take 74. */
+  function pack7(bytes) {
+    const out = [];
+    for (let i = 0; i < bytes.length; i += 7) {
+      const g = bytes.slice(i, i + 7);
+      let top = 0;
+      g.forEach((b, k) => { if (b & 0x80) top |= 1 << k; });
+      out.push(top, ...Array.from(g, b => b & 0x7F));
+    }
+    return out;
+  }
+  function unpack7(packed, n) {
+    const out = [];
+    for (let i = 0; out.length < n; i += 8) {
+      const top = packed[i];
+      for (let k = 0; k < 7 && out.length < n; k++) out.push(packed[i + 1 + k] | (((top >> k) & 1) << 7));
+    }
+    return out;
+  }
+  const fwChecksum = packed => packed.reduce((s, b) => s + b, 0) & 0x7F;
+  const FW_BLOCK = 64;
+  const FW_MAX = 0xF0000;                 // 960 KB: the firmware area (libraries/linework/lw_fw.h)
+  const FW_BASE = 0x10008000;             // where a pedal's firmware is linked, after the loader
+
+  /* A firmware file as bytes: a .bin, or a .uf2 for the firmware alone (not the _full.uf2
+   * with the loader). Returns a Uint8Array of the image starting at FW_BASE. */
+  function firmwareImage(bytes, name = '') {
+    bytes = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    const u32 = o => (bytes[o] | bytes[o + 1] << 8 | bytes[o + 2] << 16 | bytes[o + 3] << 24) >>> 0;
+    let img;
+    if (bytes.length >= 512 && u32(0) === 0x0A324655 && u32(4) === 0x9E5D5157) {
+      const parts = [];
+      let lo = Infinity, hi = 0;
+      for (let o = 0; o + 512 <= bytes.length; o += 512) {
+        if (u32(o) !== 0x0A324655 || u32(o + 4) !== 0x9E5D5157 || u32(o + 508) !== 0x0AB16F30)
+          throw new Error('this .uf2 file is damaged (block ' + o / 512 + ')');
+        if (u32(o + 8) & 1) continue;                 // "not main flash"
+        const addr = u32(o + 12), n = u32(o + 16);
+        parts.push([addr, bytes.subarray(o + 32, o + 32 + n)]);
+        lo = Math.min(lo, addr);
+        hi = Math.max(hi, addr + n);
+      }
+      if (!parts.length) throw new Error('this .uf2 file has nothing for the flash');
+      if (lo < FW_BASE)
+        throw new Error('this .uf2 includes the loader (it starts at 0x' + lo.toString(16).toUpperCase() +
+          '). Send the firmware-only file, such as flashover.uf2, not flashover_full.uf2');
+      if (lo !== FW_BASE) throw new Error("this .uf2 doesn't start where pedal firmware goes (0x10008000)");
+      img = new Uint8Array(hi - lo).fill(0xFF);
+      for (const [addr, d] of parts) img.set(d, addr - lo);
+    } else {
+      if (/\.uf2$/i.test(name)) throw new Error("this isn't a .uf2 file");
+      img = bytes;
+    }
+    if (img.length < 0x108) throw new Error('too small to be firmware');
+    if (img.length > FW_MAX) throw new Error('too big: firmware can be at most 960 KB');
+    return img;
+  }
+
   function msg(cmd, qq, body = []) {
     return [...HEADER, b7(cmd), b7(qq), ...body.map(b7), 0xF7];
   }
@@ -124,6 +183,7 @@
       this.send = send;
       this.seq = 0x3F;
       this.pending = [];
+      this.watchers = new Set();              // functions that see every message from Switchyard
       this.timeout = opts.timeout || 1000;
       this.tries = opts.tries || 3;
       this.onMessage = () => {};
@@ -143,6 +203,7 @@
         if (c === CMD.POS) this.onPosition({ index: get14(b, 0), song: b[2], part: b[3], why: b[4], whyText: WHY[b[4]] });
         if (c === CMD.STATUS) this.onStatus({ broken: !!b[0], pedals: b[1], where: b[2], whereText: b[0] ? whereText(b[2]) : '' });
       }
+      for (const w of [...this.watchers]) w(m);
       for (const p of [...this.pending]) {
         let r;
         try { r = p.match(m, p.qq); } catch (e) { r = undefined; }
@@ -282,6 +343,97 @@
       return crc;
     }
 
+    /* Firmware update for one pedal (spec, Firmware updates). target = {serial, channel} from a
+     * scan; image = the firmware bytes (firmwareImage). Keeps up to `window` data blocks waiting
+     * for an answer, and resends any that come back 03 (checksum) or 04 (busy) or get no answer.
+     * progress({stage, done, total}) is called as it goes; opts.cancel() returning true stops it.
+     * Resolves with the version [a, b, c] the pedal reports after restarting, or null. */
+    async sendFirmware(target, image, progress = () => {}, opts = {}) {
+      const window = opts.window || 4, blockTimeout = opts.blockTimeout || 1000, maxTries = opts.tries || 5;
+      const cancelled = opts.cancel || (() => false);
+      const ch = target.channel;
+      Client.checkRange(ch);
+      if (!target.serial || target.serial.length !== 10) throw new Error("the pedal's serial number is needed (scan the loop first)");
+      const size = image.length, crc = crc32(image), total = Math.ceil(size / FW_BLOCK);
+
+      progress({ stage: 'erasing', done: 0, total });
+      await this.ackRequest(CMD.FW_BEGIN, [...target.serial, size & 0x7F, (size >> 7) & 0x7F, (size >> 14) & 0x7F, ...put32(crc)],
+        { timeout: opts.beginTimeout || 15000, tries: 1 });     // the pedal answers once it has erased
+
+      const block = n => {
+        const d = new Uint8Array(FW_BLOCK).fill(0xFF);
+        d.set(image.subarray(n * FW_BLOCK, (n + 1) * FW_BLOCK));
+        const packed = pack7(d);
+        return [ch, ...put14(n), ...packed, fwChecksum(packed)];
+      };
+      await new Promise((resolve, reject) => {
+        const flight = new Map();             // block number -> {qq, tries, timer}
+        let next = 0, done = 0, over = false;
+        const finish = err => {
+          if (over) return;
+          over = true;
+          for (const f of flight.values()) clearTimeout(f.timer);
+          this.watchers.delete(watch);
+          if (err) reject(err); else resolve();
+        };
+        const send = n => {
+          const f = flight.get(n);
+          if (over || !f) return;
+          if (++f.tries > maxTries) { finish(new Error(`block ${n} got no good answer after ${maxTries} tries`)); return; }
+          f.qq = this.nextSeq();
+          clearTimeout(f.timer);
+          f.timer = setTimeout(() => send(n), blockTimeout);
+          this.out(msg(CMD.FW_DATA, f.qq, block(n)));
+        };
+        const pump = () => {
+          if (cancelled()) { finish(new Error('stopped; the pedal keeps its old firmware')); return; }
+          while (flight.size < window && next < total) {
+            flight.set(next, { tries: 0 });
+            send(next++);
+          }
+          if (done === total) finish();
+        };
+        const watch = m => {
+          if (!isLinework(m) || cmdOf(m) !== CMD.ACK) return;
+          const b = bodyOf(m);
+          if (b[0] !== ch || b[1] !== CMD.FW_DATA || b.length < 5) return;
+          const n = get14(b, 3), f = flight.get(n);
+          if (!f || qqOf(m) !== f.qq) return;          // an answer to an earlier try
+          clearTimeout(f.timer);
+          if (b[2] === 0) {
+            flight.delete(n);
+            done++;
+            if (done % 16 === 0 || done === total) progress({ stage: 'sending', done, total });
+            pump();
+          } else if (b[2] === 3 || b[2] === 4) {
+            f.timer = setTimeout(() => send(n), b[2] === 4 ? 50 : 0);
+          } else {
+            finish(new LWError(b[2]));
+          }
+        };
+        this.watchers.add(watch);
+        pump();
+      });
+
+      progress({ stage: 'checking', done: total, total });
+      // the new version introduces itself with an identity reply once it has started
+      let seen = null;
+      const announce = m => {
+        if (m[0] === 0xF0 && m[1] === 0x7E && m[2] === ch && m[3] === 0x06 && m[4] === 0x02)
+          seen = Array.from(m.slice(7 + H - 1, 10 + H - 1));
+      };
+      this.watchers.add(announce);
+      try {
+        await this.ackRequest(CMD.FW_FINISH, [ch], { timeout: 5000, tries: 1 });
+        progress({ stage: 'restarting', done: total, total });
+        const until = Date.now() + (opts.restartWait || 6000);
+        while (!seen && Date.now() < until) await new Promise(r => setTimeout(r, 50));
+      } finally {
+        this.watchers.delete(announce);
+      }
+      return seen;
+    }
+
     // ---- pedals, through the loop (addressed by channel 0-15)
 
     static checkRange(ch, slot) {
@@ -374,6 +526,7 @@
   const LW = {
     HEADER, CMD, STATUS, WHY, msg, isLinework, cmdOf, qqOf, bodyOf, crc32, put14, get14, put32, get32,
     hex, parseHex, serialHex, describe, whereText, Client, LWError, parseSetlist,
+    pack7, unpack7, fwChecksum, firmwareImage, FW_BLOCK, FW_BASE,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = LW;
   else root.LW = LW;

@@ -374,23 +374,37 @@ static void scan_rx(switchyard *sy, const uint8_t *m, int n)
             ident_done(sy);
         return;
     }
-    if (sy->scan == SCAN_IDENT) {
-        /* identity reply: F0 7E dd 06 02 <7D 4C 57> m0 m1 aa bb cc ss F7 */
-        if (n == 5 + (LW_HDR_LEN - 1) + 7 && m[0] == 0xF0 && m[1] == 0x7E && m[3] == 0x06 && m[4] == 0x02
-            && memcmp(&m[5], &LW_HEADER[1], LW_HDR_LEN - 1) == 0) {
-            const uint8_t *p = &m[5 + LW_HDR_LEN - 1];
-            sy->ident[0] = m[2];
-            memcpy(&sy->ident[1], p, 6);
-            sy->have_ident = true;
-            return;
+    /* identity reply: F0 7E dd 06 02 <7D 4C 57> m0 m1 aa bb cc ss F7. Kept for the pedal info
+     * that follows it, in a scan or when a newly installed firmware introduces itself */
+    if (n == 5 + (LW_HDR_LEN - 1) + 7 && m[0] == 0xF0 && m[1] == 0x7E && m[3] == 0x06 && m[4] == 0x02
+        && memcmp(&m[5], &LW_HEADER[1], LW_HDR_LEN - 1) == 0) {
+        const uint8_t *p = &m[5 + LW_HDR_LEN - 1];
+        sy->ident[0] = m[2];
+        memcpy(&sy->ident[1], p, 6);
+        sy->have_ident = true;
+        return;
+    }
+    /* pedal info: <header> 02 qq pp dd s0..s9 F7 */
+    if (lw_is_linework(m, n) && LW_CMD(m) == LW_PEDAL_INFO && n == LW_HDR_LEN + 2 + 2 + LW_SERIAL_LEN + 1) {
+        const uint8_t *b = LW_BODY(m);
+        sy_pedal *p = NULL;
+        if (sy->scan == SCAN_IDENT) {
+            if (sy->npedals < SY_MAX_PEDALS) {
+                p = &sy->pedal[sy->npedals++];
+                memset(p, 0, sizeof *p);
+            }
+        } else if (sy->scan == SCAN_IDLE || sy->scan == SCAN_WAIT) {
+            /* a pedal introducing itself after an update: refresh its entry in the list */
+            for (int i = 0; i < sy->npedals; i++)
+                if (memcmp(sy->pedal[i].serial, &b[2], LW_SERIAL_LEN) == 0)
+                    p = &sy->pedal[i];
         }
-        /* pedal info: <header> 02 qq pp dd s0..s9 F7 */
-        if (lw_is_linework(m, n) && LW_CMD(m) == LW_PEDAL_INFO && n == LW_HDR_LEN + 2 + 2 + LW_SERIAL_LEN + 1
-            && sy->npedals < SY_MAX_PEDALS) {
-            const uint8_t *b = LW_BODY(m);
-            sy_pedal *p = &sy->pedal[sy->npedals++];
-            memset(p, 0, sizeof *p);
-            p->pos = b[0];
+        bool rescan = false;
+        if (p && sy->scan != SCAN_IDENT && b[0] == 0)
+            rescan = true;                      /* restarted, so it has lost its place: scan again */
+        if (p) {
+            if (b[0])
+                p->pos = b[0];
             p->ch = b[1];
             memcpy(p->serial, &b[2], LW_SERIAL_LEN);
             if (sy->have_ident && sy->ident[0] == p->ch) {
@@ -398,10 +412,12 @@ static void scan_rx(switchyard *sy, const uint8_t *m, int n)
                 memcpy(p->fw, &sy->ident[3], 3);
                 p->spec = sy->ident[6];
             }
-            sy->have_ident = false;
-            if (sy->npedals >= sy->scan_count)
-                ident_done(sy);
         }
+        sy->have_ident = false;
+        if (sy->scan == SCAN_IDENT && sy->npedals >= sy->scan_count)
+            ident_done(sy);
+        if (rescan)
+            scan_start(sy, false, 0);
         return;
     }
     if (sy->scan == SCAN_ASSIGN && lw_is_linework(m, n) && LW_CMD(m) == LW_ACK && LW_QQ(m) == sy->scan_qq

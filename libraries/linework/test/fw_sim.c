@@ -401,7 +401,11 @@ int main(void)
     CHECK(fw_finish(0) == ST_OK, "Finish: CRC matches");
     run(1500);
     CHECK(app_is(B, sizeof B), "after the restart the loader has installed it");
-    CHECK(identities_since(mark) == 1, "the new version announces itself once");
+    /* it announces itself once; having lost its place, Switchyard scans again, which asks for
+     * a second identity reply */
+    CHECK(identities_since(mark) == 2 && FO.pd.position == 1 && SY.pedal[0].pos == 1,
+          "announced, and placed again by Switchyard's rescan (%d identity replies, position %u)",
+          identities_since(mark), FO.pd.position);
     CHECK(FO.pd.channel == 0 && r_on, "settings kept: channel 1, effect on again");
     mark = napp;
     boot(false, &did);
