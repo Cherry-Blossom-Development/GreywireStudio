@@ -72,9 +72,10 @@
       <h2>Firmware update</h2>
       <p class="note">Sends a pedal its firmware: the firmware-only <code>.uf2</code> (such as <code>flashover.uf2</code>, not
         <code>flashover_full.uf2</code>) or a <code>.bin</code>. The pedal stays in bypass while it updates, and keeps its old
-        firmware if anything goes wrong.</p>
+        firmware if anything goes wrong. Switchyard itself takes <code>switchyard.uf2</code> and restarts at the end, which
+        drops its USB connection for a moment.</p>
       <div class="row">
-        <label>Pedal <select id="fw-pedal"><option value="">(scan the loop first)</option></select></label>
+        <label>Send to <select id="fw-pedal"><option value="switchyard">Switchyard itself</option></select></label>
         <input id="fw-file" type="file" accept=".uf2,.bin">
       </div>
       <div class="row">

@@ -22,7 +22,7 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 
 ## What works (checked in the simulation)
 
-`test/sim.c` connects Switchyard and three stand-in pedals with simulated MIDI cables running at the real speed (31,250 baud), and adds a fake phone app. All 62 checks pass:
+`test/sim.c` connects Switchyard and three stand-in pedals with simulated MIDI cables running at the real speed (31,250 baud), and adds a fake phone app. All 81 checks pass:
 
 - **Power-up scan:** count, identify and assign channels; 3 pedals get positions 1-3 and channels 1-3.
 - **Switchyard's own messages:** the identity reply (model 02 00), Switchyard info, the pedal list, and an unknown command getting result 01.
@@ -31,14 +31,23 @@ Started Nov 4, 2026. This is firmware for the stage 1 breadboard (`../SWITCHYARD
 - **Stepping:** Up, Down and Jump send each pedal its program change. Other brands get theirs on their own MIDI out. Stopping at the end, or wrapping around, follows the setlist's setting. The display shows song.part.
 - **Loop breaks:** a pulled cable between pedals 2 and 3 is reported as "look at pedal 2"; a pulled cable from Switchyard's MIDI out is reported as "look at that cable". When the cable goes back in, Switchyard reports the repair and scans again.
 - **Two pedals on one channel:** a scan moves one of them to a free channel.
+- **Switchyard's own firmware update** (added Nov 6, 2026; 19 checks):
+  - a Begin for another serial goes into the loop as before;
+  - a data block during the erase is answered "busy";
+  - a damaged block is answered "checksum failed";
+  - every block is acknowledged with its number and ch 7F, and none of it goes into the loop;
+  - the display shows the progress, the footswitches wait, and no false loop break is reported;
+  - after the restart the loader has installed it, and the setlist, the part and the pedals are all still there;
+  - a wrong CRC installs nothing;
+  - an update abandoned for 10 seconds puts everything back to normal.
 
 **After a pedal's firmware update** (added Nov 6, 2026; checked by `fw_sim` and the test tool's checks, not by `sim.c`): the pedal restarts and introduces itself with a fresh identity reply. Switchyard updates that pedal's firmware version in its pedal list. A restarted pedal has lost its place in the loop, so Switchyard also scans again; channels stay the same.
 - **Power cycle:** Switchyard comes back on the saved part and resends its program changes.
 
 ## Not done yet
 
-- **Running on a Pico.** Both programs build with no warnings (Nov 4, 2026), but neither has run on real hardware yet. Switchyard's firmware is about 37 KB.
-- **Firmware updates** (commands 30-32). For now Switchyard is updated by holding BOOTSEL and copying the `.uf2` file. The stand-in answers firmware commands with "unknown command".
+- **Running on a Pico.** Everything builds with no warnings (Nov 6, 2026), but none of it has run on real hardware yet. Switchyard's firmware is about 41 KB, and its loader about 25 KB.
+- **The stand-in Pico doesn't take updates:** it answers firmware commands with "unknown command". The simulated stand-ins in `test/` do take them.
 - **Phone charging** (stage 2): the USB-C power controller, the power role swap, and VBUS_EN. That needs a USB Power Delivery stack.
 - **USB IDs:** the USB IDs are TinyUSB's development numbers. A free product ID from Raspberry Pi is needed before selling.
 
@@ -57,13 +66,53 @@ cmake -S . -B build -G Ninja
 cmake --build build
 ```
 
-This gives `build/switchyard.uf2` and `build/standin.uf2`. To load one, hold the Pico's BOOTSEL button while plugging it into the computer, then copy the file onto the drive that appears. For the board, add `-DSWITCHYARD_BOARD=pcb` to the first command; that turns on the 9V sense input.
+This gives:
+- `build/switchyard_full.uf2`: Switchyard's loader and firmware together. Use it the first time, or after anything else has been on the Pico.
+- `build/switchyard.uf2`: the firmware alone. This is the file the app (or the test tool) sends to update Switchyard over USB. Copying it on by BOOTSEL also works, once the loader is on.
+- `build/standin.uf2`: the stand-in pedal.
+
+To load a file, hold the Pico's BOOTSEL button while plugging it into the computer, then copy the file onto the drive that appears. For the board, add `-DSWITCHYARD_BOARD=pcb` to the first command; that turns on the 9V sense input.
+
+## Firmware updates over USB
+
+Added Nov 6, 2026. As the spec says, the app sends Switchyard the same firmware messages a pedal gets:
+- **Begin** is addressed to Switchyard's own serial number. **Data** and **Finish** use ch 7F.
+- Switchyard handles them itself (`core/sy_update.c`), and none of them go into the loop.
+
+**During an update:**
+- The display shows `----` while Switchyard erases, then `--` and the percentage sent, such as `--42`.
+- The footswitches do nothing.
+- Loop-break reports pause, because erasing flash can drop a few bytes from the loop.
+- If the app goes quiet for 10 seconds, the update is abandoned and Switchyard carries on as before.
+
+**Finish:** once the CRC checks out, Switchyard acknowledges and restarts. The loader then copies the new firmware into place and starts it. The USB connection drops for a moment, so the app reconnects. The setlist and the current part are kept.
+
+**The loader** (`pico/sy_loader.c`) is Switchyard's own version of the pedals' loader, because Switchyard is updated over USB rather than the MIDI loop.
+- **Recovery mode:** hold both footswitches while plugging in. The loader also stays in recovery mode by itself if there is no firmware it can start.
+- **In recovery mode:**
+  - It appears over USB as "Switchyard (recovery)".
+  - It answers Switchyard info and the identity request with firmware 0.0.0.
+  - It takes an update.
+  - Both footswitch LEDs flash quickly.
+  - The loop and the display are left alone.
+
+**Flash layout:** the setlists stay at 1 MB, so Switchyard's firmware areas are smaller than a pedal's (`LW_LAYOUT_SWITCHYARD` in `libraries/linework/lw_fw.h`):
+
+| From | Size | What |
+|---|---|---|
+| 0x000000 | 32 KB | The loader |
+| 0x008000 | 480 KB | Switchyard's firmware |
+| 0x080000 | 480 KB | Download area |
+| 0x0F8000 | 4 KB | Update record |
+| 0x100000 | 644 KB | Setlists and the current part (below) |
+
+The firmware checks at startup that it fits its 480 KB.
 
 ## Storage
 
 The setlists and the current part live in flash from 1 MB upward. There are two setlist copies of 320 KB each, plus a 4 KB sector for the current part. A new setlist goes into the spare copy and only becomes active once its check at Setlist finish passes. The current part is saved 2 seconds after the last step, so a burst of steps causes only one flash write.
 
-The firmware checks at startup that it doesn't reach into this area.
+The update record ends where this area starts, and the firmware checks that at startup.
 
 ## Glossary
 

@@ -347,12 +347,15 @@
      * scan; image = the firmware bytes (firmwareImage). Keeps up to `window` data blocks waiting
      * for an answer, and resends any that come back 03 (checksum) or 04 (busy) or get no answer.
      * progress({stage, done, total}) is called as it goes; opts.cancel() returning true stops it.
-     * Resolves with the version [a, b, c] the pedal reports after restarting, or null. */
+     * Resolves with the version [a, b, c] the pedal reports after restarting, or null.
+     * For Switchyard itself, target = {serial: its serial from info(), channel: 0x7F}: the
+     * messages stay in Switchyard, and it restarts at the end, which drops the USB connection
+     * for a moment, so there is no version to wait for. */
     async sendFirmware(target, image, progress = () => {}, opts = {}) {
       const window = opts.window || 4, blockTimeout = opts.blockTimeout || 1000, maxTries = opts.tries || 5;
       const cancelled = opts.cancel || (() => false);
-      const ch = target.channel;
-      Client.checkRange(ch);
+      const ch = target.channel, self = ch === 0x7F;
+      if (!self) Client.checkRange(ch);
       if (!target.serial || target.serial.length !== 10) throw new Error("the pedal's serial number is needed (scan the loop first)");
       const size = image.length, crc = crc32(image), total = Math.ceil(size / FW_BLOCK);
 
@@ -426,7 +429,7 @@
       try {
         await this.ackRequest(CMD.FW_FINISH, [ch], { timeout: 5000, tries: 1 });
         progress({ stage: 'restarting', done: total, total });
-        const until = Date.now() + (opts.restartWait || 6000);
+        const until = self ? 0 : Date.now() + (opts.restartWait || 6000);
         while (!seen && Date.now() < until) await new Promise(r => setTimeout(r, 50));
       } finally {
         this.watchers.delete(announce);

@@ -10,7 +10,7 @@ const LW = require('../lw.js');
 const exe = path.join(__dirname, '../../../firmware/test', process.platform === 'win32' ? 'bridge.exe' : 'bridge');
 const br = spawn(exe, [], { stdio: ['pipe', 'pipe', 'inherit'] });
 
-let buf = '', client, display = '', other = [], waiting = [];
+let buf = '', client, display = '', other = [], waiting = [], installs = 0;
 br.stdout.on('data', d => {
   buf += d;
   let i;
@@ -20,6 +20,7 @@ br.stdout.on('data', d => {
     if (line.startsWith('A ')) client && client.receive(LW.parseHex(line.slice(2)));
     else if (line.startsWith('O ')) other.push(LW.parseHex(line.slice(2)));
     else if (line.startsWith('D ')) display = line.slice(2);
+    else if (line.startsWith('X ')) installs = Number(line.slice(2));
     else if (line === 'OK') { const w = waiting.shift(); w && w(); }
   }
 });
@@ -176,6 +177,26 @@ async function main() {
       check(false, 'an unknown serial should fail');
     } catch (e) { check(/no answer/.test(e.message), 'unknown serial: ' + e.message); }
     client.onMessage = (m, dir) => log.push(dir + ' ' + LW.describe(m));
+  }
+
+  console.log("10. Switchyard's own firmware update");
+  {
+    const me = await client.info();
+    const slBefore = await client.setlistInfo();
+    const image = new Uint8Array(12 * 1024).map((_, i) => (i * 11 + (i >> 7)) & 255);
+    const stages = new Set();
+    const ticker = setInterval(() => run(20), 5);
+    let got;
+    try {
+      got = await client.sendFirmware({ serial: me.serial, channel: 0x7F }, image, p => stages.add(p.stage));
+      await run(400);
+    } finally { clearInterval(ticker); }
+    check(got === null && stages.has('restarting'), 'sent to Switchyard; no version to wait for');
+    check(installs === 1, 'Switchyard restarted and the loader installed it (' + installs + ')');
+    const again = await client.info();
+    check(LW.serialHex(again.serial) === LW.serialHex(me.serial), 'Switchyard answers again after the restart');
+    const slAfter = await client.setlistInfo();
+    check(slAfter.id === slBefore.id && slAfter.crc === slBefore.crc, 'setlist kept through the update');
   }
 
   check(LW.crc32(Buffer.from('123456789')) === 0xCBF43926, 'CRC-32 check value');

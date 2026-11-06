@@ -46,6 +46,8 @@ Added Nov 5, 2026. It is built and simulated, but not yet run on hardware.
 | 0x1E8000 | 4 KB | Update record: "pending" and "installed" notes |
 | 0x1F0000 | 64 KB | The pedal's settings (`pd_store`) |
 
+**Switchyard** uses a different layout, because its setlists are at 1 MB. Its firmware and download areas are 480 KB each, and its update record is at 0x0F8000. Build with `LW_LAYOUT_SWITCHYARD=1` for that layout. Switchyard also has its own loader, which takes updates over USB. Both are described in `pedals/controller/firmware/README.md`.
+
 **An update:**
 1. **Firmware: begin** carries the pedal's serial, the size and the CRC-32. The pedal goes to bypass and erases only as much of the download area as it needs, a sector at a time in gaps on MIDI in. The acknowledgement comes once that is done; a data block sent sooner gets "busy".
 2. **Firmware: data** blocks of 64 bytes go into the download area. Each block is acknowledged with its number. A damaged block gets "checksum failed", and Switchyard (or the app) sends it again. The pedal passes every block on round the loop, like any other message (this settles the open decision in `FLASHOVER_MIDI_REFERENCE.md`).
@@ -88,10 +90,11 @@ The tests live with their users:
 
 | Suite | Checks |
 |---|---|
-| `pedals/controller/firmware/test` | 62 |
+| `pedals/controller/firmware/test` | 81 |
 | `pedals/distortion/firmware/test` | 57 |
 | `pedals/boost/firmware/test` | 31 |
 | `test/fw_sim.c` here, run with `make -C test test` | 39 |
+| `pedals/controller/tools/linework-test`, run with `node test/run.js` | 41 |
 
 Run them all after changing anything here.
 

@@ -1,6 +1,7 @@
 #include "flash_store.h"
 #include "board.h"
 #include "switchyard.h"
+#include "lw_fw.h"
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/flash.h"
@@ -10,8 +11,10 @@ extern char __flash_binary_end;
 
 void store_check_fits(void)
 {
-    if ((uintptr_t)&__flash_binary_end - XIP_BASE > STORE_BASE)
-        panic("firmware is larger than 1 MB and overlaps the setlist store");
+    if ((uintptr_t)&__flash_binary_end - XIP_BASE > FW_APP_OFF + FW_APP_SIZE)
+        panic("firmware is larger than its 480 KB area (lw_fw.h)");
+    if (FW_REC_OFF + FW_SECTOR > STORE_BASE)
+        panic("the update record overlaps the setlist store");
     if (STORE_BASE + SY_STORE_SIZE > PICO_FLASH_SIZE_BYTES)
         panic("setlist store doesn't fit in flash");
 }

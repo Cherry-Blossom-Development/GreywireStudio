@@ -8,12 +8,14 @@
  *   Q               quit
  * After each command it prints what happened, then "OK":
  *   A <hex>  message to the app      O <hex>  message on the other-brands out
- *   D <text> <dp>   the display changed */
+ *   D <text> <dp>   the display changed
+ *   X <n>    Switchyard restarted after an update; n = updates installed so far */
 #include "world.h"
 
 static int shown_app, shown_other;
 static char shown_disp[5] = "????";
 static uint8_t shown_dp = 0xFF;
+static int shown_installs;
 
 static void hex(const char *tag, const uint8_t *b, int n)
 {
@@ -33,6 +35,10 @@ static void report(void)
         memcpy(shown_disp, disp, 4);
         shown_dp = disp_dp;
         printf("D %.4s %d\n", disp, disp_dp);
+    }
+    if (sy_installs != shown_installs) {
+        shown_installs = sy_installs;
+        printf("X %d\n", sy_installs);
     }
     /* the logs are small: start them again once everything has been shown */
     if (napp > MAXLOG - 200)

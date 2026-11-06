@@ -8,6 +8,7 @@
 #define SWITCHYARD_H
 
 #include "lw_proto.h"
+#include "sy_update.h"
 
 #define SY_FW_MAJOR 0
 #define SY_FW_MINOR 1
@@ -43,6 +44,7 @@ typedef struct {
     /* 4 characters ('0'-'9', '-', ' ') and a decimal point mask (bit 0 = digit 1) */
     void (*display)(void *ctx, const char text[4], uint8_t dp);
     uint8_t serial[LW_SERIAL_LEN];                            /* from the RP2040's flash ID */
+    const pd_fw_hal *update;   /* optional: Switchyard's own firmware update (sy_update.h) */
 } sy_hal;
 
 typedef struct {
@@ -112,6 +114,10 @@ typedef struct {
     uint32_t up_pedals_got;
     uint8_t up_parts_got[(SY_MAX_PARTS + 7) / 8];
     int up_nparts_got;
+
+    /* Switchyard's own firmware update */
+    sy_update upd;
+    int upd_shown;                 /* the progress on the display, or -2 */
 } switchyard;
 
 void sy_init(switchyard *sy, const sy_hal *hal);

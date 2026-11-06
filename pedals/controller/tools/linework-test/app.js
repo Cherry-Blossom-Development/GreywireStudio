@@ -159,7 +159,7 @@ function showPedals(list) {
     tr.cells[5].appendChild(b);
   }
   const sel = $('fw-pedal'), keep = sel.value;
-  sel.innerHTML = list.length ? '' : '<option value="">(scan the loop first)</option>';
+  sel.innerHTML = '<option value="switchyard">Switchyard itself</option>';
   for (const p of list) {
     const o = new Option(`Position ${p.position}: ch ${p.channel <= 15 ? p.channel + 1 : '-'}, model ${LW.hex(p.model)}, ` +
       `firmware ${p.firmware.join('.')}`, LW.serialHex(p.serial));
@@ -208,9 +208,14 @@ $('btn-report').onclick = () => act('pd-out', () => client.reportSettings(num('p
 
 let fwStop = false;
 $('btn-fw').onclick = () => act('fw-out', async () => {
-  const p = pedals.find(x => LW.serialHex(x.serial) === $('fw-pedal').value);
-  if (!p) throw new Error('Pick a pedal (press Scan loop first)');
-  if (p.channel > 15) throw new Error('That pedal has no channel yet; scan the loop again');
+  let p;
+  if ($('fw-pedal').value === 'switchyard') {
+    p = { serial: (await client.info()).serial, channel: 0x7F, switchyard: true };
+  } else {
+    p = pedals.find(x => LW.serialHex(x.serial) === $('fw-pedal').value);
+    if (!p) throw new Error('Pick a pedal (press Scan loop first)');
+    if (p.channel > 15) throw new Error('That pedal has no channel yet; scan the loop again');
+  }
   const f = $('fw-file').files[0];
   if (!f) throw new Error('Pick a firmware file');
   const image = LW.firmwareImage(new Uint8Array(await f.arrayBuffer()), f.name);
@@ -218,7 +223,7 @@ $('btn-fw').onclick = () => act('fw-out', async () => {
   $('btn-fw').disabled = true;
   $('btn-fw-stop').disabled = false;
   const t0 = Date.now(), kb = (image.length / 1024).toFixed(1);
-  const words = { erasing: 'Erasing the spare copy', checking: 'Checking', restarting: 'Restarting the pedal' };
+  const words = { erasing: 'Erasing the spare copy', checking: 'Checking', restarting: 'Restarting' };
   try {
     const got = await client.sendFirmware(p, image, s => {
       $('fw-bar').value = s.total ? s.done / s.total : 0;
@@ -227,12 +232,15 @@ $('btn-fw').onclick = () => act('fw-out', async () => {
         ? `Sending ${kb} KB: block ${s.done} of ${s.total} (${(s.done * 64 / 1024 / Math.max(secs, 0.1)).toFixed(1)} KB/s)`
         : words[s.stage] + '...';
     }, { cancel: () => fwStop });
-    return { got, secs: (Date.now() - t0) / 1000 };
+    return { got, secs: (Date.now() - t0) / 1000, self: !!p.switchyard };
   } finally {
     $('btn-fw').disabled = false;
     $('btn-fw-stop').disabled = true;
   }
-}, ({ got, secs }) => {
+}, ({ got, secs, self }) => {
+  if (self)
+    return `Sent and checked in ${secs.toFixed(0)} s. Switchyard is restarting: once it's back, press Connect again ` +
+      '(not needed on the simulated loop), then Switchyard info to see its version.';
   client.pedalList().then(showPedals).catch(() => {});
   return got ? `Done in ${secs.toFixed(0)} s. The pedal restarted with firmware ${got.join('.')}.`
     : `Sent and checked in ${secs.toFixed(0)} s, but the pedal hasn't introduced itself yet. Press Scan loop to check its version.`;

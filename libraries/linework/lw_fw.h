@@ -29,12 +29,24 @@
 
 #define FW_LOADER_SIZE 0x8000u
 #define FW_APP_OFF     0x8000u
+#if LW_LAYOUT_SWITCHYARD
+/* Switchyard keeps its setlists (644 KB) at 1 MB, so its firmware areas are smaller:
+ *   0x000000 loader, 32 KB    0x008000 firmware, 480 KB    0x080000 download area, 480 KB
+ *   0x0F8000 update record, 4 KB    0x100000 setlist store (pedals/controller/firmware) */
+#define FW_APP_SIZE    0x78000u
+#define FW_DL_OFF      0x80000u
+#define FW_REC_OFF     0xF8000u
+#else
 #define FW_APP_SIZE    0xF0000u
 #define FW_DL_OFF      0xF8000u
 #define FW_REC_OFF     0x1E8000u
+#endif
 #define FW_SECTOR      4096u
 #define FW_VECTORS     0x100u    /* the firmware's vector table, after its unused 256-byte boot2 */
 #define FW_BLOCK       64u       /* bytes per Firmware: data block */
+
+_Static_assert(FW_APP_OFF + FW_APP_SIZE <= FW_DL_OFF && FW_DL_OFF + FW_APP_SIZE <= FW_REC_OFF,
+               "the firmware, download and record areas overlap");
 
 /* ---- receiving an update (in the running firmware, or the loader in recovery mode) ----
  * The flash device here spans the whole chip (offsets from 0). */

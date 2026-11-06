@@ -7,7 +7,7 @@ LW = ..
 SY = ../../../pedals/controller/firmware/core
 FO = ../../../pedals/distortion/firmware/core
 CFLAGS = -std=c11 -Wall -Wextra -Wno-unused-function -O1 -g -I$(LW) -I$(SY) -I$(FO)
-SRC = $(LW)/lw_fw.c $(LW)/lw_ui.c $(LW)/lw_proto.c $(LW)/pedal.c $(LW)/pd_store.c $(SY)/switchyard.c $(FO)/flashover.c
+SRC = $(LW)/lw_fw.c $(LW)/lw_ui.c $(LW)/lw_proto.c $(LW)/pedal.c $(LW)/pd_store.c $(SY)/switchyard.c $(SY)/sy_update.c $(FO)/flashover.c
 
 all: fw_sim
 

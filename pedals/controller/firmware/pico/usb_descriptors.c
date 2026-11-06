@@ -45,10 +45,16 @@ const uint8_t *tud_descriptor_configuration_cb(uint8_t index)
     return config;
 }
 
+#if SY_RECOVERY
+#define SY_USB_PRODUCT "Switchyard (recovery)"   /* the loader in recovery mode (sy_loader.c) */
+#else
+#define SY_USB_PRODUCT "Switchyard"
+#endif
+
 static const char *const strings[] = {
     NULL,                                    /* 0: language, handled below */
     "Greywire Studio",
-    "Switchyard",
+    SY_USB_PRODUCT,
     NULL,                                    /* 3: serial, from the chip's flash ID */
     "Switchyard MIDI",
 };

@@ -370,7 +370,111 @@ int main(void)
     run(2);
     CHECK(ack_st(mark, 0x70, 0x5F) == ST_UNKNOWN, "unknown command acknowledged with 01");
 
-    printf("15. Byte helpers\n");
+    printf("15. Switchyard's own firmware update\n");
+    {
+        static uint8_t img[20000];
+        for (unsigned i = 0; i < sizeof img; i++)
+            img[i] = (uint8_t)(i * 13 + (i >> 9));
+        uint32_t crc = lw_crc32(0, img, sizeof img);
+        int blocks = (int)((sizeof img + FW_BLOCK - 1) / FW_BLOCK);
+        uint32_t id_before = SY.hdr.id;
+        int cur_before = SY.cur;
+        uint8_t qq = 0x40;
+        #define NEXTQ() (qq = (uint8_t)(qq >= 0x7F ? 0x40 : qq + 1))
+
+        /* builders: Begin to a serial; a data block with ch 7F; Finish with ch 7F */
+        #define BEGIN(serial, c) do { lw_msg m_; lw_begin(&m_, LW_FW_BEGIN, NEXTQ()); lw_put_n(&m_, serial, LW_SERIAL_LEN); \
+            lw_put(&m_, sizeof img & 0x7F); lw_put(&m_, (sizeof img >> 7) & 0x7F); lw_put(&m_, (sizeof img >> 14) & 0x7F); \
+            lw_put32(&m_, c); lw_end(&m_); app_lw(&m_); } while (0)
+        uint8_t packed[FW_PACKED];
+        #define BLOCK(n, damage) do { uint8_t d_[FW_BLOCK]; memset(d_, 0xFF, sizeof d_); \
+            unsigned o_ = (unsigned)(n) * FW_BLOCK, k_ = sizeof img - o_ < FW_BLOCK ? sizeof img - o_ : FW_BLOCK; \
+            memcpy(d_, &img[o_], k_); lw_pack7(d_, FW_BLOCK, packed); uint8_t x_ = lw_fw_checksum(packed, FW_PACKED); \
+            if (damage) packed[5] ^= 0x01; \
+            lw_msg m_; lw_begin(&m_, LW_FW_DATA, NEXTQ()); lw_put(&m_, 0x7F); lw_put14(&m_, (unsigned)(n)); \
+            lw_put_n(&m_, packed, FW_PACKED); lw_put(&m_, x_); lw_end(&m_); app_lw(&m_); } while (0)
+        #define FINISH() do { lw_msg m_; lw_begin(&m_, LW_FW_FINISH, NEXTQ()); lw_put(&m_, 0x7F); lw_end(&m_); app_lw(&m_); } while (0)
+
+        /* the block number in the acknowledgement of a data block with this qq, or -1 */
+        #define BLOCK_ACK(mk, q, st_out) ({ int r_ = -1; for (int i_ = (mk); i_ < napp; i_++) { uint8_t *b_ = app_log[i_].b; \
+            if (lw_is_linework(b_, app_log[i_].n) && LW_CMD(b_) == LW_ACK && LW_QQ(b_) == (q) && LW_BODY(b_)[1] == LW_FW_DATA \
+                && LW_BODY(b_)[0] == 0x7F) { st_out = LW_BODY(b_)[2]; r_ = (int)lw_get14(&LW_BODY(b_)[3]); } } r_; })
+
+        mark = napp;
+        loop_fw_msgs = 0;
+        static const uint8_t other_serial[LW_SERIAL_LEN] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        BEGIN(other_serial, crc);
+        run(100);
+        CHECK(loop_fw_msgs == 1 && ack_st(mark, qq, LW_FW_BEGIN) == -1 && !syu_active(&SY.upd),
+              "Begin for another serial goes into the loop (%d), unanswered", loop_fw_msgs);
+        mark = napp;
+        FINISH();
+        CHECK(ack_st(mark, qq, LW_FW_FINISH) == ST_RANGE, "Finish with no update: value out of range");
+
+        mark = napp;
+        sy_erases = 0;
+        BEGIN(SY.hal.serial, crc);
+        uint8_t begin_qq = qq;
+        int st = -1;
+        BLOCK(0, false);
+        CHECK(BLOCK_ACK(mark, qq, st) == 0 && st == ST_BUSY, "a block during the erase: busy (%d)", st);
+        run(1);
+        CHECK(memcmp(disp, "----", 4) == 0 && disp_dp == 0, "display ---- while erasing ('%.4s')", disp);
+        run(20);
+        CHECK(ack_st(mark, begin_qq, LW_FW_BEGIN) == ST_OK && sy_erases == 5, "Begin acknowledged once 5 sectors erased (%d)", sy_erases);
+
+        int bad = 0;
+        for (int n = 0; n < blocks; n++) {
+            int m0 = napp;
+            if (n == 100) {
+                BLOCK(n, true);
+                CHECK(BLOCK_ACK(m0, qq, st) == 100 && st == ST_CHECKSUM, "damaged block 100: checksum failed (%d)", st);
+                m0 = napp;
+            }
+            BLOCK(n, false);
+            if (BLOCK_ACK(m0, qq, st) != n || st != ST_OK)
+                bad++;
+            if (n == blocks / 2) {
+                run(1);
+                CHECK(disp[0] == '-' && disp[1] == '-' && disp[2] == '5' && disp_dp == 0, "display --NN halfway ('%.4s')", disp);
+                int was = SY.cur;
+                sy_step(&SY, +1);
+                CHECK(SY.cur == was, "footswitches wait during the update");
+            }
+        }
+        CHECK(bad == 0, "every block acknowledged with its number, ch 7F (%d bad)", bad);
+        CHECK(loop_fw_msgs == 1, "no firmware data went into the loop (%d messages)", loop_fw_msgs);
+        CHECK(!SY.broken, "no loop break reported during the update");
+        mark = napp;
+        FINISH();
+        CHECK(ack_st(mark, qq, LW_FW_FINISH) == ST_OK, "Finish: CRC matches");
+        CHECK(sy_installs == 0, "not restarted until the ack has had time to leave");
+        run(SYU_RESTART_MS + 50);
+        CHECK(sy_installs == 1 && memcmp(&sy_chip[FW_APP_OFF], img, sizeof img) == 0, "restarted: the loader installed it");
+        CHECK(SY.hdr.id == id_before && SY.cur == cur_before && SY.have_setlist, "setlist and part kept");
+        run(3000);
+        CHECK(SY.npedals == 3 && !SY.broken, "scanned the loop again after the restart");
+
+        printf("16. A failed and an abandoned update\n");
+        mark = napp;
+        BEGIN(SY.hal.serial, crc ^ 1);
+        run(20);
+        for (int n = 0; n < blocks; n++)
+            BLOCK(n, false);
+        FINISH();
+        run(SYU_RESTART_MS + 50);
+        CHECK(ack_st(mark, qq, LW_FW_FINISH) == ST_FW_FAIL && sy_installs == 1 && !syu_active(&SY.upd),
+              "wrong CRC: firmware check failed, nothing installed");
+        CHECK(memcmp(disp, "----", 4) != 0 || !SY.have_setlist, "display back to the part ('%.4s')", disp);
+        BEGIN(SY.hal.serial, crc);
+        run(20);
+        for (int n = 0; n < 3; n++)
+            BLOCK(n, false);
+        run(SYU_IDLE_MS + 100);
+        CHECK(!syu_active(&SY.upd) && sy_installs == 1 && disp_dp == 0x02, "abandoned after 10 s quiet: back to normal ('%.4s')", disp);
+    }
+
+    printf("17. Byte helpers\n");
     lw_msg t;
     lw_begin(&t, 0, 0);
     lw_put14(&t, 300);

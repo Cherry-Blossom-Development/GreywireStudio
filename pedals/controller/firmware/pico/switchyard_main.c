@@ -14,6 +14,7 @@
 #include "flash_store.h"
 #include "ht16k33.h"
 #include "switchyard.h"
+#include "lw_update.h"
 
 RING(loop_in, 1024);       /* filled by the UART0 interrupt */
 RING(loop_out, 4096);      /* to the MIDI loop */
@@ -161,7 +162,7 @@ int main(void)
         .now_ms = hal_now, .loop_send = hal_loop_send, .other_send = hal_other_send,
         .app_send = hal_app_send, .app_connected = hal_app_connected, .power_9v = hal_power_9v,
         .store_read = store_read, .store_write = store_write, .store_erase = store_erase,
-        .display = hal_display,
+        .display = hal_display, .update = &lw_update_hal,   /* its own updates over USB */
     };
     pico_unique_board_id_t id;
     pico_get_unique_board_id(&id);

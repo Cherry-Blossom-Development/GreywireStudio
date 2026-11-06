@@ -199,8 +199,8 @@ static void go_to(switchyard *sy, int idx, uint8_t qq, uint8_t why)
 
 void sy_step(switchyard *sy, int dir)
 {
-    if (!sy->have_setlist)
-        return;
+    if (!sy->have_setlist || syu_active(&sy->upd))
+        return;                               /* the footswitches wait during an update */
     int n = sy->hdr.nparts;
     bool wrap = sy->hdr.flags & 1;
     int next = sy->cur + (dir > 0 ? 1 : -1);
@@ -734,6 +734,8 @@ static void on_app_msg(void *ctx, const uint8_t *m, int n)
     switchyard *sy = ctx;
     if (m[0] >= 0xF8)
         return;                               /* real-time bytes from the app aren't passed on */
+    if (syu_app_msg(&sy->upd, m, n))
+        return;                               /* Switchyard's own firmware update */
     if (lw_is_linework(m, n) && LW_CMD(m) >= 0x40 && LW_CMD(m) <= 0x5F) {
         switchyard_cmd(sy, m, n);
         return;
@@ -774,10 +776,43 @@ static void on_loop_msg(void *ctx, const uint8_t *m, int n)
 
 /* ================================================================ main entry points */
 
+static uint32_t upd_now(void *c) { return now(c); }
+static void upd_reply(void *c, const uint8_t *m, int n) { to_app(c, m, n); }
+
+/* during Switchyard's own update the display shows ---- while erasing, then --NN (percent) */
+static void update_poll(switchyard *sy)
+{
+    bool was = syu_active(&sy->upd);
+    syu_poll(&sy->upd);
+    if (syu_active(&sy->upd)) {
+        int p = syu_percent(&sy->upd);
+        if (p != sy->upd_shown) {
+            char t[4] = {'-', '-', '-', '-'};
+            if (p >= 0) {
+                t[2] = (char)('0' + p / 10);
+                t[3] = (char)('0' + p % 10);
+            }
+            sy->hal.display(sy->hal.ctx, t, 0);
+            sy->upd_shown = p;
+        }
+    } else if (was) {                         /* abandoned or failed: back to normal */
+        sy->upd_shown = -2;
+        sy->fe_heard = now(sy);               /* loop messages may have been missed meanwhile */
+        show(sy);
+    }
+}
+
 void sy_init(switchyard *sy, const sy_hal *hal)
 {
     memset(sy, 0, sizeof *sy);
     sy->hal = *hal;
+    syu_init(&sy->upd);
+    sy->upd.hal = hal->update;
+    sy->upd.ctx = sy;
+    sy->upd.now_ms = upd_now;
+    sy->upd.reply = upd_reply;
+    sy->upd.serial = sy->hal.serial;
+    sy->upd_shown = -2;
     lw_parser_init(&sy->loop_rx, on_loop_msg, sy);
     lw_parser_init(&sy->app_rx, on_app_msg, sy);
     uint32_t t = now(sy);
@@ -800,8 +835,10 @@ void sy_app_byte(switchyard *sy, uint8_t b) { lw_parse(&sy->app_rx, b); }
 
 void sy_poll(switchyard *sy)
 {
+    update_poll(sy);
     scan_poll(sy);
-    health_poll(sy);
+    if (!syu_active(&sy->upd))
+        health_poll(sy);                      /* erasing can drop loop bytes: no false alarms */
     upload_poll(sy);
     if (sy->save_pending && now(sy) - sy->save_t >= T_SAVE)
         save_position(sy);

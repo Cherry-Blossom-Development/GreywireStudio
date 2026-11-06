@@ -91,7 +91,39 @@ static void other_send_hal(void *c, const uint8_t *m, int n)
 }
 static bool app_conn(void *c) { (void)c; return true; }
 static bool p9v(void *c) { (void)c; return true; }
-static void sy_loop_send(void *c, const uint8_t *m, int n) { (void)c; cable_put(&link_[0], m, n); }
+static int loop_fw_msgs;                            /* firmware messages Switchyard put into the loop */
+static void sy_loop_send(void *c, const uint8_t *m, int n)
+{
+    (void)c;
+    if (lw_is_linework(m, n) && LW_CMD(m) >= LW_FW_BEGIN && LW_CMD(m) <= LW_FW_FINISH)
+        loop_fw_msgs++;
+    cable_put(&link_[0], m, n);
+}
+
+/* 2 MB flash chips, for Switchyard and each stand-in: writes only clear bits */
+#define CHIP (2u * 1024u * 1024u)
+static void ch_read(void *c, uint32_t off, void *buf, uint32_t n) { memcpy(buf, (uint8_t *)c + off, n); }
+static void ch_write(void *c, uint32_t off, const void *buf, uint32_t n)
+{
+    for (uint32_t i = 0; i < n; i++)
+        ((uint8_t *)c)[off + i] &= ((const uint8_t *)buf)[i];
+}
+static void ch_erase(void *c, uint32_t off, uint32_t n) { memset((uint8_t *)c + off, 0xFF, n); }
+
+/* Switchyard's own firmware update: its chip holds the firmware areas (lw_fw.h; the simulation
+ * uses the pedals' layout, since only the offsets differ). Its setlists stay in store[]. */
+static uint8_t sy_chip[CHIP];
+static lw_flash sy_whole = {sy_chip, ch_read, ch_write, ch_erase};
+static lw_fw_rx sy_rx;
+static bool sy_restart_asked;
+static int sy_installs;                             /* updates the simulated loader has installed */
+static int sy_erases;
+static int syu_begin(void *c, uint32_t size, uint32_t crc) { (void)c; return lw_fw_begin(&sy_rx, &sy_whole, size, crc); }
+static bool syu_erase(void *c) { (void)c; sy_erases++; return lw_fw_erase_step(&sy_rx); }
+static int syu_block(void *c, uint32_t n, const uint8_t *d) { (void)c; return lw_fw_block(&sy_rx, n, d); }
+static int syu_finish(void *c) { (void)c; return lw_fw_finish(&sy_rx); }
+static void syu_restart(void *c) { (void)c; sy_restart_asked = true; }
+static const pd_fw_hal sy_upd = {NULL, syu_begin, syu_erase, syu_block, syu_finish, syu_restart};
 
 static switchyard SY;
 static sy_hal syhal = {
@@ -99,7 +131,19 @@ static sy_hal syhal = {
     .app_connected = app_conn, .power_9v = p9v, .store_read = st_read, .store_write = st_write,
     .store_erase = st_erase, .display = display,
     .serial = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x01, 0x02, 0x03},
+    .update = &sy_upd,
 };
+
+/* Switchyard's watchdog restart: the loader installs the update, then Switchyard starts again */
+static void restart_switchyard(void)
+{
+    sy_restart_asked = false;
+    int did = FW_DID_NOTHING;
+    lw_fw_boot(&sy_whole, false, &did);
+    if (did == FW_DID_INSTALL)
+        sy_installs++;
+    sy_init(&SY, &syhal);
+}
 
 static lw_pedal P[NPED];
 static void ped_send(void *c, const uint8_t *m, int n) { cable_put(&link_[(intptr_t)c + 1], m, n); }
@@ -108,15 +152,6 @@ static void ped_send(void *c, const uint8_t *m, int n) { cable_put(&link_[(intpt
  * firmware, the download area, the update record, and its settings in the last 64 KB. So it
  * keeps its settings and takes firmware updates through the real code. A simulated install
  * raises the last number of its firmware version, 0.1.0 -> 0.1.1 and so on. */
-#define CHIP (2u * 1024u * 1024u)
-static uint8_t chip[NPED][CHIP];
-static void ch_read(void *c, uint32_t off, void *buf, uint32_t n) { memcpy(buf, (uint8_t *)c + off, n); }
-static void ch_write(void *c, uint32_t off, const void *buf, uint32_t n)
-{
-    for (uint32_t i = 0; i < n; i++)
-        ((uint8_t *)c)[off + i] &= ((const uint8_t *)buf)[i];
-}
-static void ch_erase(void *c, uint32_t off, uint32_t n) { memset((uint8_t *)c + off, 0xFF, n); }
 static lw_flash whole[NPED], settings[NPED];
 static lw_fw_rx rx[NPED];
 static bool restart_asked[NPED];
@@ -127,6 +162,8 @@ static int u_block(void *c, uint32_t n, const uint8_t *d) { return lw_fw_block(&
 static int u_finish(void *c) { return lw_fw_finish(&rx[(intptr_t)c]); }
 static void u_restart(void *c) { restart_asked[(intptr_t)c] = true; }
 static pd_fw_hal upd[NPED];
+
+static uint8_t chip[NPED][CHIP];
 
 static void make_pedal(int k)
 {
@@ -178,6 +215,8 @@ static void tick(void)
             restart_pedal(k);
     }
     sy_poll(&SY);
+    if (sy_restart_asked)
+        restart_switchyard();
 }
 
 static void run(int ms)
