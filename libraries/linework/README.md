@@ -75,7 +75,7 @@ Added Nov 5, 2026. It is built and simulated, but not yet run on hardware.
 
 **Data block format:** 64 bytes travel as 74 MIDI data bytes. Each group of 7 bytes is sent as one byte holding their top bits (bit *i* is byte *i*'s top bit), followed by their low 7 bits. The 64th byte is a group of one. The checksum `xx` is the sum of the 74 bytes, low 7 bits. Block numbers are two 7-bit bytes, low first.
 
-**Speed:** if each block waits for its acknowledgement, 40 KB takes about a minute through a two-pedal loop, three times slower than the spec's 1.5–2 minutes for 200 KB. The app should keep a few blocks in flight to reach the spec's speed.
+**Speed:** if each block waits for its acknowledgement, 40 KB takes about a minute through a two-pedal loop, three times slower than the spec's 1.5–2 minutes for 200 KB. So the spec (Nov 6, 2026) lets the sender keep up to 4 blocks waiting for an answer. The pedal writes each block as it arrives, and its 2 KB output buffer (4 KB in Switchyard) has plenty of room for 4.
 
 **Building:** each pedal's `CMakeLists.txt` uses `pico/linework.cmake`, which makes:
 - `<pedal>_loader.uf2`: the loader alone (about 18 KB).
