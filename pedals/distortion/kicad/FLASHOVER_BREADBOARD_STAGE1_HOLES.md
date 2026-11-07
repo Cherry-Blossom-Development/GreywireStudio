@@ -75,29 +75,29 @@ Unplug before step 2.
 
 **Check:** power up, black probe on ground.
 
-- About **4.5 V** on c41, c39 and the bottom + rail. Allow a few seconds to settle.
-- About **8.7 V** on a38.
+- About **4.5 V** on c41, c39 and the bottom + rail. Allow a few seconds to settle. - validated
+- About **8.7 V** on a38. - validated
 
 ## Step 3: input and gain stage
 
-- [ ] **3.1** Chip U1, LM741, notch pointing left: pin 1 in **f9**, pin 4 in **f12**, pin 5 in **e12**, pin 8 in **e9**
-- [ ] **3.2** Jumper wire: **a10** to top + rail at column 10
-- [ ] **3.3** Jumper wire: **j12** to bottom − rail at column 11
-- [ ] **3.4** R1, 1M resistor: **g1** to bottom − rail at column 2
-- [ ] **3.5** C1, 10 nF film capacitor: **f1** to **f4**
-- [ ] **3.6** R2, 10k resistor: **j4** to **j11**
-- [ ] **3.7** C2, 1 nF film capacitor: **i11** to bottom − rail at column 13
-- [ ] **3.8** R3, 1M resistor: **h11** to bottom + rail (VB) at column 14
-- [ ] **3.9** R5, 100k resistor: **h10** to **c11**, arching over the chip
-- [ ] **3.10** R4, 330 Ω resistor: **i10** to **c6**, across the groove
-- [ ] **3.11** C3, 470 nF film capacitor: **c4** to top − rail at column 5
-- [ ] **3.12** Wire: Gain pot lug 3 to **a6**
-- [ ] **3.13** Wire: Gain pot lug 2 to **a4**
-- [ ] **3.14** Short wire soldered on the pot: Gain lug 1 to Gain lug 2
+- [ ] **3.1** Chip U1, LM741, notch pointing left: pin 1 in **f9**, pin 4 in **f12**, pin 5 in **e12**, pin 8 in **e9** - done
+- [ ] **3.2** Jumper wire: **a10** to top + rail at column 10 - done
+- [ ] **3.3** Jumper wire: **j12** to bottom − rail at column 11 - done
+- [ ] **3.4** R1, 1M resistor: **g1** to bottom − rail at column 2 - done
+- [ ] **3.5** C1, 10 nF film capacitor: **f1** to **f4** - done
+- [ ] **3.6** R2, 10k resistor: **j4** to **j11** - done
+- [ ] **3.7** C2, 1 nF film capacitor: **i11** to bottom − rail at column 13 - done
+- [ ] **3.8** R3, 1M resistor: **h11** to bottom + rail (VB) at column 14 - done
+- [ ] **3.9** R5, 100k resistor: **h10** to **c11**, arching over the chip - done
+- [ ] **3.10** R4, 330 Ω resistor: **i10** to **c6**, across the groove - done
+- [ ] **3.11** C3, 470 nF film capacitor: **c4** to top − rail at column 5 - done
+- [ ] **3.12** Wire: Gain pot lug 3 to **a6** - done
+- [ ] **3.13** Wire: Gain pot lug 2 to **a4** - done
+- [ ] **3.14** Short wire soldered on the pot: Gain lug 1 to Gain lug 2 - done
 
 Leave a9–d9, a12–d12 and g9–j9 empty; chip pins 8, 5 and 1 aren't used. Gain clockwise is more gain.
 
-**Check:** power up. Expect about **4.5 V** on c11 (chip pin 6) at any Gain setting. Readings near 0 V or near 8 V mean a wiring mistake around the chip.
+**Check:** power up. Expect about **4.5 V** on c11 (chip pin 6) at any Gain setting. Readings near 0 V or near 8 V mean a wiring mistake around the chip. - validated
 
 ## Step 4: clipping and the Soft/Hard switch
 
