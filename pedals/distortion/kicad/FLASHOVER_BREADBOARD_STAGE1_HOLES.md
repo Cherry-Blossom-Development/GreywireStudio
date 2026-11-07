@@ -101,22 +101,22 @@ Leave a9–d9, a12–d12 and g9–j9 empty; chip pins 8, 5 and 1 aren't used. Ga
 
 ## Step 4: clipping and the Soft/Hard switch
 
-- [ ] **4.1** C4, 1 µF film capacitor: **b11** to **b15**
-- [ ] **4.2** R6, 10k resistor: **c15** to **f18**, across the groove
-- [ ] **4.3** Jumper wire: **g18** to **g19**
-- [ ] **4.4** R10, 1M resistor: **h18** to bottom + rail (VB) at column 17
-- [ ] **4.5** C5, 1 nF film capacitor: **i18** to bottom + rail (VB) at column 19
-- [ ] **4.6** Wire: toggle center lug to **j18**
-- [ ] **4.7** Wire: toggle end lug A (Soft) to **j27**
-- [ ] **4.8** Wire: toggle end lug B (Hard) to **j30**
-- [ ] **4.9** D1, 1N34A germanium diode: plain end in **g27**, striped end in bottom + rail (VB) at column 26
-- [ ] **4.10** D2, 1N34A germanium diode: plain end in bottom + rail (VB) at column 28, striped end in **h27**
-- [ ] **4.11** D4, 1N4148 silicon diode: plain end in **g30**, striped end in bottom + rail (VB) at column 29
-- [ ] **4.12** D5, 1N4148 silicon diode: plain end in bottom + rail (VB) at column 31, striped end in **h30**
+- [ ] **4.1** C4, 1 µF film capacitor: **b11** to **b15** - done
+- [ ] **4.2** R6, 10k resistor: **c15** to **f18**, across the groove - done
+- [ ] **4.3** Jumper wire: **g18** to **g19** - done
+- [ ] **4.4** R10, 1M resistor: **h18** to bottom + rail (VB) at column 17 - done
+- [ ] **4.5** C5, 1 nF film capacitor: **i18** to bottom + rail (VB) at column 19 - done
+- [ ] **4.6** Wire: toggle center lug to **j18** - done
+- [ ] **4.7** Wire: toggle end lug A (Soft) to **j27** - done
+- [ ] **4.8** Wire: toggle end lug B (Hard) to **j30** - done
+- [ ] **4.9** D1, 1N34A germanium diode (replaced with 1N60P): plain end in **g27**, striped end in bottom + rail (VB) at column 26 - done
+- [ ] **4.10** D2, 1N34A germanium diode (replaced with 1N60P): plain end in bottom + rail (VB) at column 28, striped end in **h27** - done
+- [ ] **4.11** D4, 1N4148 silicon diode: plain end in **g30**, striped end in bottom + rail (VB) at column 29 - done
+- [ ] **4.12** D5, 1N4148 silicon diode: plain end in bottom + rail (VB) at column 31, striped end in **h30** - done
 
 D1/D2 and D4/D5 point opposite ways on purpose. The 1N34A diodes are glass and fragile: bend their legs gently, away from the body. Label the toggle once you can hear which position is Soft.
 
-**Check:** power up. Expect about **4.5 V** on h18 in both toggle positions.
+**Check:** power up. Expect about **4.5 V** on h18 in both toggle positions. - validated
 
 ## Step 5: tone, output amplifier and Level
 
