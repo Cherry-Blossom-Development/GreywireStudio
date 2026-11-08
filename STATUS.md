@@ -15,7 +15,7 @@ None of the firmware has run on real hardware yet.
 
 ## Next steps (terminal only), in the order suggested
 
-1. ~~Update the Linework Control Specification~~ **Done Nov 6** (commit 851c750). Its **Decisions to approve** section lists 7 items for your yes/no:
+1. ~~Update the Linework Control Specification~~ **Done Nov 6** (commit 851c750). All 7 decisions in it were **approved Nov 8**:
    - Tap Changer's model number 01 01
    - the firmware data block format and checksum
    - firmware blocks passed on round the loop
@@ -41,5 +41,5 @@ None of the firmware has run on real hardware yet.
 
 - Build stage 1 step 5, tone and output (Flashover breadboard). That completes the audio path.
 - Order stage 2 (JLCPCB breakout board + the order sheet), when you're ready.
-- Review the open decisions in `pedals/distortion/FLASHOVER_MIDI_REFERENCE.md` and the firmware READMEs.
+- Review the open decisions in `pedals/distortion/FLASHOVER_MIDI_REFERENCE.md` and the firmware READMEs (the 7 spec decisions are done).
 
