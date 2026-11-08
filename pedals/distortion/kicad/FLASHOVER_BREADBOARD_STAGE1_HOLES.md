@@ -120,10 +120,10 @@ D1/D2 and D4/D5 point opposite ways on purpose. The 1N34A diodes are glass and f
 
 ## Step 5: tone, output amplifier and Level
 
-- [ ] **5.1** C12, 22 nF film capacitor: **i19** to **i21**
-- [ ] **5.2** R15, 6.8k resistor: **h21** to bottom + rail (VB) at column 23
-- [ ] **5.3** R14, 6.8k resistor: **f19** to **f24**
-- [ ] **5.4** C8, 100 nF film capacitor: **h24** to bottom + rail (VB) at column 25
+- [ ] **5.1** C12, 22 nF film capacitor: **i19** to **i21** - done
+- [ ] **5.2** R15, 6.8k resistor: **h21** to bottom + rail (VB) at column 23 - done
+- [ ] **5.3** R14, 6.8k resistor: **f19** to **f24** - done
+- [ ] **5.4** C8, 100 nF film capacitor: **h24** to bottom + rail (VB) at column 25 - done
 - [ ] **5.5** Wire: Tone pot lug 1 to **j24**
 - [ ] **5.6** Wire: Tone pot lug 3 to **j21**
 - [ ] **5.7** Wire: Tone pot lug 2 to **j40**
