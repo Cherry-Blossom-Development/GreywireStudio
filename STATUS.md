@@ -1,4 +1,4 @@
-# Where we are (Nov 6, 2026)
+# Where we are (Nov 8, 2026)
 
 A pick-up note for the next session. The details are in each folder's README.
 
@@ -6,7 +6,7 @@ A pick-up note for the next session. The details are in each folder's README.
 
 | Pedal / area | State |
 |---|---|
-| **Flashover** (`pedals/distortion/`) | Stage 1 breadboard: steps 1–2 done and checked (bias 4.3–4.4 V); **step 3 in progress** (your marks in `FLASHOVER_BREADBOARD_STAGE1_HOLES.md` are uncommitted, on purpose). Firmware drafted (`firmware/`, 57 simulated checks pass). Stage 2 planned (`kicad/FLASHOVER_BREADBOARD_STAGE2.md`), breakout board designed and ready to order (`kicad/Flashover_Breakout/fab/`), order sheet `Flashover Breadboard Stage 2 Order.docx`. **Nothing for stage 2 is ordered.** |
+| **Flashover** (`pedals/distortion/`) | Stage 1 breadboard: steps 1–4 done and checked (bias 4.3–4.4 V; gain stage 4.5 V on c11; D1 and D2 are 1N60P germanium, as the 1N34A was out of stock). **Step 5 (tone and output) is next.** Firmware drafted (`firmware/`, 57 simulated checks pass). Stage 2 planned (`kicad/FLASHOVER_BREADBOARD_STAGE2.md`), breakout board designed and ready to order (`kicad/Flashover_Breakout/fab/`), order sheet `Flashover Breadboard Stage 2 Order.docx`. **Nothing for stage 2 is ordered.** |
 | **Tap Changer** (`pedals/boost/`) | Schematics drafted. Firmware drafted (`firmware/`, Boost knob in dB, 31 checks pass). Breadboard parts not ordered. |
 | **Switchyard** (`pedals/controller/`) | Schematic drafted. Firmware drafted (81 checks), with its own loader and updates over USB. Web MIDI test tool (41 checks), which can send firmware to any pedal or to Switchyard. Breadboard parts not ordered. |
 | **Shared firmware** (`libraries/linework/`) | Protocol, pedal behaviour, settings in flash, knob/LED helpers, RP2040 drivers, and the **loader with firmware updates over MIDI** (39 checks, including power cuts and recovery mode). |
@@ -28,7 +28,7 @@ None of the firmware has run on real hardware yet.
 4. ~~Recovery buttons in the Product Documents~~ **Done Nov 6.** Tap Changer's document now says footswitch + knob push, and Switchyard's says both footswitches; Flashover's already said footswitch + Soft/Hard. The status lines and Tap Changer's model number are brought up to date.
 5. ~~Stand-in Pico takes updates~~ **Done Nov 6.** It runs after the shared loader. `standin_next.uf2` is the same program reporting 0.1.1, so the Switchyard breadboard can try a real pedal update. The breadboard guide now says to load the `_full.uf2` files the first time.
 
-6. ~~Tap Changer breadboard stage 2 guide~~ **Done Nov 6** (uncommitted): `pedals/boost/TAP_CHANGER_BREADBOARD_STAGE2.md`. It borrows Flashover's stage 2 boards (Pico, breakout, Gain encoder, footswitch button), so it needs no new parts. A new firmware build, `tapchanger_breakout_debug`, uses the breakout's 10k Tone pot. Test 3 is the digital pot's distortion, Tap Changer's main risk. Flashover's stage 2 setup-mode step is also corrected: hold the button while plugging in the USB cable.
+6. ~~Tap Changer breadboard stage 2 guide~~ **Done Nov 6** (commit 434ca1e): `pedals/boost/TAP_CHANGER_BREADBOARD_STAGE2.md`. It borrows Flashover's stage 2 boards (Pico, breakout, Gain encoder, footswitch button), so it needs no new parts. A new firmware build, `tapchanger_breakout_debug`, uses the breakout's 10k Tone pot. Test 3 is the digital pot's distortion, Tap Changer's main risk. Flashover's stage 2 setup-mode step is also corrected: hold the button while plugging in the USB cable.
 
 ## Waiting on the breadboard (don't do yet)
 
@@ -39,8 +39,7 @@ None of the firmware has run on real hardware yet.
 
 ## Waiting on you
 
-- Finish stage 1 step 3 onward (Flashover breadboard).
+- Build stage 1 step 5, tone and output (Flashover breadboard). That completes the audio path.
 - Order stage 2 (JLCPCB breakout board + the order sheet), when you're ready.
 - Review the open decisions in `pedals/distortion/FLASHOVER_MIDI_REFERENCE.md` and the firmware READMEs.
 
-Tidy-up: `grep.exe.stackdump` in the repo root is a stray file and can be deleted.
