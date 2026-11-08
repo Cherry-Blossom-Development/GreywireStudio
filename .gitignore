@@ -41,3 +41,6 @@ fp-info-cache
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Crash dumps (Git for Windows tools)
+*.stackdump
