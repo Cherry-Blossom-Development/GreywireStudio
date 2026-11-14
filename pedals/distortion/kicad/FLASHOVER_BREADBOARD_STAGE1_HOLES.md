@@ -124,54 +124,58 @@ D1/D2 and D4/D5 point opposite ways on purpose. The 1N34A diodes are glass and f
 - [ ] **5.2** R15, 6.8k resistor: **h21** to bottom + rail (VB) at column 23 - done
 - [ ] **5.3** R14, 6.8k resistor: **f19** to **f24** - done
 - [ ] **5.4** C8, 100 nF film capacitor: **h24** to bottom + rail (VB) at column 25 - done
-- [ ] **5.5** Wire: Tone pot lug 1 to **j24**
-- [ ] **5.6** Wire: Tone pot lug 3 to **j21**
-- [ ] **5.7** Wire: Tone pot lug 2 to **j40**
-- [ ] **5.8** Jumper wire: **g38** to **g35**
-- [ ] **5.9** R16, 30k resistor: **h35** to **h39**
-- [ ] **5.10** R17, 10k resistor: **i39** to bottom + rail (VB) at column 37
-- [ ] **5.11** Wire: Level pot lug 3 to **j35**
-- [ ] **5.12** Wire: Level pot lug 1 to bottom + rail (VB) at column 45
-- [ ] **5.13** Wire: Level pot lug 2 to **j48**
-- [ ] **5.14** C9, 1 µF film capacitor: **g48** to **g51**
-- [ ] **5.15** R11, 100k resistor: **i51** to bottom − rail at column 52
+- [ ] **5.5** Wire: Tone pot lug 1 to **j24** - done
+- [ ] **5.6** Wire: Tone pot lug 3 to **j21** - done
+- [ ] **5.7** Wire: Tone pot lug 2 to **j40** - done
+- [ ] **5.8** Jumper wire: **g38** to **g35** - done
+- [ ] **5.9** R16, 30k resistor: **h35** to **h39** - done
+- [ ] **5.10** R17, 10k resistor: **i39** to bottom + rail (VB) at column 37 - done
+- [ ] **5.11** Wire: Level pot lug 3 to **j35** - done
+- [ ] **5.12** Wire: Level pot lug 1 to bottom + rail (VB) at column 45 - done
+- [ ] **5.13** Wire: Level pot lug 2 to **j48** - done
+- [ ] **5.14** C9, 1 µF film capacitor: **g48** to **g51** - done
+- [ ] **5.15** R11, 100k resistor: **i51** to bottom − rail at column 52 - done
 
 Tone clockwise is brighter; Level clockwise is louder.
 
 **Check:** power up and expect:
 
-- About **4.5 V** on g38 (TL072 pin 1) and j40.
-- **0 V** on g51, the output.
+- About **4.5 V** on g38 (TL072 pin 1) and j40. - validated
+- **0 V** on g51, the output. - validated
 
 ## Step 6: footswitch, LED and jacks
 
 **Footswitch lugs:** turn the footswitch over. The 9 lugs form a 3 × 3 grid, numbered like a phone keypad: 1 2 3 across the top row, 4 5 6 across the middle, 7 8 9 across the bottom. Keep the same view throughout.
 
+Which side is "up" doesn't matter, but which way you turn the switch does. Each pole is a vertical column (1-4-7, 2-5-8, 3-6-9), and the middle lug of each column is its common. To find the columns, set the meter to continuity and probe the center lug against its four neighbors: it beeps to one of them. Hold the switch so that the center lug and that neighbor are one above the other. Click the switch and the neighbor on the other side should beep instead.
+
+**Jack lugs:** each mono 1/4" jack has two lugs. The **tip lug** joins the long springy arm that presses on the plug's tip (the signal). The **sleeve lug** joins the frame that touches the plug's barrel (ground). To check, plug in a cable and use continuity: the plug's tip beeps to the tip lug, and its barrel beeps to the sleeve lug.
+
 Solder these first, off the board:
 
-- [ ] **6.1** Short wire: footswitch lug 7 to footswitch lug 9
-- [ ] **6.2** Wire: input jack tip lug to footswitch lug 4
-- [ ] **6.3** Wire: output jack tip lug to footswitch lug 6
-- [ ] **6.4** Wire: LED short leg (cathode, flat side) to footswitch lug 2
+- [ ] **6.1** Short wire: footswitch lug 7 to footswitch lug 9 - done
+- [ ] **6.2** Wire: input jack tip lug to footswitch lug 4 - done
+- [ ] **6.3** Wire: output jack tip lug to footswitch lug 6 - done
+- [ ] **6.4** Wire: LED short leg (cathode, flat side) to footswitch lug 2 - done
 
 Then connect to the board:
 
-- [ ] **6.5** Wire: footswitch lug 1 to **j1** (circuit input)
-- [ ] **6.6** Wire: footswitch lug 3 to **j51** (circuit output)
-- [ ] **6.7** Wire: footswitch lug 5 to bottom − rail at column 5
-- [ ] **6.8** LED resistor, 4.7k: top + rail at column 27 to **b28**
-- [ ] **6.9** Wire: LED long leg (anode) to **e28**
-- [ ] **6.10** Wire: input jack sleeve lug to bottom − rail at column 1
-- [ ] **6.11** Wire: output jack sleeve lug to bottom − rail at column 58
+- [ ] **6.5** Wire: footswitch lug 1 to **j1** (circuit input) - done
+- [ ] **6.6** Wire: footswitch lug 3 to **j51** (circuit output) - done
+- [ ] **6.7** Wire: footswitch lug 5 to bottom − rail at column 5 - done
+- [ ] **6.8** LED resistor, 4.7k: top + rail at column 27 to **b28** - done
+- [ ] **6.9** Wire: LED long leg (anode) to **e28** - done
+- [ ] **6.10** Wire: input jack sleeve lug to bottom − rail at column 1 - done
+- [ ] **6.11** Wire: output jack sleeve lug to bottom − rail at column 58 - done
 
 Lug 8 isn't used.
 
 **Check:** power off, meter on continuity (the beep setting). Probe the two jack tip lugs and press the footswitch:
 
-- One position beeps: that's bypass.
-- The other doesn't: that's effect on.
+- One position beeps: that's bypass. validated
+- The other doesn't: that's effect on. - validated
 
-Then power up and stomp. The LED should light with the effect on. If it lights in bypass instead, move the LED wire from lug 2 to lug 8.
+Then power up and stomp. The LED should light with the effect on. If it lights in bypass instead, move the LED wire from lug 2 to lug 8. - valid
 
 ## Step 7: first sound
 
